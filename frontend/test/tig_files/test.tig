@@ -1,0 +1,2 @@
+var test: string := "test"
+var number := 10
