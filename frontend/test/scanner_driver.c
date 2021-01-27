@@ -19,7 +19,8 @@ string toknames[] = {
     "VAR",    "TYPE"};
 
 string tokname(int tok) {
-    return tok < 1 || tok > 43 ? "BAD_TOKEN" : toknames[tok - 1];
+    return tok < 1 || tok > 44 ? "\033[1;31mBAD_TOKEN\033[0m"
+                               : toknames[tok - 1];
 }
 
 int main(int argc, char **argv) {
@@ -41,6 +42,9 @@ int main(int argc, char **argv) {
                 break;
             case INT:
                 printf("%10s %4d %d\n", tokname(tok), tokPos, yylval.ival);
+                break;
+            case FLOAT:
+                printf("%10s %4d %f\n", tokname(tok), tokPos, yylval.fval);
                 break;
             default:
                 printf("%10s %4d\n", tokname(tok), tokPos);

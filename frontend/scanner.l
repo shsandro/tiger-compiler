@@ -63,7 +63,8 @@ var                   {adjust(); return VAR;}
 type                  {adjust(); return TYPE;}
 \"[a-zA-z0-9]*\"      {adjust(); yylval.sval = String(yytext); return STRING;}
 [a-zA-Z][a-zA-Z0-9_]* {adjust(); yylval.sval = Id(yytext); return ID;}
-[0-9]+	              {adjust(); yylval.ival=atoi(yytext); return INT;}
+([0-9]*[.])[0-9]+     {adjust(); yylval.fval = atof(yytext); return FLOAT;}
+[0-9]+	              {adjust(); yylval.ival = atoi(yytext); return INT;}
 \n	                  {adjust(); newline(); continue;}
 (" "|"\t")            {adjust(); continue;}
 .               	  {adjust(); error(tokPos,"illegal token");}
