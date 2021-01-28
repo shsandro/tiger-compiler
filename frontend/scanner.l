@@ -12,12 +12,12 @@ void adjust();
 
 %}
 
-%x COMMENT STRING_S STRING_ML
+%x COMMENT STRING
 asc_range ([01][0-9]{2}|2[0-4][0-9]|25[0-5])
 
 %%
 
-"\""                        {adjust(); BEGIN(STRING_S); string_text[0]= '\0'; strcat(string_text,"\"");}
+"\""                        {adjust(); BEGIN(STRING); string_text[0]= '\0'; strcat(string_text,"\"");}
 
 "/*"                        {adjust(); BEGIN(COMMENT); comment_depth++;}
 
@@ -61,7 +61,6 @@ nil                         {adjust(); return NIL;}
 function                    {adjust(); return FUNCTION;}
 var                         {adjust(); return VAR;}
 type                        {adjust(); return TYPE;}
-\"[a-zA-z0-9]*\"            {adjust(); yylval.sval = String(yytext); return STRING;}
 [a-zA-Z][a-zA-Z0-9_]*|_main {adjust(); yylval.sval = Id(yytext); return ID;}
 ([0-9]*[.])[0-9]+           {adjust(); yylval.fval = atof(yytext); return FLOAT;}
 [0-9]+	                    {adjust(); yylval.ival = atoi(yytext); return INT;}
@@ -69,22 +68,18 @@ type                        {adjust(); return TYPE;}
 (" "|"\t")                  {adjust(); continue;}
 .               	        {adjust(); error(tokPos,"illegal token");}
 
-<STRING_ML>[ \t]            {adjust();  continue;}
-<STRING_ML>"\n"             {adjust();  newline(); continue;}
-<STRING_ML>\\               {adjust();  BEGIN(STRING_S);}
-<STRING_ML>.                {adjust();  error(tokPos,"invalid character in multiline string"); yyterminate();}
-
-<STRING_S>"\""              {adjust();  BEGIN(INITIAL); strcat(string_text,"\""); yylval.sval=String(string_text); return STRING;}
-<STRING_S>"\n"              {newline(); BEGIN(INITIAL);  error(tokPos,"unclosed multiline string"); yyterminate();}
-<STRING_S>"\\n"             {adjust();  strcat(string_text,"\n"); continue;}
-<STRING_S>"\\t"             {adjust();  strcat(string_text,"\t"); continue;}
-<STRING_S>"\\\\"            {adjust();  strcat(string_text,"\\"); continue;}
-<STRING_S>"\\\""            {adjust();  strcat(string_text,"\""); continue;}
-<STRING_S>\\{asc_range}     {adjust();  strcat(string_text,yytext); continue;}
-<STRING_S>\\[ \t]+          {adjust();  BEGIN(STRING_ML);}
-<STRING_S>\\\n              {adjust();  newline(); BEGIN(STRING_ML);}
-<STRING_S>\\.               {adjust();  error(tokPos,"invalid character or ASC code"); yyterminate();}
-<STRING_S>.                 {adjust();  strcat(string_text,yytext); continue;}
+<STRING>"\""              {adjust();  BEGIN(INITIAL); strcat(string_text,"\""); yylval.sval=String(string_text); return STRING;}
+<STRING><<EOF>>           {newline(); BEGIN(INITIAL);  error(tokPos,"unclosed string"); yyterminate();}
+<STRING>"\\n"             {adjust();  strcat(string_text,"\n"); continue;}
+<STRING>"\\t"             {adjust();  strcat(string_text,"\t"); continue;}
+<STRING>"\\\\"            {adjust();  strcat(string_text,"\\"); continue;}
+<STRING>"\\\""            {adjust();  strcat(string_text,"\""); continue;}
+<STRING>\\{asc_range}     {adjust();  strcat(string_text,yytext); continue;}
+<STRING>\\[ \t]+          {adjust();}
+<STRING>\n                {adjust();  error(tokPos,"multiline in string without '\\'"); yyterminate();}
+<STRING>\\\n              {adjust();  newline(); continue;}
+<STRING>\\.               {adjust();  error(tokPos,"invalid ASC code"); yyterminate();}
+<STRING>.                 {adjust();  strcat(string_text, yytext); continue;}
 
 <COMMENT>"*/"               {adjust(); if (--comment_depth == 0) { BEGIN(INITIAL); }}
 <COMMENT>"/*"               {adjust(); comment_depth++;}
