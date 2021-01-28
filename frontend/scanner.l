@@ -5,16 +5,8 @@
 #include "token.h"
 
 int char_pos = 1;
-
-int yywrap(void) {
-    char_pos = 1;
-    return 1;
-}
-
-void adjust(void) {
-    tokPos=char_pos;
-    char_pos+=yyleng;
-}
+int yywrap();
+void adjust();
 
 %}
 
@@ -68,3 +60,15 @@ type                  {adjust(); return TYPE;}
 \n	                  {adjust(); newline(); continue;}
 (" "|"\t")            {adjust(); continue;}
 .               	  {adjust(); error(tokPos,"illegal token");}
+
+%%
+
+int yywrap() {
+    char_pos = 1;
+    return 1;
+}
+
+void adjust() {
+    tokPos=char_pos;
+    char_pos+=yyleng;
+}
