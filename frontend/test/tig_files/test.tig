@@ -1,2 +1,3 @@
-var test: string := "testç"
+var test: string := "teste \
+\
 var number := 10

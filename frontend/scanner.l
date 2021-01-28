@@ -4,18 +4,20 @@
 #include "error.h"
 #include "token.h"
 
-extern int line_num;
-
 int char_pos = 1;
 int  comment_depth = 0;
+char string_text[5000] = "";
 int yywrap();
 void adjust();
 
 %}
 
-%x COMMENT
+%x COMMENT STRING_S STRING_ML
+asc_range ([01][0-9]{2}|2[0-4][0-9]|25[0-5])
 
 %%
+
+"\""                        {adjust(); BEGIN(STRING_S); string_text[0]= '\0'; strcat(string_text,"\"");}
 
 "/*"                        {adjust(); BEGIN(COMMENT); comment_depth++;}
 
@@ -67,6 +69,22 @@ type                        {adjust(); return TYPE;}
 (" "|"\t")                  {adjust(); continue;}
 .               	        {adjust(); error(tokPos,"illegal token");}
 
+<STRING_ML>[ \t]            {adjust();  continue;}
+<STRING_ML>"\n"             {adjust();  newline(); continue;}
+<STRING_ML>\\               {adjust();  BEGIN(STRING_S);}
+<STRING_ML>.                {adjust();  error(tokPos,"invalid character in multiline string"); yyterminate();}
+
+<STRING_S>"\""              {adjust();  BEGIN(INITIAL); strcat(string_text,"\""); yylval.sval=String(string_text); return STRING;}
+<STRING_S>"\n"              {newline(); BEGIN(INITIAL);  error(tokPos,"unclosed multiline string"); yyterminate();}
+<STRING_S>"\\n"             {adjust();  strcat(string_text,"\n"); continue;}
+<STRING_S>"\\t"             {adjust();  strcat(string_text,"\t"); continue;}
+<STRING_S>"\\\\"            {adjust();  strcat(string_text,"\\"); continue;}
+<STRING_S>"\\\""            {adjust();  strcat(string_text,"\""); continue;}
+<STRING_S>\\{asc_range}     {adjust();  strcat(string_text,yytext); continue;}
+<STRING_S>\\[ \t]+          {adjust();  BEGIN(STRING_ML);}
+<STRING_S>\\\n              {adjust();  newline(); BEGIN(STRING_ML);}
+<STRING_S>\\.               {adjust();  error(tokPos,"invalid character or ASC code"); yyterminate();}
+<STRING_S>.                 {adjust();  strcat(string_text,yytext); continue;}
 
 <COMMENT>"*/"               {adjust(); if (--comment_depth == 0) { BEGIN(INITIAL); }}
 <COMMENT>"/*"               {adjust(); comment_depth++;}

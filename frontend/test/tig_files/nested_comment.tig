@@ -3,7 +3,7 @@
 */
 let
 /* define a list */
-type intlistç = {hd: int, tl: intlist} 
+type intlist = {hd: int, tl: intlist} 
 
 /* define a tree 
 type tree ={key: int, children: treelist}
