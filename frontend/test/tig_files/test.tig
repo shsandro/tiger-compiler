@@ -1,2 +1,2 @@
 var test: string := "teste linha 1 \
-            \nteste linha 2"
+\\\100"
