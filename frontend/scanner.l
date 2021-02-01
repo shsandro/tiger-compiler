@@ -1,5 +1,6 @@
 %{
 #include <string.h>
+#include <limits.h>
 #include "util.h"
 #include "error.h"
 #include "token.h"
@@ -63,7 +64,16 @@ var                         {adjust(); return VAR;}
 type                        {adjust(); return TYPE;}
 [a-zA-Z][a-zA-Z0-9_]*|_main {adjust(); yylval.sval = Id(yytext); return ID;}
 ([0-9]*[.])[0-9]+           {adjust(); yylval.fval = atof(yytext); return FLOAT;}
-[0-9]+	                    {adjust(); yylval.ival = atoi(yytext); return INT;}
+[0-9]+	                    {adjust(); 
+                                long int value = strtol(yytext, NULL, 10); 
+                                if (value == LONG_MAX || value > INT_MAX) {
+                                    error(tokPos, "invalid integer"); 
+                                    yyterminate();
+                                } else {
+                                    yylval.ival = atoi(yytext); 
+                                    return INT;
+                                }
+                            }
 \n	                        {adjust(); newline(); continue; }
 (" "|"\t")                  {adjust(); continue;}
 .               	        {adjust(); error(tokPos,"illegal token");}
