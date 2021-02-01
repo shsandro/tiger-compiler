@@ -79,6 +79,19 @@ type                        {adjust(); return TYPE;}
 <STRING_S>"\\t"             {adjust();  strcat(string_text,"\t"); continue;}
 <STRING_S>"\\\\"            {adjust();  strcat(string_text,"\\"); continue;}
 <STRING_S>"\\\""            {adjust();  strcat(string_text,"\""); continue;}
+<STRING_S>\\^[a-z]          {adjust(); 
+                                if (strchr("abcdefghijklmnopqrstuvwxyz", yytext[2])) {
+                                    char p[2];
+                                    p[0] = (yytext[2] - 'a' + 1);
+                                    p[1] = '\0';
+
+                                    strcat(string_text, p);
+                                    continue;
+                                } else {
+                                    error(tokPos, "illegal escape sequence");
+                                    yyterminate();
+                                }
+                            }
 <STRING_S>\\{asc_range}     {adjust();  char p[2]; p[0] = (char)atoi(&yytext[1]); p[1] = '\0'; strcat(string_text, p); continue;}
 <STRING_S>\\[ \t]+          {adjust();  BEGIN(STRING_ML);}
 <STRING_S>\\\n              {adjust();  newline(); BEGIN(STRING_ML);}
