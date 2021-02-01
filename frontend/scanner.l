@@ -7,7 +7,7 @@
 
 int char_pos = 1;
 int  comment_depth = 0;
-char string_text[5000] = "";
+char string_text[16384] = "";
 int yywrap();
 void adjust();
 
