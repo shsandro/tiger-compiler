@@ -1,3 +1,5 @@
+#ifndef UTIL_H
+#define UTIL_H
 #include <assert.h>
 
 typedef char *string;
@@ -8,3 +10,5 @@ typedef char *string;
 void *checked_malloc(int);
 string String(char *);
 string Id(char *);
+
+#endif
