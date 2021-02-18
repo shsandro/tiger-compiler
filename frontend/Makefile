@@ -24,8 +24,8 @@
 
 ####################################3
 
-a.out: parsetest.o y.tab.o lex.yy.o error.o util.o absyn.o table.o symbol.o 
-	gcc -g parsetest.o y.tab.o lex.yy.o error.o util.o absyn.o table.o symbol.o 
+parsetest.out: parsetest.o tiger.tab.o lex.yy.o error.o util.o absyn.o table.o symbol.o 
+	gcc -g parsetest.o tiger.tab.o lex.yy.o error.o util.o absyn.o table.o symbol.o -o parsetest.out
 
 parsetest.o: parsetest.c error.h util.h
 	gcc -g -c parsetest.c
@@ -39,26 +39,26 @@ table.o: table.c table.h util.h
 symbol.o: symbol.c symbol.h util.h table.h
 	gcc -g -c symbol.c
 
-y.tab.o: y.tab.c
-	gcc -g -c y.tab.c
+tiger.tab.o: tiger.tab.c
+	gcc -g -c tiger.tab.c
 
-y.tab.c: tiger.y
-	yacc -dv tiger.y
+tiger.tab.c: tiger.y
+	bison -dv tiger.y
 
-y.tab.h: y.tab.c 
-	echo "y.tab.h was created at the same time as y.tab.c"
+tiger.tab.h: tiger.tab.c 
+	echo "tiger.tab.h was created at the same time as tiger.tab.c"
 
 error.o: error.c error.h util.h
 	gcc -g -c error.c
 
-lex.yy.o: lex.yy.c y.tab.h error.h util.h
+lex.yy.o: lex.yy.c tiger.tab.h error.h util.h
 	gcc -g -c lex.yy.c
 
 lex.yy.c: scanner.l
-	lex scanner.l
+	flex scanner.l
 
 util.o: util.c util.h
 	gcc -g -c util.c
 
 clean: 
-	rm -f a.out parsetest.o y.tab.o lex.yy.o error.o util.o absyn.o symbol.o table.o
+	rm -f parsetest.out parsetest.o tiger.tab.o lex.yy.o error.o util.o absyn.o symbol.o table.o

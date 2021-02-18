@@ -4,7 +4,7 @@
 #include "util.h"
 #include "error.h"
 #include "absyn.h"
-#include "y.tab.h"
+#include "tiger.tab.h"
 
 int char_pos = 1;
 int  comment_depth = 0;

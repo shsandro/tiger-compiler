@@ -173,6 +173,9 @@ exp: LPAREN explist RPAREN {$$=A_SeqExp(tokPos, $2);}
 /* integer literal */
 exp: INT {$$=A_IntExp(tokPos, $1);} 
 
+/* float literal */
+exp: FLOAT {$$=A_FloatExp(tokPos, $1);} 
+
 /* string literal */
 exp: STRING {$$=A_StringExp(tokPos, $1);}
 

@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 3.3.2.  */
+/* A Bison parser, made by GNU Bison 3.5.1.  */
 
 /* Bison interface for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2019 Free Software Foundation,
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2020 Free Software Foundation,
    Inc.
 
    This program is free software: you can redistribute it and/or modify
@@ -34,8 +34,8 @@
 /* Undocumented macros, especially those whose name start with YY_,
    are private implementation details.  Do not rely on them.  */
 
-#ifndef YY_YY_Y_TAB_H_INCLUDED
-# define YY_YY_Y_TAB_H_INCLUDED
+#ifndef YY_YY_TIGER_TAB_H_INCLUDED
+# define YY_YY_TIGER_TAB_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
@@ -96,59 +96,12 @@ extern int yydebug;
     UMINUS = 302
   };
 #endif
-/* Tokens.  */
-#define ID 258
-#define STRING 259
-#define INT 260
-#define FLOAT 261
-#define COMMA 262
-#define COLON 263
-#define SEMICOLON 264
-#define LPAREN 265
-#define RPAREN 266
-#define LBRACK 267
-#define RBRACK 268
-#define LBRACE 269
-#define RBRACE 270
-#define DOT 271
-#define PLUS 272
-#define MINUS 273
-#define TIMES 274
-#define DIVIDE 275
-#define EQ 276
-#define NEQ 277
-#define LT 278
-#define LE 279
-#define GT 280
-#define GE 281
-#define AND 282
-#define OR 283
-#define ASSIGN 284
-#define ARRAY 285
-#define IF 286
-#define THEN 287
-#define ELSE 288
-#define WHILE 289
-#define FOR 290
-#define TO 291
-#define DO 292
-#define LET 293
-#define IN 294
-#define END 295
-#define OF 296
-#define BREAK 297
-#define NIL 298
-#define FUNCTION 299
-#define VAR 300
-#define TYPE 301
-#define UMINUS 302
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-
 union YYSTYPE
 {
-#line 21 "tiger.y" /* yacc.c:1921  */
+#line 21 "tiger.y"
 
 	int pos;
 	int ival;
@@ -170,9 +123,9 @@ union YYSTYPE
 	A_nametyList nametys;
 	
 
-#line 174 "y.tab.h" /* yacc.c:1921  */
-};
+#line 127 "tiger.tab.h"
 
+};
 typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
@@ -183,4 +136,4 @@ extern YYSTYPE yylval;
 
 int yyparse (void);
 
-#endif /* !YY_YY_Y_TAB_H_INCLUDED  */
+#endif /* !YY_YY_TIGER_TAB_H_INCLUDED  */
