@@ -1,11 +1,12 @@
-# TEST=test
+INCLUDE_FOLDER=include
+TEST=test
 
-# lextest: scanner_driver.o lex.yy.o error.o util.o
-# 	gcc -g -o lextest scanner_driver.o lex.yy.o error.o util.o
-# 	make clean
+lextest: scanner_driver.o lex.yy.o error.o util.o
+	gcc -g -o lextest scanner_driver.o lex.yy.o error.o util.o
+	# make clean
 
-# scanner_driver.o: $(TEST)/scanner_driver.c token.h error.h util.h
-# 	gcc -g -c $(TEST)/scanner_driver.c
+scanner_driver.o: $(TEST)/scanner_driver.c $(INCLUDE_FOLDER)/error.h $(INCLUDE_FOLDER)/util.h
+	gcc -g -c $(TEST)/scanner_driver.c
 
 # error.o: error.c error.h util.h
 # 	gcc -g -c error.c
@@ -24,10 +25,11 @@
 
 ####################################3
 
-INCLUDE_FOLDER=include
+
 
 parsetest.out: parsetest.o tiger.tab.o lex.yy.o error.o util.o absyn.o table.o symbol.o 
 	gcc -g parsetest.o tiger.tab.o lex.yy.o error.o util.o absyn.o table.o symbol.o -o parsetest.out
+	rm -f parsetest.o tiger.tab.o lex.yy.o error.o util.o absyn.o symbol.o table.o
 
 parsetest.o: parsetest.c $(INCLUDE_FOLDER)/error.h $(INCLUDE_FOLDER)/util.h
 	gcc -g -c parsetest.c

@@ -38,8 +38,8 @@ nil
 function
 var
 type
-"string"
 type_identifier
 _main
 0.5
 5
+"string"
