@@ -11,6 +11,10 @@ type treelist = {hd: tree, tl: treelist}
 
 var lis:intlist := intlist { hd=0, tl= nil } 
 
+var test: string := "teste linha 1 100"
+
+var test: float := 1.10
+
 in
 	lis
 end
