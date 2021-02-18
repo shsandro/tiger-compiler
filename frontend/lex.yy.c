@@ -839,7 +839,7 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 YY_RULE_SETUP
 #line 22 "scanner.l"
-{adjust(); BEGIN(STRING); string_text[0]= '\0'; strcat(string_text,"\"");}
+{adjust(); BEGIN(STRING_S); string_text[0]= '\0'; strcat(string_text,"\"");}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP

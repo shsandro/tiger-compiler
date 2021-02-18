@@ -19,7 +19,7 @@ asc_range ([01][0-9]{2}|2[0-4][0-9]|25[0-5])
 
 %%
 
-"\""                        {adjust(); BEGIN(STRING); string_text[0]= '\0'; strcat(string_text,"\"");}
+"\""                        {adjust(); BEGIN(STRING_S); string_text[0]= '\0'; strcat(string_text,"\"");}
 
 "/*"                        {adjust(); BEGIN(COMMENT); comment_depth++;}
 
