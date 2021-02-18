@@ -24,19 +24,21 @@
 
 ####################################3
 
+INCLUDE_FOLDER=include
+
 parsetest.out: parsetest.o tiger.tab.o lex.yy.o error.o util.o absyn.o table.o symbol.o 
 	gcc -g parsetest.o tiger.tab.o lex.yy.o error.o util.o absyn.o table.o symbol.o -o parsetest.out
 
-parsetest.o: parsetest.c error.h util.h
+parsetest.o: parsetest.c $(INCLUDE_FOLDER)/error.h $(INCLUDE_FOLDER)/util.h
 	gcc -g -c parsetest.c
 
-absyn.o: absyn.c util.h symbol.h absyn.h
+absyn.o: absyn.c $(INCLUDE_FOLDER)/util.h $(INCLUDE_FOLDER)/symbol.h $(INCLUDE_FOLDER)/absyn.h
 	gcc -g -c absyn.c
 
-table.o: table.c table.h util.h
+table.o: table.c $(INCLUDE_FOLDER)/table.h $(INCLUDE_FOLDER)/util.h
 	gcc -g -c table.c
 
-symbol.o: symbol.c symbol.h util.h table.h
+symbol.o: symbol.c $(INCLUDE_FOLDER)/symbol.h $(INCLUDE_FOLDER)/util.h $(INCLUDE_FOLDER)/table.h
 	gcc -g -c symbol.c
 
 tiger.tab.o: tiger.tab.c
@@ -48,16 +50,16 @@ tiger.tab.c: tiger.y
 tiger.tab.h: tiger.tab.c 
 	echo "tiger.tab.h was created at the same time as tiger.tab.c"
 
-error.o: error.c error.h util.h
+error.o: error.c $(INCLUDE_FOLDER)/error.h $(INCLUDE_FOLDER)/util.h
 	gcc -g -c error.c
 
-lex.yy.o: lex.yy.c tiger.tab.h error.h util.h
+lex.yy.o: lex.yy.c tiger.tab.h $(INCLUDE_FOLDER)/error.h $(INCLUDE_FOLDER)/util.h
 	gcc -g -c lex.yy.c
 
 lex.yy.c: scanner.l
 	flex scanner.l
 
-util.o: util.c util.h
+util.o: util.c $(INCLUDE_FOLDER)/util.h
 	gcc -g -c util.c
 
 clean: 

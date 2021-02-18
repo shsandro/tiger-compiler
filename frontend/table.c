@@ -3,11 +3,11 @@
  * Copyright (c) 1997 Andrew W. Appel.
  */
 
-#include "table.h"
+#include "include/table.h"
 
 #include <stdio.h>
 
-#include "util.h"
+#include "include/util.h"
 
 #define TABSIZE 127
 

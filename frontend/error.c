@@ -1,11 +1,11 @@
 
-#include "error.h"
+#include "include/error.h"
 
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "util.h"
+#include "include/util.h"
 
 int any_errors = FALSE;
 

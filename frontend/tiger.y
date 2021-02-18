@@ -1,10 +1,10 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
-#include "util.h"
-#include "symbol.h" 
-#include "error.h"
-#include "absyn.h"
+#include "include/util.h"
+#include "include/symbol.h" 
+#include "include/error.h"
+#include "include/absyn.h"
 
 int yylex(void); /* function prototype */
 

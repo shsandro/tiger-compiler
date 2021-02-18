@@ -1,10 +1,10 @@
-#include "symbol.h"
+#include "include/symbol.h"
 
 #include <stdio.h>
 #include <string.h>
 
-#include "table.h"
-#include "util.h"
+#include "include/table.h"
+#include "include/util.h"
 
 struct S_symbol_ {
     string name;

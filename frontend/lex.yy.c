@@ -543,9 +543,9 @@ char *yytext;
 #line 2 "scanner.l"
 #include <string.h>
 #include <limits.h>
-#include "util.h"
-#include "error.h"
-#include "absyn.h"
+#include "include/util.h"
+#include "include/error.h"
+#include "include/absyn.h"
 #include "tiger.tab.h"
 
 int char_pos = 1;

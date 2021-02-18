@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "error.h"
-#include "util.h"
+#include "include/error.h"
+#include "include/util.h"
 
 extern int yyparse(void);
 
