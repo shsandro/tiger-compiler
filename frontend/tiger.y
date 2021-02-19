@@ -52,7 +52,7 @@ void yyerror(char *s)
   BREAK NIL
   FUNCTION VAR TYPE 
 
-%type <exp> exp program expseq
+%type <exp> exp program 
 %type <var> lvalue
 /* declarations */
 %type <dec> dec vardec
@@ -69,14 +69,19 @@ void yyerror(char *s)
 
 %start program
 
+%nonassoc LOW
+
 %nonassoc DO OF
 %nonassoc ASSIGN
 
-%left LBRACK
+%nonassoc TYPE FUNCTION
+%nonassoc ID
+
+%nonassoc LBRACK
 %nonassoc THEN
 %nonassoc ELSE
 
-%left RPAREN
+// %left RPAREN
 
 /* precedence of operators */
 %left OR
@@ -107,7 +112,7 @@ dec: tydecs    { $$=A_TypeDec(tokPos, $1);}
 /* data types */
 tydec: TYPE ID EQ ty       { $$=A_Namety(S_Symbol($2), $4);}
 
-tydecs: tydec              { $$=A_NametyList($1,NULL);}
+tydecs: tydec %prec LOW    { $$=A_NametyList($1,NULL);}
       | tydec tydecs       { $$=A_NametyList($1, $2);}
 
 ty: ID                     { $$=A_NameTy(tokPos, S_Symbol($1));}
@@ -130,7 +135,7 @@ fundec: FUNCTION ID LPAREN tyfields RPAREN EQ exp
 	  | FUNCTION ID LPAREN tyfields RPAREN COLON ID EQ exp
 	  {$$= A_Fundec(tokPos, S_Symbol($2), $4, S_Symbol($7), $9);}
 
-fundecs: fundec {$$=A_FundecList($1,NULL);}
+fundecs: fundec %prec LOW {$$=A_FundecList($1,NULL);}
        | fundec fundecs {$$=A_FundecList($1, $2);}
 
 /* 
@@ -180,12 +185,11 @@ exp: FLOAT {$$=A_FloatExp(tokPos, $1);}
 exp: STRING {$$=A_StringExp(tokPos, $1);}
 
 /* funciton call */
-exp: ID LPAREN RPAREN {$$=A_CallExp(tokPos, S_Symbol($1), NULL);}
-   | ID LPAREN paras RPAREN {$$=A_CallExp(tokPos, S_Symbol($1), $3);}
+exp: ID LPAREN paras RPAREN {$$=A_CallExp(tokPos, S_Symbol($1), $3);}
 
 paras: {$$=NULL;}
      | exp {$$=A_ExpList($1, NULL);}
-	 | exp COMMA paras {$$=A_ExpList($1, $3);}
+	  | exp COMMA paras {$$=A_ExpList($1, $3);}
 
 /* arithmetic */
 exp: exp PLUS exp           { $$=A_OpExp(tokPos, A_plusOp, $1, $3);}
@@ -234,15 +238,11 @@ exp: FOR ID ASSIGN exp TO exp DO exp
    {$$=A_ForExp(tokPos, S_Symbol($2), $4, $6, $8);}
 
 /* let */
-exp: LET decs IN expseq END {
+exp: LET decs IN explist END {
 		$$=A_LetExp(tokPos, $2, $4);
    } 
 
-expseq: explist {$$=A_SeqExp(tokPos, $1);} 
-
 explist: {$$=NULL;}
        | exp {$$=A_ExpList($1, NULL);}
-	   | exp SEMICOLON explist {$$=A_ExpList($1, $3);}
+	    | exp SEMICOLON explist {$$=A_ExpList($1, $3);}
 
-/* parentheses */
-exp: LPAREN expseq RPAREN {$$=$2;}

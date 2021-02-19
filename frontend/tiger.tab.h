@@ -93,7 +93,8 @@ extern int yydebug;
     FUNCTION = 299,
     VAR = 300,
     TYPE = 301,
-    UMINUS = 302
+    LOW = 302,
+    UMINUS = 303
   };
 #endif
 
@@ -123,7 +124,7 @@ union YYSTYPE
 	A_nametyList nametys;
 	
 
-#line 127 "tiger.tab.h"
+#line 128 "tiger.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
