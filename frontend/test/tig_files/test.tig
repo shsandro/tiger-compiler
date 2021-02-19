@@ -1,2 +1,1 @@
-var test: string := "teste linha 1 \
-\\\100"
+var test: string := "teste linha 1 100"
