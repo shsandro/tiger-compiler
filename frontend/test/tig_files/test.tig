@@ -1,1 +1,8 @@
-var test: string := "teste linha 1 100"
+let
+	type arrtype = array of int
+	var arr1:arrtype := arrtype [10] of 0
+in
+	arr1; print("He\
+	\llo, World\
+		   \")
+end

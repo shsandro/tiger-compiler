@@ -119,42 +119,37 @@ ty: ID                     { $$=A_NameTy(tokPos, S_Symbol($1));}
   | LBRACE tyfields RBRACE { $$=A_RecordTy(tokPos, $2);}
   | ARRAY OF ID            { $$=A_ArrayTy(tokPos, S_Symbol($3));}
 
-tyfields:/* can be empty */ {$$=NULL;}
-		| ID COLON ID {$$=A_FieldList(A_Field(tokPos, S_Symbol($1), S_Symbol($3)), NULL);}
-		| ID COLON ID COMMA tyfields
-		{$$=A_FieldList(A_Field(tokPos, S_Symbol($1), S_Symbol($3)), $5);}
+tyfields:/* empty */               {$$=NULL;}
+		| ID COLON ID                {$$=A_FieldList(A_Field(tokPos, S_Symbol($1), S_Symbol($3)), NULL);}
+		| ID COLON ID COMMA tyfields {$$=A_FieldList(A_Field(tokPos, S_Symbol($1), S_Symbol($3)), $5);}
 
 
 /* variables */
-vardec: VAR ID ASSIGN exp {$$=A_VarDec(tokPos, S_Symbol($2), NULL, $4);}
+vardec: VAR ID ASSIGN exp         {$$=A_VarDec(tokPos, S_Symbol($2), NULL, $4);}
 	  | VAR ID COLON ID ASSIGN exp {$$=A_VarDec(tokPos, S_Symbol($2), S_Symbol($4), $6);}
 
 /* functions */
-fundec: FUNCTION ID LPAREN tyfields RPAREN EQ exp 
-	  {$$= A_Fundec(tokPos, S_Symbol($2), $4, NULL, $7);}
-	  | FUNCTION ID LPAREN tyfields RPAREN COLON ID EQ exp
-	  {$$= A_Fundec(tokPos, S_Symbol($2), $4, S_Symbol($7), $9);}
+fundec: FUNCTION ID LPAREN tyfields RPAREN EQ exp         {$$= A_Fundec(tokPos, S_Symbol($2), $4, NULL, $7);}
+	  | FUNCTION ID LPAREN tyfields RPAREN COLON ID EQ exp {$$= A_Fundec(tokPos, S_Symbol($2), $4, S_Symbol($7), $9);}
 
 fundecs: fundec %prec LOW {$$=A_FundecList($1,NULL);}
-       | fundec fundecs {$$=A_FundecList($1, $2);}
+       | fundec fundecs   {$$=A_FundecList($1, $2);}
 
 /* 
  * A.3 
  * VARIABLES AND EXPRESSIONS
  */
-lvalue: ID {$$=A_SimpleVar(tokPos, S_Symbol($1));}
+lvalue: ID            {$$=A_SimpleVar(tokPos, S_Symbol($1));}
       | lvalue DOT ID {$$=A_FieldVar(tokPos, $1, S_Symbol($3));}
       /* 
         have a shift-reduce conflict with array creation: tid [exp] of exp,
         so move it to exp.
       | lvalue LBRACK exp RBRACK {$$=A_SubscriptVar(tokPos, $1, $3);}
       */
-/*exp: ID LBRACK exp RBRACK {$$=A_VarExp(tokPos, A_SubscriptVar(tokPos, 
-   A_SimpleVar(tokPos, S_Symbol($1)), $3));} */
-lvalue: ID LBRACK exp RBRACK {$$=A_SubscriptVar(tokPos, 
-   A_SimpleVar(tokPos, S_Symbol($1)), $3);}
-lvalue: lvalue DOT ID LBRACK exp RBRACK {$$=A_SubscriptVar(tokPos, 
-   A_FieldVar(tokPos, $1, S_Symbol($3)), $5);}
+
+lvalue: ID LBRACK exp RBRACK            {$$=A_SubscriptVar(tokPos, A_SimpleVar(tokPos, S_Symbol($1)), $3);}
+lvalue: lvalue DOT ID LBRACK exp RBRACK {$$=A_SubscriptVar(tokPos, A_FieldVar(tokPos, $1, S_Symbol($3)), $5);}
+/*exp: ID LBRACK exp RBRACK {$$=A_VarExp(tokPos, A_SubscriptVar(tokPos,  A_SimpleVar(tokPos, S_Symbol($1)), $3));} */
 
 /* 
  * A.3
@@ -188,8 +183,8 @@ exp: STRING {$$=A_StringExp(tokPos, $1);}
 exp: ID LPAREN paras RPAREN {$$=A_CallExp(tokPos, S_Symbol($1), $3);}
 
 paras: {$$=NULL;}
-     | exp {$$=A_ExpList($1, NULL);}
-	  | exp COMMA paras {$$=A_ExpList($1, $3);}
+     | exp {$$=A_ExpList(tokPos, $1, NULL);}
+	  | exp COMMA paras {$$=A_ExpList(tokPos, $1, $3);}
 
 /* arithmetic */
 exp: exp PLUS exp           { $$=A_OpExp(tokPos, A_plusOp, $1, $3);}
@@ -199,12 +194,12 @@ exp: exp PLUS exp           { $$=A_OpExp(tokPos, A_plusOp, $1, $3);}
    | MINUS exp %prec UMINUS { $$=A_OpExp(tokPos, A_minusOp, A_IntExp(0, 0), $2);}
 
 /* comparison */
-exp: exp EQ exp {$$=A_OpExp(tokPos, A_eqOp, $1, $3);}
+exp: exp EQ  exp {$$=A_OpExp(tokPos, A_eqOp, $1, $3);}
    | exp NEQ exp {$$=A_OpExp(tokPos, A_neqOp, $1, $3);}
-   | exp GT exp {$$=A_OpExp(tokPos, A_gtOp, $1, $3);}
-   | exp LT exp {$$=A_OpExp(tokPos, A_ltOp, $1, $3);}
-   | exp GE exp {$$=A_OpExp(tokPos, A_geOp, $1, $3);}
-   | exp LE exp {$$=A_OpExp(tokPos, A_leOp, $1, $3);}
+   | exp GT  exp {$$=A_OpExp(tokPos, A_gtOp, $1, $3);}
+   | exp LT  exp {$$=A_OpExp(tokPos, A_ltOp, $1, $3);}
+   | exp GE  exp {$$=A_OpExp(tokPos, A_geOp, $1, $3);}
+   | exp LE  exp {$$=A_OpExp(tokPos, A_leOp, $1, $3);}
 
 /* string comparison */
 /* boolean operators */
@@ -214,8 +209,8 @@ exp: exp AND exp {$$=A_IfExp(tokPos, $1, $3, A_IntExp(tokPos, 0));}
 /* record creation */
 exp: ID LBRACE efields RBRACE {$$=A_RecordExp(tokPos, S_Symbol($1), $3);}
 
-efields: {$$=NULL;}
-      | ID EQ exp {$$=A_EfieldList(A_Efield(S_Symbol($1), $3), NULL);}
+efields:                        {$$=NULL;}
+      | ID EQ exp               {$$=A_EfieldList(A_Efield(S_Symbol($1), $3), NULL);}
       | ID EQ exp COMMA efields {$$=A_EfieldList(A_Efield(S_Symbol($1), $3), $5);}
 
 /* array creation */
@@ -238,11 +233,9 @@ exp: FOR ID ASSIGN exp TO exp DO exp
    {$$=A_ForExp(tokPos, S_Symbol($2), $4, $6, $8);}
 
 /* let */
-exp: LET decs IN explist END {
-		$$=A_LetExp(tokPos, $2, $4);
-   } 
+exp: LET decs IN explist END {$$=A_LetExp(tokPos, $2, A_SeqExp($4->pos, $4));} 
 
-explist: {$$=NULL;}
-       | exp {$$=A_ExpList($1, NULL);}
-	    | exp SEMICOLON explist {$$=A_ExpList($1, $3);}
+explist: /* empty */           {$$=NULL;}
+       | exp                   {$$=A_ExpList(tokPos, $1, NULL);}
+	    | exp SEMICOLON explist {$$=A_ExpList(tokPos, $1, $3);}
 

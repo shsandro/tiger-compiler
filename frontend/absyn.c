@@ -242,8 +242,9 @@ A_fieldList A_FieldList(A_field head, A_fieldList tail) {
     return p;
 }
 
-A_expList A_ExpList(A_exp head, A_expList tail) {
+A_expList A_ExpList(A_pos pos, A_exp head, A_expList tail) {
     A_expList p = checked_malloc(sizeof(*p));
+    p->pos = pos;
     p->head = head;
     p->tail = tail;
     return p;
