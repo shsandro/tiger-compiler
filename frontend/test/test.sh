@@ -7,7 +7,7 @@ RESET="\033[0m"
 TEST_FOLDER="./tig_files"
 
 # each of this folder needs two folders inside: pass & fail
-TESTS=(${TEST_FOLDER}/princeton_tests)
+TESTS=(${TEST_FOLDER}/princeton_tests ${TEST_FOLDER}/local_tests)
 
 executable="../parsertest" # todo change to entire frontend
 
@@ -19,7 +19,7 @@ make_error() {
 # compile tests
 cd ../ && make tests && cd test && clear
 
-for folder in ${TESTS}; do
+for folder in ${TESTS[@]}; do
     pass_errors=()
     fail_errors=()
     for file in ${folder}/pass/*; do
@@ -56,4 +56,5 @@ for folder in ${TESTS}; do
             echo -e "  " $err
         done
     fi
+    echo "================================================================================="
 done
