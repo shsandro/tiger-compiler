@@ -19,10 +19,8 @@ extern A_exp absyn_root;
 A_exp parse(string fname) {
     reset(fname);
     if (yyparse() == 0) {
-        fprintf(stderr, "Parsing successful!\n\n"); /* parsing worked */
         return absyn_root;
     } else {
-        fprintf(stderr, "Parsing failed\n");
         return NULL;
     }
 }

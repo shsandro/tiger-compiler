@@ -1,21 +1,20 @@
 INCLUDE_FOLDER=include
 TEST=test
 
-all: parsetest
+tests: parsertest lextest
+	rm -f scanner_driver.o parser_driver.o tiger.tab.o lex.yy.o error.o util.o absyn.o symbol.o table.o prabsyn.o parse.o
 
 lextest: scanner_driver.o lex.yy.o error.o util.o
-	gcc -g -o lextest.out scanner_driver.o lex.yy.o error.o util.o
-	rm -f lex.yy.o error.o util.o scanner_driver.o
-
+	gcc -g -o lextest scanner_driver.o lex.yy.o error.o util.o
+	
 scanner_driver.o: $(TEST)/scanner_driver.c $(INCLUDE_FOLDER)/error.h $(INCLUDE_FOLDER)/util.h
 	gcc -g -c $(TEST)/scanner_driver.c
 
-parsetest: parsetest.o tiger.tab.o lex.yy.o error.o util.o absyn.o table.o symbol.o prabsyn.o parse.o
-	gcc -g parsetest.o tiger.tab.o lex.yy.o error.o util.o absyn.o table.o symbol.o prabsyn.o parse.o -o parsetest.out
-	rm -f parsetest.o tiger.tab.o lex.yy.o error.o util.o absyn.o symbol.o table.o prabsyn.o parse.o
+parsertest: parser_driver.o tiger.tab.o lex.yy.o error.o util.o absyn.o table.o symbol.o prabsyn.o parse.o
+	gcc -g parser_driver.o tiger.tab.o lex.yy.o error.o util.o absyn.o table.o symbol.o prabsyn.o parse.o -o parsertest
 
-parsetest.o: parsetest.c $(INCLUDE_FOLDER)/error.h $(INCLUDE_FOLDER)/util.h $(INCLUDE_FOLDER)/parse.h $(INCLUDE_FOLDER)/absyn.h
-	gcc -g -c parsetest.c
+parser_driver.o: $(TEST)/parser_driver.c $(INCLUDE_FOLDER)/error.h $(INCLUDE_FOLDER)/util.h $(INCLUDE_FOLDER)/parse.h $(INCLUDE_FOLDER)/absyn.h
+	gcc -g -c $(TEST)/parser_driver.c
 
 absyn.o: absyn.c $(INCLUDE_FOLDER)/util.h $(INCLUDE_FOLDER)/symbol.h $(INCLUDE_FOLDER)/absyn.h
 	gcc -g -c absyn.c
@@ -54,4 +53,4 @@ util.o: util.c $(INCLUDE_FOLDER)/util.h
 	gcc -g -c util.c
 
 clean: 
-	rm -f *.out *.o 
+	rm -f *.out *.o lextest parsertest
