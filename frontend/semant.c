@@ -493,7 +493,8 @@ void transDec(S_table venv, S_table tenv, A_dec d) {
             return;
         }
         case A_typeDec: {
-            dprintf(" dec:typedec:%p\n", d->u.type);
+            printf(" dec:typedec:%p\n", d->u.type);
+            hoist_type_names(tenv, d);
             Ty_tyList tl = nametyList(tenv, d->u.type);
             checkTypeDec(tenv, tl);
             return;
@@ -595,7 +596,7 @@ void transDec(S_table venv, S_table tenv, A_dec d) {
 Ty_ty transTy(S_table tenv, A_ty a) {
     // assert(a != NULL); // might cause trouble in recursive dec!
     if (a == NULL) {
-        dprintf(" type void\n");
+        printf(" type void\n");
         return Ty_Void();
     }
     switch (a->kind) {
@@ -621,7 +622,7 @@ Ty_ty transTy(S_table tenv, A_ty a) {
             return ty;
         }
         case A_recordTy: {
-            dprintf(" type record\n");
+            printf(" type record\n");
             A_fieldList fl;
             Ty_field ty_f;
             Ty_fieldList ty_fl_head = NULL, ty_fl_tail = NULL;
@@ -664,22 +665,43 @@ Ty_fieldList makeTyFieldList(S_table tenv, A_fieldList afl) {
     return Ty_FieldList(head, makeTyFieldList(tenv, afl->tail));
 }
 
+void hoist_type_names(S_table tenv, A_dec dec) {
+    A_nametyList type_list;
+    void *typenames[10];
+    int index = 0;
+
+    for (type_list = dec->u.type; type_list; type_list = type_list->tail) {
+        S_enter(tenv, type_list->head->name,
+                Ty_Name(type_list->head->name, NULL));
+        for (int i = 0; i < index; i++) {
+            if (typenames[i] == (void *)type_list->head->name) {
+                error(type_list->head->ty->pos,
+                      "type declare: redeclaration type <%s>, there are "
+                      "two types with the same name in the same "
+                      "(consecutive) batch of mutually recursive types.",
+                      S_name(type_list->head->name));
+            }
+        }
+        typenames[index++] = (void *)type_list->head->name;
+    }
+}
+
 Ty_tyList nametyList(S_table tenv, A_nametyList nl) {
     if (nl == NULL) return NULL;
     Ty_ty ty = transTy(tenv, nl->head->ty);  // for myint, get ty_int
-    dprintf(" dec:nametylist:%p, %d\n", nl, ty->kind);
+    printf(" dec:nametylist:%p, %d\n", nl, ty->kind);
 
     Ty_ty head;
     if (ty->kind == Ty_int || ty->kind == Ty_string || ty->kind == Ty_name) {
-        dprintf(" creating a name type, %s->%d\n", S_name(nl->head->name),
-                ty->kind);
+        printf(" creating a name type, %s->%d\n", S_name(nl->head->name),
+               ty->kind);
         head = Ty_Name(nl->head->name, ty);
     } else {
         head = ty;
     }
     S_enter(tenv, nl->head->name,
             ty);  // now if you S_look arrtype, it'll be a type
-    dprintf(" senter:%s = %d\n", S_name(nl->head->name), ty->kind);
+    printf(" senter:%s = %d\n", S_name(nl->head->name), ty->kind);
     return Ty_TyList(head, nametyList(tenv, nl->tail));
 }
 

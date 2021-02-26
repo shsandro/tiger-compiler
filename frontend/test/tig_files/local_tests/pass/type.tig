@@ -1,0 +1,8 @@
+let 
+    type list = {first: int}
+    function create_list(n: int): list =
+		list {first=n}
+	var list1:list := create_list(10)
+in
+    list1
+end
