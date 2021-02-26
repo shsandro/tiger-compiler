@@ -322,7 +322,7 @@ expty transExp(S_table venv, S_table tenv, A_exp a) {
             }
 
             S_beginScope(venv);
-            S_enter(venv, a->u.forr.var, Ty_Int());
+            S_enter(venv, a->u.forr.var, E_VarEntry(Ty_Int()));
 
             inside++;  // inside loop
             expty body = transExp(venv, tenv, a->u.forr.body);
