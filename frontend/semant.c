@@ -165,10 +165,10 @@ expty transExp(S_table venv, S_table tenv, A_exp a) {
                 oper == A_divideOp) {
                 // operand must be integer or float, return value must be
                 // integer or float
-                if (left.ty->kind != Ty_int || left.ty->kind != Ty_float)
+                if (left.ty->kind != Ty_int && left.ty->kind != Ty_float)
                     error(a->u.op.left->pos,
                           "binary operation: integer or float required");
-                if (right.ty->kind != Ty_int || right.ty->kind != Ty_float)
+                if (right.ty->kind != Ty_int && right.ty->kind != Ty_float)
                     error(a->u.op.right->pos,
                           "binary operation: integer or float required");
                 if (right.ty->kind != right.ty->kind)

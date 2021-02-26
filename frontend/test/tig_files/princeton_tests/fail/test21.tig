@@ -1,8 +1,8 @@
-/* define a recursive function */
+/* error : procedure returns value  and procedure is used in arexpr */
 let
 
 /* calculate n! */
-function nfactor(n: int): int =
+function nfactor(n: int) =
 		if  n = 0 
 			then 1
 			else n * nfactor(n-1)
