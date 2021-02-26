@@ -1,8 +1,23 @@
 INCLUDE_FOLDER=include
 TEST=test
 
-tests: parsertest lextest
+tests: semantictest parsertest lextest
 	rm -f scanner_driver.o parser_driver.o tiger.tab.o lex.yy.o error.o util.o absyn.o symbol.o table.o prabsyn.o parse.o
+
+semantictest: semantic_driver.o tiger.tab.o lex.yy.o error.o util.o absyn.o table.o symbol.o parse.o semant.o types.o env.o
+	gcc -g semantic_driver.o tiger.tab.o lex.yy.o error.o util.o absyn.o table.o symbol.o parse.o semant.o types.o env.o -o semantictest
+
+semantic_driver.o: $(TEST)/semantic_driver.c $(INCLUDE_FOLDER)/error.h $(INCLUDE_FOLDER)/util.h $(INCLUDE_FOLDER)/absyn.h $(INCLUDE_FOLDER)/parse.h $(INCLUDE_FOLDER)/semant.h $(INCLUDE_FOLDER)/symbol.h
+	gcc -g -c $(TEST)/semantic_driver.c
+
+semant.o: semant.c $(INCLUDE_FOLDER)/env.h $(INCLUDE_FOLDER)/error.h $(INCLUDE_FOLDER)/types.h $(INCLUDE_FOLDER)/util.h $(INCLUDE_FOLDER)/semant.h $(INCLUDE_FOLDER)/absyn.h
+	gcc -g -c semant.c
+
+types.o: types.c $(INCLUDE_FOLDER)/types.h $(INCLUDE_FOLDER)/symbol.h $(INCLUDE_FOLDER)/util.h $(INCLUDE_FOLDER)/types.h
+	gcc -g -c types.c
+
+env.o: env.c $(INCLUDE_FOLDER)/env.h $(INCLUDE_FOLDER)/symbol.h $(INCLUDE_FOLDER)/util.h
+	gcc -g -c env.c
 
 lextest: scanner_driver.o lex.yy.o error.o util.o
 	gcc -g -o lextest scanner_driver.o lex.yy.o error.o util.o
@@ -53,4 +68,4 @@ util.o: util.c $(INCLUDE_FOLDER)/util.h
 	gcc -g -c util.c
 
 clean: 
-	rm -f *.out *.o lextest parsertest
+	rm -f *.out *.o lextest parsertest semantictest
