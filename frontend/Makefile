@@ -2,7 +2,7 @@ INCLUDE_FOLDER=include
 TEST=test
 
 tests: semantictest parsertest lextest
-	rm -f scanner_driver.o parser_driver.o tiger.tab.o lex.yy.o error.o util.o absyn.o symbol.o table.o prabsyn.o parse.o
+	rm -f scanner_driver.o parser_driver.o tiger.tab.o lex.yy.o error.o util.o absyn.o symbol.o table.o prabsyn.o parse.o semant.o types.o env.o
 
 semantictest: semantic_driver.o tiger.tab.o lex.yy.o error.o util.o absyn.o table.o symbol.o parse.o semant.o types.o env.o
 	gcc -g semantic_driver.o tiger.tab.o lex.yy.o error.o util.o absyn.o table.o symbol.o parse.o semant.o types.o env.o -o semantictest

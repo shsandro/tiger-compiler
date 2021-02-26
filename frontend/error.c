@@ -55,6 +55,8 @@ void error(int pos, char *message, ...) {
     vfprintf(stderr, message, ap);
     va_end(ap);
     fprintf(stderr, "\n");
+
+    any_errors = TRUE;
 }
 
 void reset(string fname) {
@@ -68,3 +70,5 @@ void reset(string fname) {
         exit(1);
     }
 }
+
+int anyErrors() { return any_errors; }

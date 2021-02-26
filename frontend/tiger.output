@@ -1,4 +1,4 @@
-Gramática
+Grammar
 
     0 $accept: program $end
 
@@ -83,121 +83,132 @@ Gramática
    63        | exp SEMICOLON explist
 
 
-Terminais, com as regras onde eles aparecem
+Terminals, with rules where they appear
 
-$end (0) 0
-error (256)
-ID <sval> (258) 7 10 12 14 15 16 17 18 19 22 23 24 25 33 50 52 53 54
-    59
-STRING <sval> (259) 32
-INT <ival> (260) 30
-FLOAT <fval> (261) 31
-COMMA (262) 15 36 53
-COLON (263) 14 15 17 19
-SEMICOLON (264) 63
-LPAREN (265) 18 19 29 33
-RPAREN (266) 18 19 29 33
-LBRACK (267) 24 25 54
-RBRACK (268) 24 25 54
-LBRACE (269) 11 50
-RBRACE (270) 11 50
-DOT (271) 23 25
-PLUS (272) 37
-MINUS (273) 38 41
-TIMES (274) 39
-DIVIDE (275) 40
-EQ (276) 7 18 19 42 52 53
-NEQ (277) 43
-LT (278) 45
-LE (279) 47
-GT (280) 44
-GE (281) 46
-AND (282) 48
-OR (283) 49
-ASSIGN (284) 16 17 57 59
-ARRAY (285) 12
-IF (286) 55 56
-THEN (287) 55 56
-ELSE (288) 55
-WHILE (289) 58
-FOR (290) 59
-TO (291) 59
-DO (292) 58 59
-LET (293) 60
-IN (294) 60
-END (295) 60
-OF (296) 12 54
-BREAK (297) 27
-NIL (298) 28
-FUNCTION (299) 18 19
-VAR (300) 16 17
-TYPE (301) 7
-LOW (302)
-UMINUS (303)
-
-
-Não terminais com as regras onde eles aparecem
-
-$accept (49)
-    à esquerda: 0
-program <exp> (50)
-    à esquerda: 1, à direita: 0
-decs <decs> (51)
-    à esquerda: 2 3, à direita: 2 60
-dec <dec> (52)
-    à esquerda: 4 5 6, à direita: 2 3
-tydec <namety> (53)
-    à esquerda: 7, à direita: 8 9
-tydecs <nametys> (54)
-    à esquerda: 8 9, à direita: 4 9
-ty <ty> (55)
-    à esquerda: 10 11 12, à direita: 7
-tyfields <fields> (56)
-    à esquerda: 13 14 15, à direita: 11 15 18 19
-vardec <dec> (57)
-    à esquerda: 16 17, à direita: 5
-fundec <fundec> (58)
-    à esquerda: 18 19, à direita: 20 21
-fundecs <fundecs> (59)
-    à esquerda: 20 21, à direita: 6 21
-lvalue <var> (60)
-    à esquerda: 22 23 24 25, à direita: 23 25 26 57
-exp <exp> (61)
-    à esquerda: 26 27 28 29 30 31 32 33 37 38 39 40 41 42 43 44 45
-    46 47 48 49 50 54 55 56 57 58 59 60, à direita: 1 16 17 18 19
-    24 25 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 52 53 54 55
-    56 57 58 59 62 63
-paras <exps> (62)
-    à esquerda: 34 35 36, à direita: 33 36
-efields <efields> (63)
-    à esquerda: 51 52 53, à direita: 50 53
-explist <exps> (64)
-    à esquerda: 61 62 63, à direita: 29 60 63
+    $end (0) 0
+    error (256)
+    ID <sval> (258) 7 10 12 14 15 16 17 18 19 22 23 24 25 33 50 52 53 54 59
+    STRING <sval> (259) 32
+    INT <ival> (260) 30
+    FLOAT <fval> (261) 31
+    COMMA (262) 15 36 53
+    COLON (263) 14 15 17 19
+    SEMICOLON (264) 63
+    LPAREN (265) 18 19 29 33
+    RPAREN (266) 18 19 29 33
+    LBRACK (267) 24 25 54
+    RBRACK (268) 24 25 54
+    LBRACE (269) 11 50
+    RBRACE (270) 11 50
+    DOT (271) 23 25
+    PLUS (272) 37
+    MINUS (273) 38 41
+    TIMES (274) 39
+    DIVIDE (275) 40
+    EQ (276) 7 18 19 42 52 53
+    NEQ (277) 43
+    LT (278) 45
+    LE (279) 47
+    GT (280) 44
+    GE (281) 46
+    AND (282) 48
+    OR (283) 49
+    ASSIGN (284) 16 17 57 59
+    ARRAY (285) 12
+    IF (286) 55 56
+    THEN (287) 55 56
+    ELSE (288) 55
+    WHILE (289) 58
+    FOR (290) 59
+    TO (291) 59
+    DO (292) 58 59
+    LET (293) 60
+    IN (294) 60
+    END (295) 60
+    OF (296) 12 54
+    BREAK (297) 27
+    NIL (298) 28
+    FUNCTION (299) 18 19
+    VAR (300) 16 17
+    TYPE (301) 7
+    LOW (302)
+    UMINUS (303)
 
 
-Estado 0
+Nonterminals, with rules where they appear
+
+    $accept (49)
+        on left: 0
+    program <exp> (50)
+        on left: 1
+        on right: 0
+    decs <decs> (51)
+        on left: 2 3
+        on right: 2 60
+    dec <dec> (52)
+        on left: 4 5 6
+        on right: 2 3
+    tydec <namety> (53)
+        on left: 7
+        on right: 8 9
+    tydecs <nametys> (54)
+        on left: 8 9
+        on right: 4 9
+    ty <ty> (55)
+        on left: 10 11 12
+        on right: 7
+    tyfields <fields> (56)
+        on left: 13 14 15
+        on right: 11 15 18 19
+    vardec <dec> (57)
+        on left: 16 17
+        on right: 5
+    fundec <fundec> (58)
+        on left: 18 19
+        on right: 20 21
+    fundecs <fundecs> (59)
+        on left: 20 21
+        on right: 6 21
+    lvalue <var> (60)
+        on left: 22 23 24 25
+        on right: 23 25 26 57
+    exp <exp> (61)
+        on left: 26 27 28 29 30 31 32 33 37 38 39 40 41 42 43 44 45 46 47 48 49 50 54 55 56 57 58 59 60
+        on right: 1 16 17 18 19 24 25 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 52 53 54 55 56 57 58 59 62 63
+    paras <exps> (62)
+        on left: 34 35 36
+        on right: 33 36
+    efields <efields> (63)
+        on left: 51 52 53
+        on right: 50 53
+    explist <exps> (64)
+        on left: 61 62 63
+        on right: 29 60 63
+
+
+State 0
 
     0 $accept: . program $end
 
-    ID      deslocar, e ir ao estado 1
-    STRING  deslocar, e ir ao estado 2
-    INT     deslocar, e ir ao estado 3
-    FLOAT   deslocar, e ir ao estado 4
-    LPAREN  deslocar, e ir ao estado 5
-    MINUS   deslocar, e ir ao estado 6
-    IF      deslocar, e ir ao estado 7
-    WHILE   deslocar, e ir ao estado 8
-    FOR     deslocar, e ir ao estado 9
-    LET     deslocar, e ir ao estado 10
-    BREAK   deslocar, e ir ao estado 11
-    NIL     deslocar, e ir ao estado 12
+    ID      shift, and go to state 1
+    STRING  shift, and go to state 2
+    INT     shift, and go to state 3
+    FLOAT   shift, and go to state 4
+    LPAREN  shift, and go to state 5
+    MINUS   shift, and go to state 6
+    IF      shift, and go to state 7
+    WHILE   shift, and go to state 8
+    FOR     shift, and go to state 9
+    LET     shift, and go to state 10
+    BREAK   shift, and go to state 11
+    NIL     shift, and go to state 12
 
-    program  ir ao estado 13
-    lvalue   ir ao estado 14
-    exp      ir ao estado 15
+    program  go to state 13
+    lvalue   go to state 14
+    exp      go to state 15
 
 
-Estado 1
+State 1
 
    22 lvalue: ID .
    24       | ID . LBRACK exp RBRACK
@@ -205,181 +216,181 @@ Estado 1
    50    | ID . LBRACE efields RBRACE
    54    | ID . LBRACK exp RBRACK OF exp
 
-    LPAREN  deslocar, e ir ao estado 16
-    LBRACK  deslocar, e ir ao estado 17
-    LBRACE  deslocar, e ir ao estado 18
+    LPAREN  shift, and go to state 16
+    LBRACK  shift, and go to state 17
+    LBRACE  shift, and go to state 18
 
-    $padrão  reduzir usando a regra 22 (lvalue)
+    $default  reduce using rule 22 (lvalue)
 
 
-Estado 2
+State 2
 
    32 exp: STRING .
 
-    $padrão  reduzir usando a regra 32 (exp)
+    $default  reduce using rule 32 (exp)
 
 
-Estado 3
+State 3
 
    30 exp: INT .
 
-    $padrão  reduzir usando a regra 30 (exp)
+    $default  reduce using rule 30 (exp)
 
 
-Estado 4
+State 4
 
    31 exp: FLOAT .
 
-    $padrão  reduzir usando a regra 31 (exp)
+    $default  reduce using rule 31 (exp)
 
 
-Estado 5
+State 5
 
    29 exp: LPAREN . explist RPAREN
 
-    ID      deslocar, e ir ao estado 1
-    STRING  deslocar, e ir ao estado 2
-    INT     deslocar, e ir ao estado 3
-    FLOAT   deslocar, e ir ao estado 4
-    LPAREN  deslocar, e ir ao estado 5
-    MINUS   deslocar, e ir ao estado 6
-    IF      deslocar, e ir ao estado 7
-    WHILE   deslocar, e ir ao estado 8
-    FOR     deslocar, e ir ao estado 9
-    LET     deslocar, e ir ao estado 10
-    BREAK   deslocar, e ir ao estado 11
-    NIL     deslocar, e ir ao estado 12
+    ID      shift, and go to state 1
+    STRING  shift, and go to state 2
+    INT     shift, and go to state 3
+    FLOAT   shift, and go to state 4
+    LPAREN  shift, and go to state 5
+    MINUS   shift, and go to state 6
+    IF      shift, and go to state 7
+    WHILE   shift, and go to state 8
+    FOR     shift, and go to state 9
+    LET     shift, and go to state 10
+    BREAK   shift, and go to state 11
+    NIL     shift, and go to state 12
 
-    $padrão  reduzir usando a regra 61 (explist)
+    $default  reduce using rule 61 (explist)
 
-    lvalue   ir ao estado 14
-    exp      ir ao estado 19
-    explist  ir ao estado 20
+    lvalue   go to state 14
+    exp      go to state 19
+    explist  go to state 20
 
 
-Estado 6
+State 6
 
    41 exp: MINUS . exp
 
-    ID      deslocar, e ir ao estado 1
-    STRING  deslocar, e ir ao estado 2
-    INT     deslocar, e ir ao estado 3
-    FLOAT   deslocar, e ir ao estado 4
-    LPAREN  deslocar, e ir ao estado 5
-    MINUS   deslocar, e ir ao estado 6
-    IF      deslocar, e ir ao estado 7
-    WHILE   deslocar, e ir ao estado 8
-    FOR     deslocar, e ir ao estado 9
-    LET     deslocar, e ir ao estado 10
-    BREAK   deslocar, e ir ao estado 11
-    NIL     deslocar, e ir ao estado 12
+    ID      shift, and go to state 1
+    STRING  shift, and go to state 2
+    INT     shift, and go to state 3
+    FLOAT   shift, and go to state 4
+    LPAREN  shift, and go to state 5
+    MINUS   shift, and go to state 6
+    IF      shift, and go to state 7
+    WHILE   shift, and go to state 8
+    FOR     shift, and go to state 9
+    LET     shift, and go to state 10
+    BREAK   shift, and go to state 11
+    NIL     shift, and go to state 12
 
-    lvalue  ir ao estado 14
-    exp     ir ao estado 21
+    lvalue  go to state 14
+    exp     go to state 21
 
 
-Estado 7
+State 7
 
    55 exp: IF . exp THEN exp ELSE exp
    56    | IF . exp THEN exp
 
-    ID      deslocar, e ir ao estado 1
-    STRING  deslocar, e ir ao estado 2
-    INT     deslocar, e ir ao estado 3
-    FLOAT   deslocar, e ir ao estado 4
-    LPAREN  deslocar, e ir ao estado 5
-    MINUS   deslocar, e ir ao estado 6
-    IF      deslocar, e ir ao estado 7
-    WHILE   deslocar, e ir ao estado 8
-    FOR     deslocar, e ir ao estado 9
-    LET     deslocar, e ir ao estado 10
-    BREAK   deslocar, e ir ao estado 11
-    NIL     deslocar, e ir ao estado 12
+    ID      shift, and go to state 1
+    STRING  shift, and go to state 2
+    INT     shift, and go to state 3
+    FLOAT   shift, and go to state 4
+    LPAREN  shift, and go to state 5
+    MINUS   shift, and go to state 6
+    IF      shift, and go to state 7
+    WHILE   shift, and go to state 8
+    FOR     shift, and go to state 9
+    LET     shift, and go to state 10
+    BREAK   shift, and go to state 11
+    NIL     shift, and go to state 12
 
-    lvalue  ir ao estado 14
-    exp     ir ao estado 22
+    lvalue  go to state 14
+    exp     go to state 22
 
 
-Estado 8
+State 8
 
    58 exp: WHILE . exp DO exp
 
-    ID      deslocar, e ir ao estado 1
-    STRING  deslocar, e ir ao estado 2
-    INT     deslocar, e ir ao estado 3
-    FLOAT   deslocar, e ir ao estado 4
-    LPAREN  deslocar, e ir ao estado 5
-    MINUS   deslocar, e ir ao estado 6
-    IF      deslocar, e ir ao estado 7
-    WHILE   deslocar, e ir ao estado 8
-    FOR     deslocar, e ir ao estado 9
-    LET     deslocar, e ir ao estado 10
-    BREAK   deslocar, e ir ao estado 11
-    NIL     deslocar, e ir ao estado 12
+    ID      shift, and go to state 1
+    STRING  shift, and go to state 2
+    INT     shift, and go to state 3
+    FLOAT   shift, and go to state 4
+    LPAREN  shift, and go to state 5
+    MINUS   shift, and go to state 6
+    IF      shift, and go to state 7
+    WHILE   shift, and go to state 8
+    FOR     shift, and go to state 9
+    LET     shift, and go to state 10
+    BREAK   shift, and go to state 11
+    NIL     shift, and go to state 12
 
-    lvalue  ir ao estado 14
-    exp     ir ao estado 23
+    lvalue  go to state 14
+    exp     go to state 23
 
 
-Estado 9
+State 9
 
    59 exp: FOR . ID ASSIGN exp TO exp DO exp
 
-    ID  deslocar, e ir ao estado 24
+    ID  shift, and go to state 24
 
 
-Estado 10
+State 10
 
    60 exp: LET . decs IN explist END
 
-    FUNCTION  deslocar, e ir ao estado 25
-    VAR       deslocar, e ir ao estado 26
-    TYPE      deslocar, e ir ao estado 27
+    FUNCTION  shift, and go to state 25
+    VAR       shift, and go to state 26
+    TYPE      shift, and go to state 27
 
-    decs     ir ao estado 28
-    dec      ir ao estado 29
-    tydec    ir ao estado 30
-    tydecs   ir ao estado 31
-    vardec   ir ao estado 32
-    fundec   ir ao estado 33
-    fundecs  ir ao estado 34
+    decs     go to state 28
+    dec      go to state 29
+    tydec    go to state 30
+    tydecs   go to state 31
+    vardec   go to state 32
+    fundec   go to state 33
+    fundecs  go to state 34
 
 
-Estado 11
+State 11
 
    27 exp: BREAK .
 
-    $padrão  reduzir usando a regra 27 (exp)
+    $default  reduce using rule 27 (exp)
 
 
-Estado 12
+State 12
 
    28 exp: NIL .
 
-    $padrão  reduzir usando a regra 28 (exp)
+    $default  reduce using rule 28 (exp)
 
 
-Estado 13
+State 13
 
     0 $accept: program . $end
 
-    $end  deslocar, e ir ao estado 35
+    $end  shift, and go to state 35
 
 
-Estado 14
+State 14
 
    23 lvalue: lvalue . DOT ID
    25       | lvalue . DOT ID LBRACK exp RBRACK
    26 exp: lvalue .
    57    | lvalue . ASSIGN exp
 
-    DOT     deslocar, e ir ao estado 36
-    ASSIGN  deslocar, e ir ao estado 37
+    DOT     shift, and go to state 36
+    ASSIGN  shift, and go to state 37
 
-    $padrão  reduzir usando a regra 26 (exp)
+    $default  reduce using rule 26 (exp)
 
 
-Estado 15
+State 15
 
     1 program: exp .
    37 exp: exp . PLUS exp
@@ -395,80 +406,80 @@ Estado 15
    48    | exp . AND exp
    49    | exp . OR exp
 
-    PLUS    deslocar, e ir ao estado 38
-    MINUS   deslocar, e ir ao estado 39
-    TIMES   deslocar, e ir ao estado 40
-    DIVIDE  deslocar, e ir ao estado 41
-    EQ      deslocar, e ir ao estado 42
-    NEQ     deslocar, e ir ao estado 43
-    LT      deslocar, e ir ao estado 44
-    LE      deslocar, e ir ao estado 45
-    GT      deslocar, e ir ao estado 46
-    GE      deslocar, e ir ao estado 47
-    AND     deslocar, e ir ao estado 48
-    OR      deslocar, e ir ao estado 49
+    PLUS    shift, and go to state 38
+    MINUS   shift, and go to state 39
+    TIMES   shift, and go to state 40
+    DIVIDE  shift, and go to state 41
+    EQ      shift, and go to state 42
+    NEQ     shift, and go to state 43
+    LT      shift, and go to state 44
+    LE      shift, and go to state 45
+    GT      shift, and go to state 46
+    GE      shift, and go to state 47
+    AND     shift, and go to state 48
+    OR      shift, and go to state 49
 
-    $padrão  reduzir usando a regra 1 (program)
+    $default  reduce using rule 1 (program)
 
 
-Estado 16
+State 16
 
    33 exp: ID LPAREN . paras RPAREN
 
-    ID      deslocar, e ir ao estado 1
-    STRING  deslocar, e ir ao estado 2
-    INT     deslocar, e ir ao estado 3
-    FLOAT   deslocar, e ir ao estado 4
-    LPAREN  deslocar, e ir ao estado 5
-    MINUS   deslocar, e ir ao estado 6
-    IF      deslocar, e ir ao estado 7
-    WHILE   deslocar, e ir ao estado 8
-    FOR     deslocar, e ir ao estado 9
-    LET     deslocar, e ir ao estado 10
-    BREAK   deslocar, e ir ao estado 11
-    NIL     deslocar, e ir ao estado 12
+    ID      shift, and go to state 1
+    STRING  shift, and go to state 2
+    INT     shift, and go to state 3
+    FLOAT   shift, and go to state 4
+    LPAREN  shift, and go to state 5
+    MINUS   shift, and go to state 6
+    IF      shift, and go to state 7
+    WHILE   shift, and go to state 8
+    FOR     shift, and go to state 9
+    LET     shift, and go to state 10
+    BREAK   shift, and go to state 11
+    NIL     shift, and go to state 12
 
-    $padrão  reduzir usando a regra 34 (paras)
+    $default  reduce using rule 34 (paras)
 
-    lvalue  ir ao estado 14
-    exp     ir ao estado 50
-    paras   ir ao estado 51
+    lvalue  go to state 14
+    exp     go to state 50
+    paras   go to state 51
 
 
-Estado 17
+State 17
 
    24 lvalue: ID LBRACK . exp RBRACK
    54 exp: ID LBRACK . exp RBRACK OF exp
 
-    ID      deslocar, e ir ao estado 1
-    STRING  deslocar, e ir ao estado 2
-    INT     deslocar, e ir ao estado 3
-    FLOAT   deslocar, e ir ao estado 4
-    LPAREN  deslocar, e ir ao estado 5
-    MINUS   deslocar, e ir ao estado 6
-    IF      deslocar, e ir ao estado 7
-    WHILE   deslocar, e ir ao estado 8
-    FOR     deslocar, e ir ao estado 9
-    LET     deslocar, e ir ao estado 10
-    BREAK   deslocar, e ir ao estado 11
-    NIL     deslocar, e ir ao estado 12
+    ID      shift, and go to state 1
+    STRING  shift, and go to state 2
+    INT     shift, and go to state 3
+    FLOAT   shift, and go to state 4
+    LPAREN  shift, and go to state 5
+    MINUS   shift, and go to state 6
+    IF      shift, and go to state 7
+    WHILE   shift, and go to state 8
+    FOR     shift, and go to state 9
+    LET     shift, and go to state 10
+    BREAK   shift, and go to state 11
+    NIL     shift, and go to state 12
 
-    lvalue  ir ao estado 14
-    exp     ir ao estado 52
+    lvalue  go to state 14
+    exp     go to state 52
 
 
-Estado 18
+State 18
 
    50 exp: ID LBRACE . efields RBRACE
 
-    ID  deslocar, e ir ao estado 53
+    ID  shift, and go to state 53
 
-    $padrão  reduzir usando a regra 51 (efields)
+    $default  reduce using rule 51 (efields)
 
-    efields  ir ao estado 54
+    efields  go to state 54
 
 
-Estado 19
+State 19
 
    37 exp: exp . PLUS exp
    38    | exp . MINUS exp
@@ -485,31 +496,31 @@ Estado 19
    62 explist: exp .
    63        | exp . SEMICOLON explist
 
-    SEMICOLON  deslocar, e ir ao estado 55
-    PLUS       deslocar, e ir ao estado 38
-    MINUS      deslocar, e ir ao estado 39
-    TIMES      deslocar, e ir ao estado 40
-    DIVIDE     deslocar, e ir ao estado 41
-    EQ         deslocar, e ir ao estado 42
-    NEQ        deslocar, e ir ao estado 43
-    LT         deslocar, e ir ao estado 44
-    LE         deslocar, e ir ao estado 45
-    GT         deslocar, e ir ao estado 46
-    GE         deslocar, e ir ao estado 47
-    AND        deslocar, e ir ao estado 48
-    OR         deslocar, e ir ao estado 49
+    SEMICOLON  shift, and go to state 55
+    PLUS       shift, and go to state 38
+    MINUS      shift, and go to state 39
+    TIMES      shift, and go to state 40
+    DIVIDE     shift, and go to state 41
+    EQ         shift, and go to state 42
+    NEQ        shift, and go to state 43
+    LT         shift, and go to state 44
+    LE         shift, and go to state 45
+    GT         shift, and go to state 46
+    GE         shift, and go to state 47
+    AND        shift, and go to state 48
+    OR         shift, and go to state 49
 
-    $padrão  reduzir usando a regra 62 (explist)
+    $default  reduce using rule 62 (explist)
 
 
-Estado 20
+State 20
 
    29 exp: LPAREN explist . RPAREN
 
-    RPAREN  deslocar, e ir ao estado 56
+    RPAREN  shift, and go to state 56
 
 
-Estado 21
+State 21
 
    37 exp: exp . PLUS exp
    38    | exp . MINUS exp
@@ -525,10 +536,10 @@ Estado 21
    48    | exp . AND exp
    49    | exp . OR exp
 
-    $padrão  reduzir usando a regra 41 (exp)
+    $default  reduce using rule 41 (exp)
 
 
-Estado 22
+State 22
 
    37 exp: exp . PLUS exp
    38    | exp . MINUS exp
@@ -545,22 +556,22 @@ Estado 22
    55    | IF exp . THEN exp ELSE exp
    56    | IF exp . THEN exp
 
-    PLUS    deslocar, e ir ao estado 38
-    MINUS   deslocar, e ir ao estado 39
-    TIMES   deslocar, e ir ao estado 40
-    DIVIDE  deslocar, e ir ao estado 41
-    EQ      deslocar, e ir ao estado 42
-    NEQ     deslocar, e ir ao estado 43
-    LT      deslocar, e ir ao estado 44
-    LE      deslocar, e ir ao estado 45
-    GT      deslocar, e ir ao estado 46
-    GE      deslocar, e ir ao estado 47
-    AND     deslocar, e ir ao estado 48
-    OR      deslocar, e ir ao estado 49
-    THEN    deslocar, e ir ao estado 57
+    PLUS    shift, and go to state 38
+    MINUS   shift, and go to state 39
+    TIMES   shift, and go to state 40
+    DIVIDE  shift, and go to state 41
+    EQ      shift, and go to state 42
+    NEQ     shift, and go to state 43
+    LT      shift, and go to state 44
+    LE      shift, and go to state 45
+    GT      shift, and go to state 46
+    GE      shift, and go to state 47
+    AND     shift, and go to state 48
+    OR      shift, and go to state 49
+    THEN    shift, and go to state 57
 
 
-Estado 23
+State 23
 
    37 exp: exp . PLUS exp
    38    | exp . MINUS exp
@@ -576,414 +587,414 @@ Estado 23
    49    | exp . OR exp
    58    | WHILE exp . DO exp
 
-    PLUS    deslocar, e ir ao estado 38
-    MINUS   deslocar, e ir ao estado 39
-    TIMES   deslocar, e ir ao estado 40
-    DIVIDE  deslocar, e ir ao estado 41
-    EQ      deslocar, e ir ao estado 42
-    NEQ     deslocar, e ir ao estado 43
-    LT      deslocar, e ir ao estado 44
-    LE      deslocar, e ir ao estado 45
-    GT      deslocar, e ir ao estado 46
-    GE      deslocar, e ir ao estado 47
-    AND     deslocar, e ir ao estado 48
-    OR      deslocar, e ir ao estado 49
-    DO      deslocar, e ir ao estado 58
+    PLUS    shift, and go to state 38
+    MINUS   shift, and go to state 39
+    TIMES   shift, and go to state 40
+    DIVIDE  shift, and go to state 41
+    EQ      shift, and go to state 42
+    NEQ     shift, and go to state 43
+    LT      shift, and go to state 44
+    LE      shift, and go to state 45
+    GT      shift, and go to state 46
+    GE      shift, and go to state 47
+    AND     shift, and go to state 48
+    OR      shift, and go to state 49
+    DO      shift, and go to state 58
 
 
-Estado 24
+State 24
 
    59 exp: FOR ID . ASSIGN exp TO exp DO exp
 
-    ASSIGN  deslocar, e ir ao estado 59
+    ASSIGN  shift, and go to state 59
 
 
-Estado 25
+State 25
 
    18 fundec: FUNCTION . ID LPAREN tyfields RPAREN EQ exp
    19       | FUNCTION . ID LPAREN tyfields RPAREN COLON ID EQ exp
 
-    ID  deslocar, e ir ao estado 60
+    ID  shift, and go to state 60
 
 
-Estado 26
+State 26
 
    16 vardec: VAR . ID ASSIGN exp
    17       | VAR . ID COLON ID ASSIGN exp
 
-    ID  deslocar, e ir ao estado 61
+    ID  shift, and go to state 61
 
 
-Estado 27
+State 27
 
     7 tydec: TYPE . ID EQ ty
 
-    ID  deslocar, e ir ao estado 62
+    ID  shift, and go to state 62
 
 
-Estado 28
+State 28
 
    60 exp: LET decs . IN explist END
 
-    IN  deslocar, e ir ao estado 63
+    IN  shift, and go to state 63
 
 
-Estado 29
+State 29
 
     2 decs: dec . decs
     3     | dec .
 
-    FUNCTION  deslocar, e ir ao estado 25
-    VAR       deslocar, e ir ao estado 26
-    TYPE      deslocar, e ir ao estado 27
+    FUNCTION  shift, and go to state 25
+    VAR       shift, and go to state 26
+    TYPE      shift, and go to state 27
 
-    $padrão  reduzir usando a regra 3 (decs)
+    $default  reduce using rule 3 (decs)
 
-    decs     ir ao estado 64
-    dec      ir ao estado 29
-    tydec    ir ao estado 30
-    tydecs   ir ao estado 31
-    vardec   ir ao estado 32
-    fundec   ir ao estado 33
-    fundecs  ir ao estado 34
+    decs     go to state 64
+    dec      go to state 29
+    tydec    go to state 30
+    tydecs   go to state 31
+    vardec   go to state 32
+    fundec   go to state 33
+    fundecs  go to state 34
 
 
-Estado 30
+State 30
 
     8 tydecs: tydec .
     9       | tydec . tydecs
 
-    TYPE  deslocar, e ir ao estado 27
+    TYPE  shift, and go to state 27
 
-    $padrão  reduzir usando a regra 8 (tydecs)
+    $default  reduce using rule 8 (tydecs)
 
-    tydec   ir ao estado 30
-    tydecs  ir ao estado 65
+    tydec   go to state 30
+    tydecs  go to state 65
 
 
-Estado 31
+State 31
 
     4 dec: tydecs .
 
-    $padrão  reduzir usando a regra 4 (dec)
+    $default  reduce using rule 4 (dec)
 
 
-Estado 32
+State 32
 
     5 dec: vardec .
 
-    $padrão  reduzir usando a regra 5 (dec)
+    $default  reduce using rule 5 (dec)
 
 
-Estado 33
+State 33
 
    20 fundecs: fundec .
    21        | fundec . fundecs
 
-    FUNCTION  deslocar, e ir ao estado 25
+    FUNCTION  shift, and go to state 25
 
-    $padrão  reduzir usando a regra 20 (fundecs)
+    $default  reduce using rule 20 (fundecs)
 
-    fundec   ir ao estado 33
-    fundecs  ir ao estado 66
+    fundec   go to state 33
+    fundecs  go to state 66
 
 
-Estado 34
+State 34
 
     6 dec: fundecs .
 
-    $padrão  reduzir usando a regra 6 (dec)
+    $default  reduce using rule 6 (dec)
 
 
-Estado 35
+State 35
 
     0 $accept: program $end .
 
-    $padrão  aceitar
+    $default  accept
 
 
-Estado 36
+State 36
 
    23 lvalue: lvalue DOT . ID
    25       | lvalue DOT . ID LBRACK exp RBRACK
 
-    ID  deslocar, e ir ao estado 67
+    ID  shift, and go to state 67
 
 
-Estado 37
+State 37
 
    57 exp: lvalue ASSIGN . exp
 
-    ID      deslocar, e ir ao estado 1
-    STRING  deslocar, e ir ao estado 2
-    INT     deslocar, e ir ao estado 3
-    FLOAT   deslocar, e ir ao estado 4
-    LPAREN  deslocar, e ir ao estado 5
-    MINUS   deslocar, e ir ao estado 6
-    IF      deslocar, e ir ao estado 7
-    WHILE   deslocar, e ir ao estado 8
-    FOR     deslocar, e ir ao estado 9
-    LET     deslocar, e ir ao estado 10
-    BREAK   deslocar, e ir ao estado 11
-    NIL     deslocar, e ir ao estado 12
+    ID      shift, and go to state 1
+    STRING  shift, and go to state 2
+    INT     shift, and go to state 3
+    FLOAT   shift, and go to state 4
+    LPAREN  shift, and go to state 5
+    MINUS   shift, and go to state 6
+    IF      shift, and go to state 7
+    WHILE   shift, and go to state 8
+    FOR     shift, and go to state 9
+    LET     shift, and go to state 10
+    BREAK   shift, and go to state 11
+    NIL     shift, and go to state 12
 
-    lvalue  ir ao estado 14
-    exp     ir ao estado 68
+    lvalue  go to state 14
+    exp     go to state 68
 
 
-Estado 38
+State 38
 
    37 exp: exp PLUS . exp
 
-    ID      deslocar, e ir ao estado 1
-    STRING  deslocar, e ir ao estado 2
-    INT     deslocar, e ir ao estado 3
-    FLOAT   deslocar, e ir ao estado 4
-    LPAREN  deslocar, e ir ao estado 5
-    MINUS   deslocar, e ir ao estado 6
-    IF      deslocar, e ir ao estado 7
-    WHILE   deslocar, e ir ao estado 8
-    FOR     deslocar, e ir ao estado 9
-    LET     deslocar, e ir ao estado 10
-    BREAK   deslocar, e ir ao estado 11
-    NIL     deslocar, e ir ao estado 12
+    ID      shift, and go to state 1
+    STRING  shift, and go to state 2
+    INT     shift, and go to state 3
+    FLOAT   shift, and go to state 4
+    LPAREN  shift, and go to state 5
+    MINUS   shift, and go to state 6
+    IF      shift, and go to state 7
+    WHILE   shift, and go to state 8
+    FOR     shift, and go to state 9
+    LET     shift, and go to state 10
+    BREAK   shift, and go to state 11
+    NIL     shift, and go to state 12
 
-    lvalue  ir ao estado 14
-    exp     ir ao estado 69
+    lvalue  go to state 14
+    exp     go to state 69
 
 
-Estado 39
+State 39
 
    38 exp: exp MINUS . exp
 
-    ID      deslocar, e ir ao estado 1
-    STRING  deslocar, e ir ao estado 2
-    INT     deslocar, e ir ao estado 3
-    FLOAT   deslocar, e ir ao estado 4
-    LPAREN  deslocar, e ir ao estado 5
-    MINUS   deslocar, e ir ao estado 6
-    IF      deslocar, e ir ao estado 7
-    WHILE   deslocar, e ir ao estado 8
-    FOR     deslocar, e ir ao estado 9
-    LET     deslocar, e ir ao estado 10
-    BREAK   deslocar, e ir ao estado 11
-    NIL     deslocar, e ir ao estado 12
+    ID      shift, and go to state 1
+    STRING  shift, and go to state 2
+    INT     shift, and go to state 3
+    FLOAT   shift, and go to state 4
+    LPAREN  shift, and go to state 5
+    MINUS   shift, and go to state 6
+    IF      shift, and go to state 7
+    WHILE   shift, and go to state 8
+    FOR     shift, and go to state 9
+    LET     shift, and go to state 10
+    BREAK   shift, and go to state 11
+    NIL     shift, and go to state 12
 
-    lvalue  ir ao estado 14
-    exp     ir ao estado 70
+    lvalue  go to state 14
+    exp     go to state 70
 
 
-Estado 40
+State 40
 
    39 exp: exp TIMES . exp
 
-    ID      deslocar, e ir ao estado 1
-    STRING  deslocar, e ir ao estado 2
-    INT     deslocar, e ir ao estado 3
-    FLOAT   deslocar, e ir ao estado 4
-    LPAREN  deslocar, e ir ao estado 5
-    MINUS   deslocar, e ir ao estado 6
-    IF      deslocar, e ir ao estado 7
-    WHILE   deslocar, e ir ao estado 8
-    FOR     deslocar, e ir ao estado 9
-    LET     deslocar, e ir ao estado 10
-    BREAK   deslocar, e ir ao estado 11
-    NIL     deslocar, e ir ao estado 12
+    ID      shift, and go to state 1
+    STRING  shift, and go to state 2
+    INT     shift, and go to state 3
+    FLOAT   shift, and go to state 4
+    LPAREN  shift, and go to state 5
+    MINUS   shift, and go to state 6
+    IF      shift, and go to state 7
+    WHILE   shift, and go to state 8
+    FOR     shift, and go to state 9
+    LET     shift, and go to state 10
+    BREAK   shift, and go to state 11
+    NIL     shift, and go to state 12
 
-    lvalue  ir ao estado 14
-    exp     ir ao estado 71
+    lvalue  go to state 14
+    exp     go to state 71
 
 
-Estado 41
+State 41
 
    40 exp: exp DIVIDE . exp
 
-    ID      deslocar, e ir ao estado 1
-    STRING  deslocar, e ir ao estado 2
-    INT     deslocar, e ir ao estado 3
-    FLOAT   deslocar, e ir ao estado 4
-    LPAREN  deslocar, e ir ao estado 5
-    MINUS   deslocar, e ir ao estado 6
-    IF      deslocar, e ir ao estado 7
-    WHILE   deslocar, e ir ao estado 8
-    FOR     deslocar, e ir ao estado 9
-    LET     deslocar, e ir ao estado 10
-    BREAK   deslocar, e ir ao estado 11
-    NIL     deslocar, e ir ao estado 12
+    ID      shift, and go to state 1
+    STRING  shift, and go to state 2
+    INT     shift, and go to state 3
+    FLOAT   shift, and go to state 4
+    LPAREN  shift, and go to state 5
+    MINUS   shift, and go to state 6
+    IF      shift, and go to state 7
+    WHILE   shift, and go to state 8
+    FOR     shift, and go to state 9
+    LET     shift, and go to state 10
+    BREAK   shift, and go to state 11
+    NIL     shift, and go to state 12
 
-    lvalue  ir ao estado 14
-    exp     ir ao estado 72
+    lvalue  go to state 14
+    exp     go to state 72
 
 
-Estado 42
+State 42
 
    42 exp: exp EQ . exp
 
-    ID      deslocar, e ir ao estado 1
-    STRING  deslocar, e ir ao estado 2
-    INT     deslocar, e ir ao estado 3
-    FLOAT   deslocar, e ir ao estado 4
-    LPAREN  deslocar, e ir ao estado 5
-    MINUS   deslocar, e ir ao estado 6
-    IF      deslocar, e ir ao estado 7
-    WHILE   deslocar, e ir ao estado 8
-    FOR     deslocar, e ir ao estado 9
-    LET     deslocar, e ir ao estado 10
-    BREAK   deslocar, e ir ao estado 11
-    NIL     deslocar, e ir ao estado 12
+    ID      shift, and go to state 1
+    STRING  shift, and go to state 2
+    INT     shift, and go to state 3
+    FLOAT   shift, and go to state 4
+    LPAREN  shift, and go to state 5
+    MINUS   shift, and go to state 6
+    IF      shift, and go to state 7
+    WHILE   shift, and go to state 8
+    FOR     shift, and go to state 9
+    LET     shift, and go to state 10
+    BREAK   shift, and go to state 11
+    NIL     shift, and go to state 12
 
-    lvalue  ir ao estado 14
-    exp     ir ao estado 73
+    lvalue  go to state 14
+    exp     go to state 73
 
 
-Estado 43
+State 43
 
    43 exp: exp NEQ . exp
 
-    ID      deslocar, e ir ao estado 1
-    STRING  deslocar, e ir ao estado 2
-    INT     deslocar, e ir ao estado 3
-    FLOAT   deslocar, e ir ao estado 4
-    LPAREN  deslocar, e ir ao estado 5
-    MINUS   deslocar, e ir ao estado 6
-    IF      deslocar, e ir ao estado 7
-    WHILE   deslocar, e ir ao estado 8
-    FOR     deslocar, e ir ao estado 9
-    LET     deslocar, e ir ao estado 10
-    BREAK   deslocar, e ir ao estado 11
-    NIL     deslocar, e ir ao estado 12
+    ID      shift, and go to state 1
+    STRING  shift, and go to state 2
+    INT     shift, and go to state 3
+    FLOAT   shift, and go to state 4
+    LPAREN  shift, and go to state 5
+    MINUS   shift, and go to state 6
+    IF      shift, and go to state 7
+    WHILE   shift, and go to state 8
+    FOR     shift, and go to state 9
+    LET     shift, and go to state 10
+    BREAK   shift, and go to state 11
+    NIL     shift, and go to state 12
 
-    lvalue  ir ao estado 14
-    exp     ir ao estado 74
+    lvalue  go to state 14
+    exp     go to state 74
 
 
-Estado 44
+State 44
 
    45 exp: exp LT . exp
 
-    ID      deslocar, e ir ao estado 1
-    STRING  deslocar, e ir ao estado 2
-    INT     deslocar, e ir ao estado 3
-    FLOAT   deslocar, e ir ao estado 4
-    LPAREN  deslocar, e ir ao estado 5
-    MINUS   deslocar, e ir ao estado 6
-    IF      deslocar, e ir ao estado 7
-    WHILE   deslocar, e ir ao estado 8
-    FOR     deslocar, e ir ao estado 9
-    LET     deslocar, e ir ao estado 10
-    BREAK   deslocar, e ir ao estado 11
-    NIL     deslocar, e ir ao estado 12
+    ID      shift, and go to state 1
+    STRING  shift, and go to state 2
+    INT     shift, and go to state 3
+    FLOAT   shift, and go to state 4
+    LPAREN  shift, and go to state 5
+    MINUS   shift, and go to state 6
+    IF      shift, and go to state 7
+    WHILE   shift, and go to state 8
+    FOR     shift, and go to state 9
+    LET     shift, and go to state 10
+    BREAK   shift, and go to state 11
+    NIL     shift, and go to state 12
 
-    lvalue  ir ao estado 14
-    exp     ir ao estado 75
+    lvalue  go to state 14
+    exp     go to state 75
 
 
-Estado 45
+State 45
 
    47 exp: exp LE . exp
 
-    ID      deslocar, e ir ao estado 1
-    STRING  deslocar, e ir ao estado 2
-    INT     deslocar, e ir ao estado 3
-    FLOAT   deslocar, e ir ao estado 4
-    LPAREN  deslocar, e ir ao estado 5
-    MINUS   deslocar, e ir ao estado 6
-    IF      deslocar, e ir ao estado 7
-    WHILE   deslocar, e ir ao estado 8
-    FOR     deslocar, e ir ao estado 9
-    LET     deslocar, e ir ao estado 10
-    BREAK   deslocar, e ir ao estado 11
-    NIL     deslocar, e ir ao estado 12
+    ID      shift, and go to state 1
+    STRING  shift, and go to state 2
+    INT     shift, and go to state 3
+    FLOAT   shift, and go to state 4
+    LPAREN  shift, and go to state 5
+    MINUS   shift, and go to state 6
+    IF      shift, and go to state 7
+    WHILE   shift, and go to state 8
+    FOR     shift, and go to state 9
+    LET     shift, and go to state 10
+    BREAK   shift, and go to state 11
+    NIL     shift, and go to state 12
 
-    lvalue  ir ao estado 14
-    exp     ir ao estado 76
+    lvalue  go to state 14
+    exp     go to state 76
 
 
-Estado 46
+State 46
 
    44 exp: exp GT . exp
 
-    ID      deslocar, e ir ao estado 1
-    STRING  deslocar, e ir ao estado 2
-    INT     deslocar, e ir ao estado 3
-    FLOAT   deslocar, e ir ao estado 4
-    LPAREN  deslocar, e ir ao estado 5
-    MINUS   deslocar, e ir ao estado 6
-    IF      deslocar, e ir ao estado 7
-    WHILE   deslocar, e ir ao estado 8
-    FOR     deslocar, e ir ao estado 9
-    LET     deslocar, e ir ao estado 10
-    BREAK   deslocar, e ir ao estado 11
-    NIL     deslocar, e ir ao estado 12
+    ID      shift, and go to state 1
+    STRING  shift, and go to state 2
+    INT     shift, and go to state 3
+    FLOAT   shift, and go to state 4
+    LPAREN  shift, and go to state 5
+    MINUS   shift, and go to state 6
+    IF      shift, and go to state 7
+    WHILE   shift, and go to state 8
+    FOR     shift, and go to state 9
+    LET     shift, and go to state 10
+    BREAK   shift, and go to state 11
+    NIL     shift, and go to state 12
 
-    lvalue  ir ao estado 14
-    exp     ir ao estado 77
+    lvalue  go to state 14
+    exp     go to state 77
 
 
-Estado 47
+State 47
 
    46 exp: exp GE . exp
 
-    ID      deslocar, e ir ao estado 1
-    STRING  deslocar, e ir ao estado 2
-    INT     deslocar, e ir ao estado 3
-    FLOAT   deslocar, e ir ao estado 4
-    LPAREN  deslocar, e ir ao estado 5
-    MINUS   deslocar, e ir ao estado 6
-    IF      deslocar, e ir ao estado 7
-    WHILE   deslocar, e ir ao estado 8
-    FOR     deslocar, e ir ao estado 9
-    LET     deslocar, e ir ao estado 10
-    BREAK   deslocar, e ir ao estado 11
-    NIL     deslocar, e ir ao estado 12
+    ID      shift, and go to state 1
+    STRING  shift, and go to state 2
+    INT     shift, and go to state 3
+    FLOAT   shift, and go to state 4
+    LPAREN  shift, and go to state 5
+    MINUS   shift, and go to state 6
+    IF      shift, and go to state 7
+    WHILE   shift, and go to state 8
+    FOR     shift, and go to state 9
+    LET     shift, and go to state 10
+    BREAK   shift, and go to state 11
+    NIL     shift, and go to state 12
 
-    lvalue  ir ao estado 14
-    exp     ir ao estado 78
+    lvalue  go to state 14
+    exp     go to state 78
 
 
-Estado 48
+State 48
 
    48 exp: exp AND . exp
 
-    ID      deslocar, e ir ao estado 1
-    STRING  deslocar, e ir ao estado 2
-    INT     deslocar, e ir ao estado 3
-    FLOAT   deslocar, e ir ao estado 4
-    LPAREN  deslocar, e ir ao estado 5
-    MINUS   deslocar, e ir ao estado 6
-    IF      deslocar, e ir ao estado 7
-    WHILE   deslocar, e ir ao estado 8
-    FOR     deslocar, e ir ao estado 9
-    LET     deslocar, e ir ao estado 10
-    BREAK   deslocar, e ir ao estado 11
-    NIL     deslocar, e ir ao estado 12
+    ID      shift, and go to state 1
+    STRING  shift, and go to state 2
+    INT     shift, and go to state 3
+    FLOAT   shift, and go to state 4
+    LPAREN  shift, and go to state 5
+    MINUS   shift, and go to state 6
+    IF      shift, and go to state 7
+    WHILE   shift, and go to state 8
+    FOR     shift, and go to state 9
+    LET     shift, and go to state 10
+    BREAK   shift, and go to state 11
+    NIL     shift, and go to state 12
 
-    lvalue  ir ao estado 14
-    exp     ir ao estado 79
+    lvalue  go to state 14
+    exp     go to state 79
 
 
-Estado 49
+State 49
 
    49 exp: exp OR . exp
 
-    ID      deslocar, e ir ao estado 1
-    STRING  deslocar, e ir ao estado 2
-    INT     deslocar, e ir ao estado 3
-    FLOAT   deslocar, e ir ao estado 4
-    LPAREN  deslocar, e ir ao estado 5
-    MINUS   deslocar, e ir ao estado 6
-    IF      deslocar, e ir ao estado 7
-    WHILE   deslocar, e ir ao estado 8
-    FOR     deslocar, e ir ao estado 9
-    LET     deslocar, e ir ao estado 10
-    BREAK   deslocar, e ir ao estado 11
-    NIL     deslocar, e ir ao estado 12
+    ID      shift, and go to state 1
+    STRING  shift, and go to state 2
+    INT     shift, and go to state 3
+    FLOAT   shift, and go to state 4
+    LPAREN  shift, and go to state 5
+    MINUS   shift, and go to state 6
+    IF      shift, and go to state 7
+    WHILE   shift, and go to state 8
+    FOR     shift, and go to state 9
+    LET     shift, and go to state 10
+    BREAK   shift, and go to state 11
+    NIL     shift, and go to state 12
 
-    lvalue  ir ao estado 14
-    exp     ir ao estado 80
+    lvalue  go to state 14
+    exp     go to state 80
 
 
-Estado 50
+State 50
 
    35 paras: exp .
    36      | exp . COMMA paras
@@ -1000,31 +1011,31 @@ Estado 50
    48    | exp . AND exp
    49    | exp . OR exp
 
-    COMMA   deslocar, e ir ao estado 81
-    PLUS    deslocar, e ir ao estado 38
-    MINUS   deslocar, e ir ao estado 39
-    TIMES   deslocar, e ir ao estado 40
-    DIVIDE  deslocar, e ir ao estado 41
-    EQ      deslocar, e ir ao estado 42
-    NEQ     deslocar, e ir ao estado 43
-    LT      deslocar, e ir ao estado 44
-    LE      deslocar, e ir ao estado 45
-    GT      deslocar, e ir ao estado 46
-    GE      deslocar, e ir ao estado 47
-    AND     deslocar, e ir ao estado 48
-    OR      deslocar, e ir ao estado 49
+    COMMA   shift, and go to state 81
+    PLUS    shift, and go to state 38
+    MINUS   shift, and go to state 39
+    TIMES   shift, and go to state 40
+    DIVIDE  shift, and go to state 41
+    EQ      shift, and go to state 42
+    NEQ     shift, and go to state 43
+    LT      shift, and go to state 44
+    LE      shift, and go to state 45
+    GT      shift, and go to state 46
+    GE      shift, and go to state 47
+    AND     shift, and go to state 48
+    OR      shift, and go to state 49
 
-    $padrão  reduzir usando a regra 35 (paras)
+    $default  reduce using rule 35 (paras)
 
 
-Estado 51
+State 51
 
    33 exp: ID LPAREN paras . RPAREN
 
-    RPAREN  deslocar, e ir ao estado 82
+    RPAREN  shift, and go to state 82
 
 
-Estado 52
+State 52
 
    24 lvalue: ID LBRACK exp . RBRACK
    37 exp: exp . PLUS exp
@@ -1041,211 +1052,211 @@ Estado 52
    49    | exp . OR exp
    54    | ID LBRACK exp . RBRACK OF exp
 
-    RBRACK  deslocar, e ir ao estado 83
-    PLUS    deslocar, e ir ao estado 38
-    MINUS   deslocar, e ir ao estado 39
-    TIMES   deslocar, e ir ao estado 40
-    DIVIDE  deslocar, e ir ao estado 41
-    EQ      deslocar, e ir ao estado 42
-    NEQ     deslocar, e ir ao estado 43
-    LT      deslocar, e ir ao estado 44
-    LE      deslocar, e ir ao estado 45
-    GT      deslocar, e ir ao estado 46
-    GE      deslocar, e ir ao estado 47
-    AND     deslocar, e ir ao estado 48
-    OR      deslocar, e ir ao estado 49
+    RBRACK  shift, and go to state 83
+    PLUS    shift, and go to state 38
+    MINUS   shift, and go to state 39
+    TIMES   shift, and go to state 40
+    DIVIDE  shift, and go to state 41
+    EQ      shift, and go to state 42
+    NEQ     shift, and go to state 43
+    LT      shift, and go to state 44
+    LE      shift, and go to state 45
+    GT      shift, and go to state 46
+    GE      shift, and go to state 47
+    AND     shift, and go to state 48
+    OR      shift, and go to state 49
 
 
-Estado 53
+State 53
 
    52 efields: ID . EQ exp
    53        | ID . EQ exp COMMA efields
 
-    EQ  deslocar, e ir ao estado 84
+    EQ  shift, and go to state 84
 
 
-Estado 54
+State 54
 
    50 exp: ID LBRACE efields . RBRACE
 
-    RBRACE  deslocar, e ir ao estado 85
+    RBRACE  shift, and go to state 85
 
 
-Estado 55
+State 55
 
    63 explist: exp SEMICOLON . explist
 
-    ID      deslocar, e ir ao estado 1
-    STRING  deslocar, e ir ao estado 2
-    INT     deslocar, e ir ao estado 3
-    FLOAT   deslocar, e ir ao estado 4
-    LPAREN  deslocar, e ir ao estado 5
-    MINUS   deslocar, e ir ao estado 6
-    IF      deslocar, e ir ao estado 7
-    WHILE   deslocar, e ir ao estado 8
-    FOR     deslocar, e ir ao estado 9
-    LET     deslocar, e ir ao estado 10
-    BREAK   deslocar, e ir ao estado 11
-    NIL     deslocar, e ir ao estado 12
+    ID      shift, and go to state 1
+    STRING  shift, and go to state 2
+    INT     shift, and go to state 3
+    FLOAT   shift, and go to state 4
+    LPAREN  shift, and go to state 5
+    MINUS   shift, and go to state 6
+    IF      shift, and go to state 7
+    WHILE   shift, and go to state 8
+    FOR     shift, and go to state 9
+    LET     shift, and go to state 10
+    BREAK   shift, and go to state 11
+    NIL     shift, and go to state 12
 
-    $padrão  reduzir usando a regra 61 (explist)
+    $default  reduce using rule 61 (explist)
 
-    lvalue   ir ao estado 14
-    exp      ir ao estado 19
-    explist  ir ao estado 86
+    lvalue   go to state 14
+    exp      go to state 19
+    explist  go to state 86
 
 
-Estado 56
+State 56
 
    29 exp: LPAREN explist RPAREN .
 
-    $padrão  reduzir usando a regra 29 (exp)
+    $default  reduce using rule 29 (exp)
 
 
-Estado 57
+State 57
 
    55 exp: IF exp THEN . exp ELSE exp
    56    | IF exp THEN . exp
 
-    ID      deslocar, e ir ao estado 1
-    STRING  deslocar, e ir ao estado 2
-    INT     deslocar, e ir ao estado 3
-    FLOAT   deslocar, e ir ao estado 4
-    LPAREN  deslocar, e ir ao estado 5
-    MINUS   deslocar, e ir ao estado 6
-    IF      deslocar, e ir ao estado 7
-    WHILE   deslocar, e ir ao estado 8
-    FOR     deslocar, e ir ao estado 9
-    LET     deslocar, e ir ao estado 10
-    BREAK   deslocar, e ir ao estado 11
-    NIL     deslocar, e ir ao estado 12
+    ID      shift, and go to state 1
+    STRING  shift, and go to state 2
+    INT     shift, and go to state 3
+    FLOAT   shift, and go to state 4
+    LPAREN  shift, and go to state 5
+    MINUS   shift, and go to state 6
+    IF      shift, and go to state 7
+    WHILE   shift, and go to state 8
+    FOR     shift, and go to state 9
+    LET     shift, and go to state 10
+    BREAK   shift, and go to state 11
+    NIL     shift, and go to state 12
 
-    lvalue  ir ao estado 14
-    exp     ir ao estado 87
+    lvalue  go to state 14
+    exp     go to state 87
 
 
-Estado 58
+State 58
 
    58 exp: WHILE exp DO . exp
 
-    ID      deslocar, e ir ao estado 1
-    STRING  deslocar, e ir ao estado 2
-    INT     deslocar, e ir ao estado 3
-    FLOAT   deslocar, e ir ao estado 4
-    LPAREN  deslocar, e ir ao estado 5
-    MINUS   deslocar, e ir ao estado 6
-    IF      deslocar, e ir ao estado 7
-    WHILE   deslocar, e ir ao estado 8
-    FOR     deslocar, e ir ao estado 9
-    LET     deslocar, e ir ao estado 10
-    BREAK   deslocar, e ir ao estado 11
-    NIL     deslocar, e ir ao estado 12
+    ID      shift, and go to state 1
+    STRING  shift, and go to state 2
+    INT     shift, and go to state 3
+    FLOAT   shift, and go to state 4
+    LPAREN  shift, and go to state 5
+    MINUS   shift, and go to state 6
+    IF      shift, and go to state 7
+    WHILE   shift, and go to state 8
+    FOR     shift, and go to state 9
+    LET     shift, and go to state 10
+    BREAK   shift, and go to state 11
+    NIL     shift, and go to state 12
 
-    lvalue  ir ao estado 14
-    exp     ir ao estado 88
+    lvalue  go to state 14
+    exp     go to state 88
 
 
-Estado 59
+State 59
 
    59 exp: FOR ID ASSIGN . exp TO exp DO exp
 
-    ID      deslocar, e ir ao estado 1
-    STRING  deslocar, e ir ao estado 2
-    INT     deslocar, e ir ao estado 3
-    FLOAT   deslocar, e ir ao estado 4
-    LPAREN  deslocar, e ir ao estado 5
-    MINUS   deslocar, e ir ao estado 6
-    IF      deslocar, e ir ao estado 7
-    WHILE   deslocar, e ir ao estado 8
-    FOR     deslocar, e ir ao estado 9
-    LET     deslocar, e ir ao estado 10
-    BREAK   deslocar, e ir ao estado 11
-    NIL     deslocar, e ir ao estado 12
+    ID      shift, and go to state 1
+    STRING  shift, and go to state 2
+    INT     shift, and go to state 3
+    FLOAT   shift, and go to state 4
+    LPAREN  shift, and go to state 5
+    MINUS   shift, and go to state 6
+    IF      shift, and go to state 7
+    WHILE   shift, and go to state 8
+    FOR     shift, and go to state 9
+    LET     shift, and go to state 10
+    BREAK   shift, and go to state 11
+    NIL     shift, and go to state 12
 
-    lvalue  ir ao estado 14
-    exp     ir ao estado 89
+    lvalue  go to state 14
+    exp     go to state 89
 
 
-Estado 60
+State 60
 
    18 fundec: FUNCTION ID . LPAREN tyfields RPAREN EQ exp
    19       | FUNCTION ID . LPAREN tyfields RPAREN COLON ID EQ exp
 
-    LPAREN  deslocar, e ir ao estado 90
+    LPAREN  shift, and go to state 90
 
 
-Estado 61
+State 61
 
    16 vardec: VAR ID . ASSIGN exp
    17       | VAR ID . COLON ID ASSIGN exp
 
-    COLON   deslocar, e ir ao estado 91
-    ASSIGN  deslocar, e ir ao estado 92
+    COLON   shift, and go to state 91
+    ASSIGN  shift, and go to state 92
 
 
-Estado 62
+State 62
 
     7 tydec: TYPE ID . EQ ty
 
-    EQ  deslocar, e ir ao estado 93
+    EQ  shift, and go to state 93
 
 
-Estado 63
+State 63
 
    60 exp: LET decs IN . explist END
 
-    ID      deslocar, e ir ao estado 1
-    STRING  deslocar, e ir ao estado 2
-    INT     deslocar, e ir ao estado 3
-    FLOAT   deslocar, e ir ao estado 4
-    LPAREN  deslocar, e ir ao estado 5
-    MINUS   deslocar, e ir ao estado 6
-    IF      deslocar, e ir ao estado 7
-    WHILE   deslocar, e ir ao estado 8
-    FOR     deslocar, e ir ao estado 9
-    LET     deslocar, e ir ao estado 10
-    BREAK   deslocar, e ir ao estado 11
-    NIL     deslocar, e ir ao estado 12
+    ID      shift, and go to state 1
+    STRING  shift, and go to state 2
+    INT     shift, and go to state 3
+    FLOAT   shift, and go to state 4
+    LPAREN  shift, and go to state 5
+    MINUS   shift, and go to state 6
+    IF      shift, and go to state 7
+    WHILE   shift, and go to state 8
+    FOR     shift, and go to state 9
+    LET     shift, and go to state 10
+    BREAK   shift, and go to state 11
+    NIL     shift, and go to state 12
 
-    $padrão  reduzir usando a regra 61 (explist)
+    $default  reduce using rule 61 (explist)
 
-    lvalue   ir ao estado 14
-    exp      ir ao estado 19
-    explist  ir ao estado 94
+    lvalue   go to state 14
+    exp      go to state 19
+    explist  go to state 94
 
 
-Estado 64
+State 64
 
     2 decs: dec decs .
 
-    $padrão  reduzir usando a regra 2 (decs)
+    $default  reduce using rule 2 (decs)
 
 
-Estado 65
+State 65
 
     9 tydecs: tydec tydecs .
 
-    $padrão  reduzir usando a regra 9 (tydecs)
+    $default  reduce using rule 9 (tydecs)
 
 
-Estado 66
+State 66
 
    21 fundecs: fundec fundecs .
 
-    $padrão  reduzir usando a regra 21 (fundecs)
+    $default  reduce using rule 21 (fundecs)
 
 
-Estado 67
+State 67
 
    23 lvalue: lvalue DOT ID .
    25       | lvalue DOT ID . LBRACK exp RBRACK
 
-    LBRACK  deslocar, e ir ao estado 95
+    LBRACK  shift, and go to state 95
 
-    $padrão  reduzir usando a regra 23 (lvalue)
+    $default  reduce using rule 23 (lvalue)
 
 
-Estado 68
+State 68
 
    37 exp: exp . PLUS exp
    38    | exp . MINUS exp
@@ -1261,23 +1272,23 @@ Estado 68
    49    | exp . OR exp
    57    | lvalue ASSIGN exp .
 
-    PLUS    deslocar, e ir ao estado 38
-    MINUS   deslocar, e ir ao estado 39
-    TIMES   deslocar, e ir ao estado 40
-    DIVIDE  deslocar, e ir ao estado 41
-    EQ      deslocar, e ir ao estado 42
-    NEQ     deslocar, e ir ao estado 43
-    LT      deslocar, e ir ao estado 44
-    LE      deslocar, e ir ao estado 45
-    GT      deslocar, e ir ao estado 46
-    GE      deslocar, e ir ao estado 47
-    AND     deslocar, e ir ao estado 48
-    OR      deslocar, e ir ao estado 49
+    PLUS    shift, and go to state 38
+    MINUS   shift, and go to state 39
+    TIMES   shift, and go to state 40
+    DIVIDE  shift, and go to state 41
+    EQ      shift, and go to state 42
+    NEQ     shift, and go to state 43
+    LT      shift, and go to state 44
+    LE      shift, and go to state 45
+    GT      shift, and go to state 46
+    GE      shift, and go to state 47
+    AND     shift, and go to state 48
+    OR      shift, and go to state 49
 
-    $padrão  reduzir usando a regra 57 (exp)
+    $default  reduce using rule 57 (exp)
 
 
-Estado 69
+State 69
 
    37 exp: exp . PLUS exp
    37    | exp PLUS exp .
@@ -1293,13 +1304,13 @@ Estado 69
    48    | exp . AND exp
    49    | exp . OR exp
 
-    TIMES   deslocar, e ir ao estado 40
-    DIVIDE  deslocar, e ir ao estado 41
+    TIMES   shift, and go to state 40
+    DIVIDE  shift, and go to state 41
 
-    $padrão  reduzir usando a regra 37 (exp)
+    $default  reduce using rule 37 (exp)
 
 
-Estado 70
+State 70
 
    37 exp: exp . PLUS exp
    38    | exp . MINUS exp
@@ -1315,13 +1326,13 @@ Estado 70
    48    | exp . AND exp
    49    | exp . OR exp
 
-    TIMES   deslocar, e ir ao estado 40
-    DIVIDE  deslocar, e ir ao estado 41
+    TIMES   shift, and go to state 40
+    DIVIDE  shift, and go to state 41
 
-    $padrão  reduzir usando a regra 38 (exp)
+    $default  reduce using rule 38 (exp)
 
 
-Estado 71
+State 71
 
    37 exp: exp . PLUS exp
    38    | exp . MINUS exp
@@ -1337,10 +1348,10 @@ Estado 71
    48    | exp . AND exp
    49    | exp . OR exp
 
-    $padrão  reduzir usando a regra 39 (exp)
+    $default  reduce using rule 39 (exp)
 
 
-Estado 72
+State 72
 
    37 exp: exp . PLUS exp
    38    | exp . MINUS exp
@@ -1356,10 +1367,10 @@ Estado 72
    48    | exp . AND exp
    49    | exp . OR exp
 
-    $padrão  reduzir usando a regra 40 (exp)
+    $default  reduce using rule 40 (exp)
 
 
-Estado 73
+State 73
 
    37 exp: exp . PLUS exp
    38    | exp . MINUS exp
@@ -1375,22 +1386,22 @@ Estado 73
    48    | exp . AND exp
    49    | exp . OR exp
 
-    PLUS    deslocar, e ir ao estado 38
-    MINUS   deslocar, e ir ao estado 39
-    TIMES   deslocar, e ir ao estado 40
-    DIVIDE  deslocar, e ir ao estado 41
+    PLUS    shift, and go to state 38
+    MINUS   shift, and go to state 39
+    TIMES   shift, and go to state 40
+    DIVIDE  shift, and go to state 41
 
-    EQ   erro (não associativo)
-    NEQ  erro (não associativo)
-    LT   erro (não associativo)
-    LE   erro (não associativo)
-    GT   erro (não associativo)
-    GE   erro (não associativo)
+    EQ   error (nonassociative)
+    NEQ  error (nonassociative)
+    LT   error (nonassociative)
+    LE   error (nonassociative)
+    GT   error (nonassociative)
+    GE   error (nonassociative)
 
-    $padrão  reduzir usando a regra 42 (exp)
+    $default  reduce using rule 42 (exp)
 
 
-Estado 74
+State 74
 
    37 exp: exp . PLUS exp
    38    | exp . MINUS exp
@@ -1406,22 +1417,22 @@ Estado 74
    48    | exp . AND exp
    49    | exp . OR exp
 
-    PLUS    deslocar, e ir ao estado 38
-    MINUS   deslocar, e ir ao estado 39
-    TIMES   deslocar, e ir ao estado 40
-    DIVIDE  deslocar, e ir ao estado 41
+    PLUS    shift, and go to state 38
+    MINUS   shift, and go to state 39
+    TIMES   shift, and go to state 40
+    DIVIDE  shift, and go to state 41
 
-    EQ   erro (não associativo)
-    NEQ  erro (não associativo)
-    LT   erro (não associativo)
-    LE   erro (não associativo)
-    GT   erro (não associativo)
-    GE   erro (não associativo)
+    EQ   error (nonassociative)
+    NEQ  error (nonassociative)
+    LT   error (nonassociative)
+    LE   error (nonassociative)
+    GT   error (nonassociative)
+    GE   error (nonassociative)
 
-    $padrão  reduzir usando a regra 43 (exp)
+    $default  reduce using rule 43 (exp)
 
 
-Estado 75
+State 75
 
    37 exp: exp . PLUS exp
    38    | exp . MINUS exp
@@ -1437,22 +1448,22 @@ Estado 75
    48    | exp . AND exp
    49    | exp . OR exp
 
-    PLUS    deslocar, e ir ao estado 38
-    MINUS   deslocar, e ir ao estado 39
-    TIMES   deslocar, e ir ao estado 40
-    DIVIDE  deslocar, e ir ao estado 41
+    PLUS    shift, and go to state 38
+    MINUS   shift, and go to state 39
+    TIMES   shift, and go to state 40
+    DIVIDE  shift, and go to state 41
 
-    EQ   erro (não associativo)
-    NEQ  erro (não associativo)
-    LT   erro (não associativo)
-    LE   erro (não associativo)
-    GT   erro (não associativo)
-    GE   erro (não associativo)
+    EQ   error (nonassociative)
+    NEQ  error (nonassociative)
+    LT   error (nonassociative)
+    LE   error (nonassociative)
+    GT   error (nonassociative)
+    GE   error (nonassociative)
 
-    $padrão  reduzir usando a regra 45 (exp)
+    $default  reduce using rule 45 (exp)
 
 
-Estado 76
+State 76
 
    37 exp: exp . PLUS exp
    38    | exp . MINUS exp
@@ -1468,22 +1479,22 @@ Estado 76
    48    | exp . AND exp
    49    | exp . OR exp
 
-    PLUS    deslocar, e ir ao estado 38
-    MINUS   deslocar, e ir ao estado 39
-    TIMES   deslocar, e ir ao estado 40
-    DIVIDE  deslocar, e ir ao estado 41
+    PLUS    shift, and go to state 38
+    MINUS   shift, and go to state 39
+    TIMES   shift, and go to state 40
+    DIVIDE  shift, and go to state 41
 
-    EQ   erro (não associativo)
-    NEQ  erro (não associativo)
-    LT   erro (não associativo)
-    LE   erro (não associativo)
-    GT   erro (não associativo)
-    GE   erro (não associativo)
+    EQ   error (nonassociative)
+    NEQ  error (nonassociative)
+    LT   error (nonassociative)
+    LE   error (nonassociative)
+    GT   error (nonassociative)
+    GE   error (nonassociative)
 
-    $padrão  reduzir usando a regra 47 (exp)
+    $default  reduce using rule 47 (exp)
 
 
-Estado 77
+State 77
 
    37 exp: exp . PLUS exp
    38    | exp . MINUS exp
@@ -1499,22 +1510,22 @@ Estado 77
    48    | exp . AND exp
    49    | exp . OR exp
 
-    PLUS    deslocar, e ir ao estado 38
-    MINUS   deslocar, e ir ao estado 39
-    TIMES   deslocar, e ir ao estado 40
-    DIVIDE  deslocar, e ir ao estado 41
+    PLUS    shift, and go to state 38
+    MINUS   shift, and go to state 39
+    TIMES   shift, and go to state 40
+    DIVIDE  shift, and go to state 41
 
-    EQ   erro (não associativo)
-    NEQ  erro (não associativo)
-    LT   erro (não associativo)
-    LE   erro (não associativo)
-    GT   erro (não associativo)
-    GE   erro (não associativo)
+    EQ   error (nonassociative)
+    NEQ  error (nonassociative)
+    LT   error (nonassociative)
+    LE   error (nonassociative)
+    GT   error (nonassociative)
+    GE   error (nonassociative)
 
-    $padrão  reduzir usando a regra 44 (exp)
+    $default  reduce using rule 44 (exp)
 
 
-Estado 78
+State 78
 
    37 exp: exp . PLUS exp
    38    | exp . MINUS exp
@@ -1530,22 +1541,22 @@ Estado 78
    48    | exp . AND exp
    49    | exp . OR exp
 
-    PLUS    deslocar, e ir ao estado 38
-    MINUS   deslocar, e ir ao estado 39
-    TIMES   deslocar, e ir ao estado 40
-    DIVIDE  deslocar, e ir ao estado 41
+    PLUS    shift, and go to state 38
+    MINUS   shift, and go to state 39
+    TIMES   shift, and go to state 40
+    DIVIDE  shift, and go to state 41
 
-    EQ   erro (não associativo)
-    NEQ  erro (não associativo)
-    LT   erro (não associativo)
-    LE   erro (não associativo)
-    GT   erro (não associativo)
-    GE   erro (não associativo)
+    EQ   error (nonassociative)
+    NEQ  error (nonassociative)
+    LT   error (nonassociative)
+    LE   error (nonassociative)
+    GT   error (nonassociative)
+    GE   error (nonassociative)
 
-    $padrão  reduzir usando a regra 46 (exp)
+    $default  reduce using rule 46 (exp)
 
 
-Estado 79
+State 79
 
    37 exp: exp . PLUS exp
    38    | exp . MINUS exp
@@ -1561,21 +1572,21 @@ Estado 79
    48    | exp AND exp .
    49    | exp . OR exp
 
-    PLUS    deslocar, e ir ao estado 38
-    MINUS   deslocar, e ir ao estado 39
-    TIMES   deslocar, e ir ao estado 40
-    DIVIDE  deslocar, e ir ao estado 41
-    EQ      deslocar, e ir ao estado 42
-    NEQ     deslocar, e ir ao estado 43
-    LT      deslocar, e ir ao estado 44
-    LE      deslocar, e ir ao estado 45
-    GT      deslocar, e ir ao estado 46
-    GE      deslocar, e ir ao estado 47
+    PLUS    shift, and go to state 38
+    MINUS   shift, and go to state 39
+    TIMES   shift, and go to state 40
+    DIVIDE  shift, and go to state 41
+    EQ      shift, and go to state 42
+    NEQ     shift, and go to state 43
+    LT      shift, and go to state 44
+    LE      shift, and go to state 45
+    GT      shift, and go to state 46
+    GE      shift, and go to state 47
 
-    $padrão  reduzir usando a regra 48 (exp)
+    $default  reduce using rule 48 (exp)
 
 
-Estado 80
+State 80
 
    37 exp: exp . PLUS exp
    38    | exp . MINUS exp
@@ -1591,99 +1602,99 @@ Estado 80
    49    | exp . OR exp
    49    | exp OR exp .
 
-    PLUS    deslocar, e ir ao estado 38
-    MINUS   deslocar, e ir ao estado 39
-    TIMES   deslocar, e ir ao estado 40
-    DIVIDE  deslocar, e ir ao estado 41
-    EQ      deslocar, e ir ao estado 42
-    NEQ     deslocar, e ir ao estado 43
-    LT      deslocar, e ir ao estado 44
-    LE      deslocar, e ir ao estado 45
-    GT      deslocar, e ir ao estado 46
-    GE      deslocar, e ir ao estado 47
-    AND     deslocar, e ir ao estado 48
+    PLUS    shift, and go to state 38
+    MINUS   shift, and go to state 39
+    TIMES   shift, and go to state 40
+    DIVIDE  shift, and go to state 41
+    EQ      shift, and go to state 42
+    NEQ     shift, and go to state 43
+    LT      shift, and go to state 44
+    LE      shift, and go to state 45
+    GT      shift, and go to state 46
+    GE      shift, and go to state 47
+    AND     shift, and go to state 48
 
-    $padrão  reduzir usando a regra 49 (exp)
+    $default  reduce using rule 49 (exp)
 
 
-Estado 81
+State 81
 
    36 paras: exp COMMA . paras
 
-    ID      deslocar, e ir ao estado 1
-    STRING  deslocar, e ir ao estado 2
-    INT     deslocar, e ir ao estado 3
-    FLOAT   deslocar, e ir ao estado 4
-    LPAREN  deslocar, e ir ao estado 5
-    MINUS   deslocar, e ir ao estado 6
-    IF      deslocar, e ir ao estado 7
-    WHILE   deslocar, e ir ao estado 8
-    FOR     deslocar, e ir ao estado 9
-    LET     deslocar, e ir ao estado 10
-    BREAK   deslocar, e ir ao estado 11
-    NIL     deslocar, e ir ao estado 12
+    ID      shift, and go to state 1
+    STRING  shift, and go to state 2
+    INT     shift, and go to state 3
+    FLOAT   shift, and go to state 4
+    LPAREN  shift, and go to state 5
+    MINUS   shift, and go to state 6
+    IF      shift, and go to state 7
+    WHILE   shift, and go to state 8
+    FOR     shift, and go to state 9
+    LET     shift, and go to state 10
+    BREAK   shift, and go to state 11
+    NIL     shift, and go to state 12
 
-    $padrão  reduzir usando a regra 34 (paras)
+    $default  reduce using rule 34 (paras)
 
-    lvalue  ir ao estado 14
-    exp     ir ao estado 50
-    paras   ir ao estado 96
+    lvalue  go to state 14
+    exp     go to state 50
+    paras   go to state 96
 
 
-Estado 82
+State 82
 
    33 exp: ID LPAREN paras RPAREN .
 
-    $padrão  reduzir usando a regra 33 (exp)
+    $default  reduce using rule 33 (exp)
 
 
-Estado 83
+State 83
 
    24 lvalue: ID LBRACK exp RBRACK .
    54 exp: ID LBRACK exp RBRACK . OF exp
 
-    OF  deslocar, e ir ao estado 97
+    OF  shift, and go to state 97
 
-    $padrão  reduzir usando a regra 24 (lvalue)
+    $default  reduce using rule 24 (lvalue)
 
 
-Estado 84
+State 84
 
    52 efields: ID EQ . exp
    53        | ID EQ . exp COMMA efields
 
-    ID      deslocar, e ir ao estado 1
-    STRING  deslocar, e ir ao estado 2
-    INT     deslocar, e ir ao estado 3
-    FLOAT   deslocar, e ir ao estado 4
-    LPAREN  deslocar, e ir ao estado 5
-    MINUS   deslocar, e ir ao estado 6
-    IF      deslocar, e ir ao estado 7
-    WHILE   deslocar, e ir ao estado 8
-    FOR     deslocar, e ir ao estado 9
-    LET     deslocar, e ir ao estado 10
-    BREAK   deslocar, e ir ao estado 11
-    NIL     deslocar, e ir ao estado 12
+    ID      shift, and go to state 1
+    STRING  shift, and go to state 2
+    INT     shift, and go to state 3
+    FLOAT   shift, and go to state 4
+    LPAREN  shift, and go to state 5
+    MINUS   shift, and go to state 6
+    IF      shift, and go to state 7
+    WHILE   shift, and go to state 8
+    FOR     shift, and go to state 9
+    LET     shift, and go to state 10
+    BREAK   shift, and go to state 11
+    NIL     shift, and go to state 12
 
-    lvalue  ir ao estado 14
-    exp     ir ao estado 98
+    lvalue  go to state 14
+    exp     go to state 98
 
 
-Estado 85
+State 85
 
    50 exp: ID LBRACE efields RBRACE .
 
-    $padrão  reduzir usando a regra 50 (exp)
+    $default  reduce using rule 50 (exp)
 
 
-Estado 86
+State 86
 
    63 explist: exp SEMICOLON explist .
 
-    $padrão  reduzir usando a regra 63 (explist)
+    $default  reduce using rule 63 (explist)
 
 
-Estado 87
+State 87
 
    37 exp: exp . PLUS exp
    38    | exp . MINUS exp
@@ -1700,24 +1711,24 @@ Estado 87
    55    | IF exp THEN exp . ELSE exp
    56    | IF exp THEN exp .
 
-    PLUS    deslocar, e ir ao estado 38
-    MINUS   deslocar, e ir ao estado 39
-    TIMES   deslocar, e ir ao estado 40
-    DIVIDE  deslocar, e ir ao estado 41
-    EQ      deslocar, e ir ao estado 42
-    NEQ     deslocar, e ir ao estado 43
-    LT      deslocar, e ir ao estado 44
-    LE      deslocar, e ir ao estado 45
-    GT      deslocar, e ir ao estado 46
-    GE      deslocar, e ir ao estado 47
-    AND     deslocar, e ir ao estado 48
-    OR      deslocar, e ir ao estado 49
-    ELSE    deslocar, e ir ao estado 99
+    PLUS    shift, and go to state 38
+    MINUS   shift, and go to state 39
+    TIMES   shift, and go to state 40
+    DIVIDE  shift, and go to state 41
+    EQ      shift, and go to state 42
+    NEQ     shift, and go to state 43
+    LT      shift, and go to state 44
+    LE      shift, and go to state 45
+    GT      shift, and go to state 46
+    GE      shift, and go to state 47
+    AND     shift, and go to state 48
+    OR      shift, and go to state 49
+    ELSE    shift, and go to state 99
 
-    $padrão  reduzir usando a regra 56 (exp)
+    $default  reduce using rule 56 (exp)
 
 
-Estado 88
+State 88
 
    37 exp: exp . PLUS exp
    38    | exp . MINUS exp
@@ -1733,23 +1744,23 @@ Estado 88
    49    | exp . OR exp
    58    | WHILE exp DO exp .
 
-    PLUS    deslocar, e ir ao estado 38
-    MINUS   deslocar, e ir ao estado 39
-    TIMES   deslocar, e ir ao estado 40
-    DIVIDE  deslocar, e ir ao estado 41
-    EQ      deslocar, e ir ao estado 42
-    NEQ     deslocar, e ir ao estado 43
-    LT      deslocar, e ir ao estado 44
-    LE      deslocar, e ir ao estado 45
-    GT      deslocar, e ir ao estado 46
-    GE      deslocar, e ir ao estado 47
-    AND     deslocar, e ir ao estado 48
-    OR      deslocar, e ir ao estado 49
+    PLUS    shift, and go to state 38
+    MINUS   shift, and go to state 39
+    TIMES   shift, and go to state 40
+    DIVIDE  shift, and go to state 41
+    EQ      shift, and go to state 42
+    NEQ     shift, and go to state 43
+    LT      shift, and go to state 44
+    LE      shift, and go to state 45
+    GT      shift, and go to state 46
+    GE      shift, and go to state 47
+    AND     shift, and go to state 48
+    OR      shift, and go to state 49
 
-    $padrão  reduzir usando a regra 58 (exp)
+    $default  reduce using rule 58 (exp)
 
 
-Estado 89
+State 89
 
    37 exp: exp . PLUS exp
    38    | exp . MINUS exp
@@ -1765,129 +1776,129 @@ Estado 89
    49    | exp . OR exp
    59    | FOR ID ASSIGN exp . TO exp DO exp
 
-    PLUS    deslocar, e ir ao estado 38
-    MINUS   deslocar, e ir ao estado 39
-    TIMES   deslocar, e ir ao estado 40
-    DIVIDE  deslocar, e ir ao estado 41
-    EQ      deslocar, e ir ao estado 42
-    NEQ     deslocar, e ir ao estado 43
-    LT      deslocar, e ir ao estado 44
-    LE      deslocar, e ir ao estado 45
-    GT      deslocar, e ir ao estado 46
-    GE      deslocar, e ir ao estado 47
-    AND     deslocar, e ir ao estado 48
-    OR      deslocar, e ir ao estado 49
-    TO      deslocar, e ir ao estado 100
+    PLUS    shift, and go to state 38
+    MINUS   shift, and go to state 39
+    TIMES   shift, and go to state 40
+    DIVIDE  shift, and go to state 41
+    EQ      shift, and go to state 42
+    NEQ     shift, and go to state 43
+    LT      shift, and go to state 44
+    LE      shift, and go to state 45
+    GT      shift, and go to state 46
+    GE      shift, and go to state 47
+    AND     shift, and go to state 48
+    OR      shift, and go to state 49
+    TO      shift, and go to state 100
 
 
-Estado 90
+State 90
 
    18 fundec: FUNCTION ID LPAREN . tyfields RPAREN EQ exp
    19       | FUNCTION ID LPAREN . tyfields RPAREN COLON ID EQ exp
 
-    ID  deslocar, e ir ao estado 101
+    ID  shift, and go to state 101
 
-    $padrão  reduzir usando a regra 13 (tyfields)
+    $default  reduce using rule 13 (tyfields)
 
-    tyfields  ir ao estado 102
+    tyfields  go to state 102
 
 
-Estado 91
+State 91
 
    17 vardec: VAR ID COLON . ID ASSIGN exp
 
-    ID  deslocar, e ir ao estado 103
+    ID  shift, and go to state 103
 
 
-Estado 92
+State 92
 
    16 vardec: VAR ID ASSIGN . exp
 
-    ID      deslocar, e ir ao estado 1
-    STRING  deslocar, e ir ao estado 2
-    INT     deslocar, e ir ao estado 3
-    FLOAT   deslocar, e ir ao estado 4
-    LPAREN  deslocar, e ir ao estado 5
-    MINUS   deslocar, e ir ao estado 6
-    IF      deslocar, e ir ao estado 7
-    WHILE   deslocar, e ir ao estado 8
-    FOR     deslocar, e ir ao estado 9
-    LET     deslocar, e ir ao estado 10
-    BREAK   deslocar, e ir ao estado 11
-    NIL     deslocar, e ir ao estado 12
+    ID      shift, and go to state 1
+    STRING  shift, and go to state 2
+    INT     shift, and go to state 3
+    FLOAT   shift, and go to state 4
+    LPAREN  shift, and go to state 5
+    MINUS   shift, and go to state 6
+    IF      shift, and go to state 7
+    WHILE   shift, and go to state 8
+    FOR     shift, and go to state 9
+    LET     shift, and go to state 10
+    BREAK   shift, and go to state 11
+    NIL     shift, and go to state 12
 
-    lvalue  ir ao estado 14
-    exp     ir ao estado 104
+    lvalue  go to state 14
+    exp     go to state 104
 
 
-Estado 93
+State 93
 
     7 tydec: TYPE ID EQ . ty
 
-    ID      deslocar, e ir ao estado 105
-    LBRACE  deslocar, e ir ao estado 106
-    ARRAY   deslocar, e ir ao estado 107
+    ID      shift, and go to state 105
+    LBRACE  shift, and go to state 106
+    ARRAY   shift, and go to state 107
 
-    ty  ir ao estado 108
+    ty  go to state 108
 
 
-Estado 94
+State 94
 
    60 exp: LET decs IN explist . END
 
-    END  deslocar, e ir ao estado 109
+    END  shift, and go to state 109
 
 
-Estado 95
+State 95
 
    25 lvalue: lvalue DOT ID LBRACK . exp RBRACK
 
-    ID      deslocar, e ir ao estado 1
-    STRING  deslocar, e ir ao estado 2
-    INT     deslocar, e ir ao estado 3
-    FLOAT   deslocar, e ir ao estado 4
-    LPAREN  deslocar, e ir ao estado 5
-    MINUS   deslocar, e ir ao estado 6
-    IF      deslocar, e ir ao estado 7
-    WHILE   deslocar, e ir ao estado 8
-    FOR     deslocar, e ir ao estado 9
-    LET     deslocar, e ir ao estado 10
-    BREAK   deslocar, e ir ao estado 11
-    NIL     deslocar, e ir ao estado 12
+    ID      shift, and go to state 1
+    STRING  shift, and go to state 2
+    INT     shift, and go to state 3
+    FLOAT   shift, and go to state 4
+    LPAREN  shift, and go to state 5
+    MINUS   shift, and go to state 6
+    IF      shift, and go to state 7
+    WHILE   shift, and go to state 8
+    FOR     shift, and go to state 9
+    LET     shift, and go to state 10
+    BREAK   shift, and go to state 11
+    NIL     shift, and go to state 12
 
-    lvalue  ir ao estado 14
-    exp     ir ao estado 110
+    lvalue  go to state 14
+    exp     go to state 110
 
 
-Estado 96
+State 96
 
    36 paras: exp COMMA paras .
 
-    $padrão  reduzir usando a regra 36 (paras)
+    $default  reduce using rule 36 (paras)
 
 
-Estado 97
+State 97
 
    54 exp: ID LBRACK exp RBRACK OF . exp
 
-    ID      deslocar, e ir ao estado 1
-    STRING  deslocar, e ir ao estado 2
-    INT     deslocar, e ir ao estado 3
-    FLOAT   deslocar, e ir ao estado 4
-    LPAREN  deslocar, e ir ao estado 5
-    MINUS   deslocar, e ir ao estado 6
-    IF      deslocar, e ir ao estado 7
-    WHILE   deslocar, e ir ao estado 8
-    FOR     deslocar, e ir ao estado 9
-    LET     deslocar, e ir ao estado 10
-    BREAK   deslocar, e ir ao estado 11
-    NIL     deslocar, e ir ao estado 12
+    ID      shift, and go to state 1
+    STRING  shift, and go to state 2
+    INT     shift, and go to state 3
+    FLOAT   shift, and go to state 4
+    LPAREN  shift, and go to state 5
+    MINUS   shift, and go to state 6
+    IF      shift, and go to state 7
+    WHILE   shift, and go to state 8
+    FOR     shift, and go to state 9
+    LET     shift, and go to state 10
+    BREAK   shift, and go to state 11
+    NIL     shift, and go to state 12
 
-    lvalue  ir ao estado 14
-    exp     ir ao estado 111
+    lvalue  go to state 14
+    exp     go to state 111
 
 
-Estado 98
+State 98
 
    37 exp: exp . PLUS exp
    38    | exp . MINUS exp
@@ -1904,89 +1915,89 @@ Estado 98
    52 efields: ID EQ exp .
    53        | ID EQ exp . COMMA efields
 
-    COMMA   deslocar, e ir ao estado 112
-    PLUS    deslocar, e ir ao estado 38
-    MINUS   deslocar, e ir ao estado 39
-    TIMES   deslocar, e ir ao estado 40
-    DIVIDE  deslocar, e ir ao estado 41
-    EQ      deslocar, e ir ao estado 42
-    NEQ     deslocar, e ir ao estado 43
-    LT      deslocar, e ir ao estado 44
-    LE      deslocar, e ir ao estado 45
-    GT      deslocar, e ir ao estado 46
-    GE      deslocar, e ir ao estado 47
-    AND     deslocar, e ir ao estado 48
-    OR      deslocar, e ir ao estado 49
+    COMMA   shift, and go to state 112
+    PLUS    shift, and go to state 38
+    MINUS   shift, and go to state 39
+    TIMES   shift, and go to state 40
+    DIVIDE  shift, and go to state 41
+    EQ      shift, and go to state 42
+    NEQ     shift, and go to state 43
+    LT      shift, and go to state 44
+    LE      shift, and go to state 45
+    GT      shift, and go to state 46
+    GE      shift, and go to state 47
+    AND     shift, and go to state 48
+    OR      shift, and go to state 49
 
-    $padrão  reduzir usando a regra 52 (efields)
+    $default  reduce using rule 52 (efields)
 
 
-Estado 99
+State 99
 
    55 exp: IF exp THEN exp ELSE . exp
 
-    ID      deslocar, e ir ao estado 1
-    STRING  deslocar, e ir ao estado 2
-    INT     deslocar, e ir ao estado 3
-    FLOAT   deslocar, e ir ao estado 4
-    LPAREN  deslocar, e ir ao estado 5
-    MINUS   deslocar, e ir ao estado 6
-    IF      deslocar, e ir ao estado 7
-    WHILE   deslocar, e ir ao estado 8
-    FOR     deslocar, e ir ao estado 9
-    LET     deslocar, e ir ao estado 10
-    BREAK   deslocar, e ir ao estado 11
-    NIL     deslocar, e ir ao estado 12
+    ID      shift, and go to state 1
+    STRING  shift, and go to state 2
+    INT     shift, and go to state 3
+    FLOAT   shift, and go to state 4
+    LPAREN  shift, and go to state 5
+    MINUS   shift, and go to state 6
+    IF      shift, and go to state 7
+    WHILE   shift, and go to state 8
+    FOR     shift, and go to state 9
+    LET     shift, and go to state 10
+    BREAK   shift, and go to state 11
+    NIL     shift, and go to state 12
 
-    lvalue  ir ao estado 14
-    exp     ir ao estado 113
+    lvalue  go to state 14
+    exp     go to state 113
 
 
-Estado 100
+State 100
 
    59 exp: FOR ID ASSIGN exp TO . exp DO exp
 
-    ID      deslocar, e ir ao estado 1
-    STRING  deslocar, e ir ao estado 2
-    INT     deslocar, e ir ao estado 3
-    FLOAT   deslocar, e ir ao estado 4
-    LPAREN  deslocar, e ir ao estado 5
-    MINUS   deslocar, e ir ao estado 6
-    IF      deslocar, e ir ao estado 7
-    WHILE   deslocar, e ir ao estado 8
-    FOR     deslocar, e ir ao estado 9
-    LET     deslocar, e ir ao estado 10
-    BREAK   deslocar, e ir ao estado 11
-    NIL     deslocar, e ir ao estado 12
+    ID      shift, and go to state 1
+    STRING  shift, and go to state 2
+    INT     shift, and go to state 3
+    FLOAT   shift, and go to state 4
+    LPAREN  shift, and go to state 5
+    MINUS   shift, and go to state 6
+    IF      shift, and go to state 7
+    WHILE   shift, and go to state 8
+    FOR     shift, and go to state 9
+    LET     shift, and go to state 10
+    BREAK   shift, and go to state 11
+    NIL     shift, and go to state 12
 
-    lvalue  ir ao estado 14
-    exp     ir ao estado 114
+    lvalue  go to state 14
+    exp     go to state 114
 
 
-Estado 101
+State 101
 
    14 tyfields: ID . COLON ID
    15         | ID . COLON ID COMMA tyfields
 
-    COLON  deslocar, e ir ao estado 115
+    COLON  shift, and go to state 115
 
 
-Estado 102
+State 102
 
    18 fundec: FUNCTION ID LPAREN tyfields . RPAREN EQ exp
    19       | FUNCTION ID LPAREN tyfields . RPAREN COLON ID EQ exp
 
-    RPAREN  deslocar, e ir ao estado 116
+    RPAREN  shift, and go to state 116
 
 
-Estado 103
+State 103
 
    17 vardec: VAR ID COLON ID . ASSIGN exp
 
-    ASSIGN  deslocar, e ir ao estado 117
+    ASSIGN  shift, and go to state 117
 
 
-Estado 104
+State 104
 
    16 vardec: VAR ID ASSIGN exp .
    37 exp: exp . PLUS exp
@@ -2002,62 +2013,62 @@ Estado 104
    48    | exp . AND exp
    49    | exp . OR exp
 
-    PLUS    deslocar, e ir ao estado 38
-    MINUS   deslocar, e ir ao estado 39
-    TIMES   deslocar, e ir ao estado 40
-    DIVIDE  deslocar, e ir ao estado 41
-    EQ      deslocar, e ir ao estado 42
-    NEQ     deslocar, e ir ao estado 43
-    LT      deslocar, e ir ao estado 44
-    LE      deslocar, e ir ao estado 45
-    GT      deslocar, e ir ao estado 46
-    GE      deslocar, e ir ao estado 47
-    AND     deslocar, e ir ao estado 48
-    OR      deslocar, e ir ao estado 49
+    PLUS    shift, and go to state 38
+    MINUS   shift, and go to state 39
+    TIMES   shift, and go to state 40
+    DIVIDE  shift, and go to state 41
+    EQ      shift, and go to state 42
+    NEQ     shift, and go to state 43
+    LT      shift, and go to state 44
+    LE      shift, and go to state 45
+    GT      shift, and go to state 46
+    GE      shift, and go to state 47
+    AND     shift, and go to state 48
+    OR      shift, and go to state 49
 
-    $padrão  reduzir usando a regra 16 (vardec)
+    $default  reduce using rule 16 (vardec)
 
 
-Estado 105
+State 105
 
    10 ty: ID .
 
-    $padrão  reduzir usando a regra 10 (ty)
+    $default  reduce using rule 10 (ty)
 
 
-Estado 106
+State 106
 
    11 ty: LBRACE . tyfields RBRACE
 
-    ID  deslocar, e ir ao estado 101
+    ID  shift, and go to state 101
 
-    $padrão  reduzir usando a regra 13 (tyfields)
+    $default  reduce using rule 13 (tyfields)
 
-    tyfields  ir ao estado 118
+    tyfields  go to state 118
 
 
-Estado 107
+State 107
 
    12 ty: ARRAY . OF ID
 
-    OF  deslocar, e ir ao estado 119
+    OF  shift, and go to state 119
 
 
-Estado 108
+State 108
 
     7 tydec: TYPE ID EQ ty .
 
-    $padrão  reduzir usando a regra 7 (tydec)
+    $default  reduce using rule 7 (tydec)
 
 
-Estado 109
+State 109
 
    60 exp: LET decs IN explist END .
 
-    $padrão  reduzir usando a regra 60 (exp)
+    $default  reduce using rule 60 (exp)
 
 
-Estado 110
+State 110
 
    25 lvalue: lvalue DOT ID LBRACK exp . RBRACK
    37 exp: exp . PLUS exp
@@ -2073,22 +2084,22 @@ Estado 110
    48    | exp . AND exp
    49    | exp . OR exp
 
-    RBRACK  deslocar, e ir ao estado 120
-    PLUS    deslocar, e ir ao estado 38
-    MINUS   deslocar, e ir ao estado 39
-    TIMES   deslocar, e ir ao estado 40
-    DIVIDE  deslocar, e ir ao estado 41
-    EQ      deslocar, e ir ao estado 42
-    NEQ     deslocar, e ir ao estado 43
-    LT      deslocar, e ir ao estado 44
-    LE      deslocar, e ir ao estado 45
-    GT      deslocar, e ir ao estado 46
-    GE      deslocar, e ir ao estado 47
-    AND     deslocar, e ir ao estado 48
-    OR      deslocar, e ir ao estado 49
+    RBRACK  shift, and go to state 120
+    PLUS    shift, and go to state 38
+    MINUS   shift, and go to state 39
+    TIMES   shift, and go to state 40
+    DIVIDE  shift, and go to state 41
+    EQ      shift, and go to state 42
+    NEQ     shift, and go to state 43
+    LT      shift, and go to state 44
+    LE      shift, and go to state 45
+    GT      shift, and go to state 46
+    GE      shift, and go to state 47
+    AND     shift, and go to state 48
+    OR      shift, and go to state 49
 
 
-Estado 111
+State 111
 
    37 exp: exp . PLUS exp
    38    | exp . MINUS exp
@@ -2104,34 +2115,34 @@ Estado 111
    49    | exp . OR exp
    54    | ID LBRACK exp RBRACK OF exp .
 
-    PLUS    deslocar, e ir ao estado 38
-    MINUS   deslocar, e ir ao estado 39
-    TIMES   deslocar, e ir ao estado 40
-    DIVIDE  deslocar, e ir ao estado 41
-    EQ      deslocar, e ir ao estado 42
-    NEQ     deslocar, e ir ao estado 43
-    LT      deslocar, e ir ao estado 44
-    LE      deslocar, e ir ao estado 45
-    GT      deslocar, e ir ao estado 46
-    GE      deslocar, e ir ao estado 47
-    AND     deslocar, e ir ao estado 48
-    OR      deslocar, e ir ao estado 49
+    PLUS    shift, and go to state 38
+    MINUS   shift, and go to state 39
+    TIMES   shift, and go to state 40
+    DIVIDE  shift, and go to state 41
+    EQ      shift, and go to state 42
+    NEQ     shift, and go to state 43
+    LT      shift, and go to state 44
+    LE      shift, and go to state 45
+    GT      shift, and go to state 46
+    GE      shift, and go to state 47
+    AND     shift, and go to state 48
+    OR      shift, and go to state 49
 
-    $padrão  reduzir usando a regra 54 (exp)
+    $default  reduce using rule 54 (exp)
 
 
-Estado 112
+State 112
 
    53 efields: ID EQ exp COMMA . efields
 
-    ID  deslocar, e ir ao estado 53
+    ID  shift, and go to state 53
 
-    $padrão  reduzir usando a regra 51 (efields)
+    $default  reduce using rule 51 (efields)
 
-    efields  ir ao estado 121
+    efields  go to state 121
 
 
-Estado 113
+State 113
 
    37 exp: exp . PLUS exp
    38    | exp . MINUS exp
@@ -2147,23 +2158,23 @@ Estado 113
    49    | exp . OR exp
    55    | IF exp THEN exp ELSE exp .
 
-    PLUS    deslocar, e ir ao estado 38
-    MINUS   deslocar, e ir ao estado 39
-    TIMES   deslocar, e ir ao estado 40
-    DIVIDE  deslocar, e ir ao estado 41
-    EQ      deslocar, e ir ao estado 42
-    NEQ     deslocar, e ir ao estado 43
-    LT      deslocar, e ir ao estado 44
-    LE      deslocar, e ir ao estado 45
-    GT      deslocar, e ir ao estado 46
-    GE      deslocar, e ir ao estado 47
-    AND     deslocar, e ir ao estado 48
-    OR      deslocar, e ir ao estado 49
+    PLUS    shift, and go to state 38
+    MINUS   shift, and go to state 39
+    TIMES   shift, and go to state 40
+    DIVIDE  shift, and go to state 41
+    EQ      shift, and go to state 42
+    NEQ     shift, and go to state 43
+    LT      shift, and go to state 44
+    LE      shift, and go to state 45
+    GT      shift, and go to state 46
+    GE      shift, and go to state 47
+    AND     shift, and go to state 48
+    OR      shift, and go to state 49
 
-    $padrão  reduzir usando a regra 55 (exp)
+    $default  reduce using rule 55 (exp)
 
 
-Estado 114
+State 114
 
    37 exp: exp . PLUS exp
    38    | exp . MINUS exp
@@ -2179,147 +2190,147 @@ Estado 114
    49    | exp . OR exp
    59    | FOR ID ASSIGN exp TO exp . DO exp
 
-    PLUS    deslocar, e ir ao estado 38
-    MINUS   deslocar, e ir ao estado 39
-    TIMES   deslocar, e ir ao estado 40
-    DIVIDE  deslocar, e ir ao estado 41
-    EQ      deslocar, e ir ao estado 42
-    NEQ     deslocar, e ir ao estado 43
-    LT      deslocar, e ir ao estado 44
-    LE      deslocar, e ir ao estado 45
-    GT      deslocar, e ir ao estado 46
-    GE      deslocar, e ir ao estado 47
-    AND     deslocar, e ir ao estado 48
-    OR      deslocar, e ir ao estado 49
-    DO      deslocar, e ir ao estado 122
+    PLUS    shift, and go to state 38
+    MINUS   shift, and go to state 39
+    TIMES   shift, and go to state 40
+    DIVIDE  shift, and go to state 41
+    EQ      shift, and go to state 42
+    NEQ     shift, and go to state 43
+    LT      shift, and go to state 44
+    LE      shift, and go to state 45
+    GT      shift, and go to state 46
+    GE      shift, and go to state 47
+    AND     shift, and go to state 48
+    OR      shift, and go to state 49
+    DO      shift, and go to state 122
 
 
-Estado 115
+State 115
 
    14 tyfields: ID COLON . ID
    15         | ID COLON . ID COMMA tyfields
 
-    ID  deslocar, e ir ao estado 123
+    ID  shift, and go to state 123
 
 
-Estado 116
+State 116
 
    18 fundec: FUNCTION ID LPAREN tyfields RPAREN . EQ exp
    19       | FUNCTION ID LPAREN tyfields RPAREN . COLON ID EQ exp
 
-    COLON  deslocar, e ir ao estado 124
-    EQ     deslocar, e ir ao estado 125
+    COLON  shift, and go to state 124
+    EQ     shift, and go to state 125
 
 
-Estado 117
+State 117
 
    17 vardec: VAR ID COLON ID ASSIGN . exp
 
-    ID      deslocar, e ir ao estado 1
-    STRING  deslocar, e ir ao estado 2
-    INT     deslocar, e ir ao estado 3
-    FLOAT   deslocar, e ir ao estado 4
-    LPAREN  deslocar, e ir ao estado 5
-    MINUS   deslocar, e ir ao estado 6
-    IF      deslocar, e ir ao estado 7
-    WHILE   deslocar, e ir ao estado 8
-    FOR     deslocar, e ir ao estado 9
-    LET     deslocar, e ir ao estado 10
-    BREAK   deslocar, e ir ao estado 11
-    NIL     deslocar, e ir ao estado 12
+    ID      shift, and go to state 1
+    STRING  shift, and go to state 2
+    INT     shift, and go to state 3
+    FLOAT   shift, and go to state 4
+    LPAREN  shift, and go to state 5
+    MINUS   shift, and go to state 6
+    IF      shift, and go to state 7
+    WHILE   shift, and go to state 8
+    FOR     shift, and go to state 9
+    LET     shift, and go to state 10
+    BREAK   shift, and go to state 11
+    NIL     shift, and go to state 12
 
-    lvalue  ir ao estado 14
-    exp     ir ao estado 126
+    lvalue  go to state 14
+    exp     go to state 126
 
 
-Estado 118
+State 118
 
    11 ty: LBRACE tyfields . RBRACE
 
-    RBRACE  deslocar, e ir ao estado 127
+    RBRACE  shift, and go to state 127
 
 
-Estado 119
+State 119
 
    12 ty: ARRAY OF . ID
 
-    ID  deslocar, e ir ao estado 128
+    ID  shift, and go to state 128
 
 
-Estado 120
+State 120
 
    25 lvalue: lvalue DOT ID LBRACK exp RBRACK .
 
-    $padrão  reduzir usando a regra 25 (lvalue)
+    $default  reduce using rule 25 (lvalue)
 
 
-Estado 121
+State 121
 
    53 efields: ID EQ exp COMMA efields .
 
-    $padrão  reduzir usando a regra 53 (efields)
+    $default  reduce using rule 53 (efields)
 
 
-Estado 122
+State 122
 
    59 exp: FOR ID ASSIGN exp TO exp DO . exp
 
-    ID      deslocar, e ir ao estado 1
-    STRING  deslocar, e ir ao estado 2
-    INT     deslocar, e ir ao estado 3
-    FLOAT   deslocar, e ir ao estado 4
-    LPAREN  deslocar, e ir ao estado 5
-    MINUS   deslocar, e ir ao estado 6
-    IF      deslocar, e ir ao estado 7
-    WHILE   deslocar, e ir ao estado 8
-    FOR     deslocar, e ir ao estado 9
-    LET     deslocar, e ir ao estado 10
-    BREAK   deslocar, e ir ao estado 11
-    NIL     deslocar, e ir ao estado 12
+    ID      shift, and go to state 1
+    STRING  shift, and go to state 2
+    INT     shift, and go to state 3
+    FLOAT   shift, and go to state 4
+    LPAREN  shift, and go to state 5
+    MINUS   shift, and go to state 6
+    IF      shift, and go to state 7
+    WHILE   shift, and go to state 8
+    FOR     shift, and go to state 9
+    LET     shift, and go to state 10
+    BREAK   shift, and go to state 11
+    NIL     shift, and go to state 12
 
-    lvalue  ir ao estado 14
-    exp     ir ao estado 129
+    lvalue  go to state 14
+    exp     go to state 129
 
 
-Estado 123
+State 123
 
    14 tyfields: ID COLON ID .
    15         | ID COLON ID . COMMA tyfields
 
-    COMMA  deslocar, e ir ao estado 130
+    COMMA  shift, and go to state 130
 
-    $padrão  reduzir usando a regra 14 (tyfields)
+    $default  reduce using rule 14 (tyfields)
 
 
-Estado 124
+State 124
 
    19 fundec: FUNCTION ID LPAREN tyfields RPAREN COLON . ID EQ exp
 
-    ID  deslocar, e ir ao estado 131
+    ID  shift, and go to state 131
 
 
-Estado 125
+State 125
 
    18 fundec: FUNCTION ID LPAREN tyfields RPAREN EQ . exp
 
-    ID      deslocar, e ir ao estado 1
-    STRING  deslocar, e ir ao estado 2
-    INT     deslocar, e ir ao estado 3
-    FLOAT   deslocar, e ir ao estado 4
-    LPAREN  deslocar, e ir ao estado 5
-    MINUS   deslocar, e ir ao estado 6
-    IF      deslocar, e ir ao estado 7
-    WHILE   deslocar, e ir ao estado 8
-    FOR     deslocar, e ir ao estado 9
-    LET     deslocar, e ir ao estado 10
-    BREAK   deslocar, e ir ao estado 11
-    NIL     deslocar, e ir ao estado 12
+    ID      shift, and go to state 1
+    STRING  shift, and go to state 2
+    INT     shift, and go to state 3
+    FLOAT   shift, and go to state 4
+    LPAREN  shift, and go to state 5
+    MINUS   shift, and go to state 6
+    IF      shift, and go to state 7
+    WHILE   shift, and go to state 8
+    FOR     shift, and go to state 9
+    LET     shift, and go to state 10
+    BREAK   shift, and go to state 11
+    NIL     shift, and go to state 12
 
-    lvalue  ir ao estado 14
-    exp     ir ao estado 132
+    lvalue  go to state 14
+    exp     go to state 132
 
 
-Estado 126
+State 126
 
    17 vardec: VAR ID COLON ID ASSIGN exp .
    37 exp: exp . PLUS exp
@@ -2335,37 +2346,37 @@ Estado 126
    48    | exp . AND exp
    49    | exp . OR exp
 
-    PLUS    deslocar, e ir ao estado 38
-    MINUS   deslocar, e ir ao estado 39
-    TIMES   deslocar, e ir ao estado 40
-    DIVIDE  deslocar, e ir ao estado 41
-    EQ      deslocar, e ir ao estado 42
-    NEQ     deslocar, e ir ao estado 43
-    LT      deslocar, e ir ao estado 44
-    LE      deslocar, e ir ao estado 45
-    GT      deslocar, e ir ao estado 46
-    GE      deslocar, e ir ao estado 47
-    AND     deslocar, e ir ao estado 48
-    OR      deslocar, e ir ao estado 49
+    PLUS    shift, and go to state 38
+    MINUS   shift, and go to state 39
+    TIMES   shift, and go to state 40
+    DIVIDE  shift, and go to state 41
+    EQ      shift, and go to state 42
+    NEQ     shift, and go to state 43
+    LT      shift, and go to state 44
+    LE      shift, and go to state 45
+    GT      shift, and go to state 46
+    GE      shift, and go to state 47
+    AND     shift, and go to state 48
+    OR      shift, and go to state 49
 
-    $padrão  reduzir usando a regra 17 (vardec)
+    $default  reduce using rule 17 (vardec)
 
 
-Estado 127
+State 127
 
    11 ty: LBRACE tyfields RBRACE .
 
-    $padrão  reduzir usando a regra 11 (ty)
+    $default  reduce using rule 11 (ty)
 
 
-Estado 128
+State 128
 
    12 ty: ARRAY OF ID .
 
-    $padrão  reduzir usando a regra 12 (ty)
+    $default  reduce using rule 12 (ty)
 
 
-Estado 129
+State 129
 
    37 exp: exp . PLUS exp
    38    | exp . MINUS exp
@@ -2381,41 +2392,41 @@ Estado 129
    49    | exp . OR exp
    59    | FOR ID ASSIGN exp TO exp DO exp .
 
-    PLUS    deslocar, e ir ao estado 38
-    MINUS   deslocar, e ir ao estado 39
-    TIMES   deslocar, e ir ao estado 40
-    DIVIDE  deslocar, e ir ao estado 41
-    EQ      deslocar, e ir ao estado 42
-    NEQ     deslocar, e ir ao estado 43
-    LT      deslocar, e ir ao estado 44
-    LE      deslocar, e ir ao estado 45
-    GT      deslocar, e ir ao estado 46
-    GE      deslocar, e ir ao estado 47
-    AND     deslocar, e ir ao estado 48
-    OR      deslocar, e ir ao estado 49
+    PLUS    shift, and go to state 38
+    MINUS   shift, and go to state 39
+    TIMES   shift, and go to state 40
+    DIVIDE  shift, and go to state 41
+    EQ      shift, and go to state 42
+    NEQ     shift, and go to state 43
+    LT      shift, and go to state 44
+    LE      shift, and go to state 45
+    GT      shift, and go to state 46
+    GE      shift, and go to state 47
+    AND     shift, and go to state 48
+    OR      shift, and go to state 49
 
-    $padrão  reduzir usando a regra 59 (exp)
+    $default  reduce using rule 59 (exp)
 
 
-Estado 130
+State 130
 
    15 tyfields: ID COLON ID COMMA . tyfields
 
-    ID  deslocar, e ir ao estado 101
+    ID  shift, and go to state 101
 
-    $padrão  reduzir usando a regra 13 (tyfields)
+    $default  reduce using rule 13 (tyfields)
 
-    tyfields  ir ao estado 133
+    tyfields  go to state 133
 
 
-Estado 131
+State 131
 
    19 fundec: FUNCTION ID LPAREN tyfields RPAREN COLON ID . EQ exp
 
-    EQ  deslocar, e ir ao estado 134
+    EQ  shift, and go to state 134
 
 
-Estado 132
+State 132
 
    18 fundec: FUNCTION ID LPAREN tyfields RPAREN EQ exp .
    37 exp: exp . PLUS exp
@@ -2431,51 +2442,51 @@ Estado 132
    48    | exp . AND exp
    49    | exp . OR exp
 
-    PLUS    deslocar, e ir ao estado 38
-    MINUS   deslocar, e ir ao estado 39
-    TIMES   deslocar, e ir ao estado 40
-    DIVIDE  deslocar, e ir ao estado 41
-    EQ      deslocar, e ir ao estado 42
-    NEQ     deslocar, e ir ao estado 43
-    LT      deslocar, e ir ao estado 44
-    LE      deslocar, e ir ao estado 45
-    GT      deslocar, e ir ao estado 46
-    GE      deslocar, e ir ao estado 47
-    AND     deslocar, e ir ao estado 48
-    OR      deslocar, e ir ao estado 49
+    PLUS    shift, and go to state 38
+    MINUS   shift, and go to state 39
+    TIMES   shift, and go to state 40
+    DIVIDE  shift, and go to state 41
+    EQ      shift, and go to state 42
+    NEQ     shift, and go to state 43
+    LT      shift, and go to state 44
+    LE      shift, and go to state 45
+    GT      shift, and go to state 46
+    GE      shift, and go to state 47
+    AND     shift, and go to state 48
+    OR      shift, and go to state 49
 
-    $padrão  reduzir usando a regra 18 (fundec)
+    $default  reduce using rule 18 (fundec)
 
 
-Estado 133
+State 133
 
    15 tyfields: ID COLON ID COMMA tyfields .
 
-    $padrão  reduzir usando a regra 15 (tyfields)
+    $default  reduce using rule 15 (tyfields)
 
 
-Estado 134
+State 134
 
    19 fundec: FUNCTION ID LPAREN tyfields RPAREN COLON ID EQ . exp
 
-    ID      deslocar, e ir ao estado 1
-    STRING  deslocar, e ir ao estado 2
-    INT     deslocar, e ir ao estado 3
-    FLOAT   deslocar, e ir ao estado 4
-    LPAREN  deslocar, e ir ao estado 5
-    MINUS   deslocar, e ir ao estado 6
-    IF      deslocar, e ir ao estado 7
-    WHILE   deslocar, e ir ao estado 8
-    FOR     deslocar, e ir ao estado 9
-    LET     deslocar, e ir ao estado 10
-    BREAK   deslocar, e ir ao estado 11
-    NIL     deslocar, e ir ao estado 12
+    ID      shift, and go to state 1
+    STRING  shift, and go to state 2
+    INT     shift, and go to state 3
+    FLOAT   shift, and go to state 4
+    LPAREN  shift, and go to state 5
+    MINUS   shift, and go to state 6
+    IF      shift, and go to state 7
+    WHILE   shift, and go to state 8
+    FOR     shift, and go to state 9
+    LET     shift, and go to state 10
+    BREAK   shift, and go to state 11
+    NIL     shift, and go to state 12
 
-    lvalue  ir ao estado 14
-    exp     ir ao estado 135
+    lvalue  go to state 14
+    exp     go to state 135
 
 
-Estado 135
+State 135
 
    19 fundec: FUNCTION ID LPAREN tyfields RPAREN COLON ID EQ exp .
    37 exp: exp . PLUS exp
@@ -2491,17 +2502,17 @@ Estado 135
    48    | exp . AND exp
    49    | exp . OR exp
 
-    PLUS    deslocar, e ir ao estado 38
-    MINUS   deslocar, e ir ao estado 39
-    TIMES   deslocar, e ir ao estado 40
-    DIVIDE  deslocar, e ir ao estado 41
-    EQ      deslocar, e ir ao estado 42
-    NEQ     deslocar, e ir ao estado 43
-    LT      deslocar, e ir ao estado 44
-    LE      deslocar, e ir ao estado 45
-    GT      deslocar, e ir ao estado 46
-    GE      deslocar, e ir ao estado 47
-    AND     deslocar, e ir ao estado 48
-    OR      deslocar, e ir ao estado 49
+    PLUS    shift, and go to state 38
+    MINUS   shift, and go to state 39
+    TIMES   shift, and go to state 40
+    DIVIDE  shift, and go to state 41
+    EQ      shift, and go to state 42
+    NEQ     shift, and go to state 43
+    LT      shift, and go to state 44
+    LE      shift, and go to state 45
+    GT      shift, and go to state 46
+    GE      shift, and go to state 47
+    AND     shift, and go to state 48
+    OR      shift, and go to state 49
 
-    $padrão  reduzir usando a regra 19 (fundec)
+    $default  reduce using rule 19 (fundec)

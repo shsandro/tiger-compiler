@@ -36,10 +36,15 @@ static int inside = 0;
 //#define dprintf(...) printf(...)
 #define dprintf(...)
 
-void SEM_transProg(A_exp exp) {
+int SEM_transProg(A_exp exp) {
     S_table tenv = E_base_tenv();
     S_table venv = E_base_venv();
+
     transExp(venv, tenv, exp);
+
+    printf("Errors? %d\n", anyErrors());
+
+    return anyErrors();
 }
 
 Ty_ty actual_ty(Ty_ty ty) {

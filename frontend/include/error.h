@@ -9,5 +9,6 @@ void newline();
 void error(int, string, ...);
 void impossible(string, ...);
 void reset(string filename);
+int anyErrors();
 
 #endif

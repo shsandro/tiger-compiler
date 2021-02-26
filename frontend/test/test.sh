@@ -9,7 +9,7 @@ TEST_FOLDER="./tig_files"
 # each of this folder needs two folders inside: pass & fail
 TESTS=(${TEST_FOLDER}/princeton_tests ${TEST_FOLDER}/local_tests)
 
-executable="../parsertest" # todo change to entire frontend
+executable="../semantictest" # todo change to entire frontend
 
 make_error() {
     echo -e "File $1:"
@@ -26,7 +26,7 @@ for folder in ${TESTS[@]}; do
         exec_print_result=$(./${executable} ${file})
         exec_return=$(echo $?)
         if [ $exec_return -ne 0 ]; then
-            pass_errors+=$file
+            pass_errors+=($file)
         fi
     done
 
@@ -34,7 +34,7 @@ for folder in ${TESTS[@]}; do
         ./${executable} ${file} >/dev/null
         exec_return=$(echo $?)
         if [ $exec_return -ne 1 ]; then
-            fail_errors+=$file
+            fail_errors+=($file)
         fi
     done
 
@@ -43,18 +43,14 @@ for folder in ${TESTS[@]}; do
         echo -e "$folder/pass ... ${GREEN}ok${RESET}"
     else 
         echo -e "$folder/pass ... ${RED}expected all to pass, but got fail in:${RESET}"
-        for err in $pass_errors; do
-            echo -e "  " $err
-        done
+        printf '  %s\n' "${pass_errors[@]}"
     fi
 
     if [ ${#fail_errors[@]} -eq 0 ]; then
         echo -e "$folder/fail ... ${GREEN}ok${RESET}"
     else 
         echo -e "$folder/fail ... ${RED}expected all to fail, but got success in:${RESET}"
-        for err in $fail_errors; do
-            echo -e "  " $err
-        done
+        printf '  %s\n' "${fail_errors[@]}"
     fi
     echo "================================================================================="
 done

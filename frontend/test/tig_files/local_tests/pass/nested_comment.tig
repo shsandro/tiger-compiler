@@ -1,20 +1,5 @@
-/* define valid recursive types
-/* nested comment */
+/* This is a comment 
+	/* This is a nested comment */ 
 */
-let
-/* define a list */
-type intlist = {hd: int, tl: intlist} 
 
-/* define a tree */
-type tree ={key: int, children: treelist}
-type treelist = {hd: tree, tl: treelist}
-
-var lis:intlist := intlist { hd=0, tl= nil } 
-
-var test: string := "teste linha 1 100"
-
-var test: float := 1.10
-
-in
-	lis
-end
+print("Hello, world!")
