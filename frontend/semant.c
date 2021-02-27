@@ -33,16 +33,11 @@ void checkRecord(S_table tenv, Ty_fieldList fl);
 // inside flag (for loop, while loop)
 static int inside = 0;
 
-//#define dprintf(...) printf(...)
-#define dprintf(...)
-
 int SEM_transProg(A_exp exp) {
     S_table tenv = E_base_tenv();
     S_table venv = E_base_venv();
 
     transExp(venv, tenv, exp);
-
-    printf("Errors? %d\n", anyErrors());
 
     return anyErrors();
 }
@@ -51,14 +46,12 @@ Ty_ty actual_ty(Ty_ty ty) {
     assert(ty);
     Ty_ty tmpty;
     while (ty->kind == Ty_name) {
-        dprintf("ty...%s\n", S_name(ty->u.name.sym));
         tmpty = ty->u.name.ty;
         if (tmpty)
             ty = tmpty;
         else
             return NULL;  // XXX ugly code
     }
-    dprintf("return ty %d\n", ty->kind - Ty_record);
     return ty;
 }
 
@@ -92,7 +85,6 @@ Ty_tyList makeFormalTyList(S_table tenv, A_fieldList afl) {
         else
             ttl->head = S_look(tenv, afl->head->typ);
 
-        dprintf("formal list:%s %x\n", S_name(afl->head->typ), ttl);
         if (ttl->head == NULL) {
             error(afl->head->pos, " undefined type: %s",
                   S_name(afl->head->typ));
@@ -108,29 +100,23 @@ Ty_tyList makeFormalTyList(S_table tenv, A_fieldList afl) {
 expty transExp(S_table venv, S_table tenv, A_exp a) {
     switch (a->kind) {
         case A_varExp: {
-            dprintf("evaluate var exp\n");
             return transVar(venv, tenv, a->u.var);
         }
         case A_nilExp: {
-            dprintf(" nil!\n");
             return expTy(NULL, Ty_Nil());
         }
         case A_intExp: {
-            dprintf(" int!\n");
             return expTy(NULL, Ty_Int());
         }
         case A_floatExp: {
-            dprintf(" float!\n");
             return expTy(NULL, Ty_Float());
         }
         case A_stringExp: {
-            dprintf(" string!\n");
             return expTy(NULL, Ty_String());
         }
         case A_callExp: {
             E_enventry et = S_look(venv, a->u.call.func);
-            printf(" call! look in %p [%s:%p]\n", venv, S_name(a->u.call.func),
-                   et);
+
             if (et == NULL || et->kind != E_funEntry) {
                 error(a->pos, "call expression: undefined type %s",
                       S_name(a->u.call.func));
@@ -162,7 +148,6 @@ expty transExp(S_table venv, S_table tenv, A_exp a) {
             }
         }
         case A_opExp: {
-            dprintf(" op!\n");
             A_oper oper = a->u.op.oper;
             expty left = transExp(venv, tenv, a->u.op.left);
             expty right = transExp(venv, tenv, a->u.op.right);
@@ -206,7 +191,6 @@ expty transExp(S_table venv, S_table tenv, A_exp a) {
             return expTy(NULL, Ty_Int());
         }
         case A_recordExp: {
-            dprintf(" record!\n");
             Ty_ty recordty = S_look(tenv, a->u.record.typ);
             if (NULL == recordty) {
                 error(a->pos, "record expression: undefined type %s",
@@ -240,7 +224,6 @@ expty transExp(S_table venv, S_table tenv, A_exp a) {
             return expTy(NULL, recordty);
         }
         case A_seqExp: {
-            dprintf(" seq!\n");
             expty exp = expTy(NULL, Ty_Void());
             A_expList el;
             for (el = a->u.seq; el; el = el->tail) {
@@ -249,7 +232,6 @@ expty transExp(S_table venv, S_table tenv, A_exp a) {
             return exp;
         }
         case A_assignExp: {
-            dprintf(" assgin!\n");
             expty var = transVar(venv, tenv, a->u.assign.var);
             expty exp = transExp(venv, tenv, a->u.assign.exp);
             if (var.ty != exp.ty)
@@ -260,16 +242,13 @@ expty transExp(S_table venv, S_table tenv, A_exp a) {
             return expTy(NULL, Ty_Void());
         }
         case A_ifExp: {
-            dprintf(" if!\n");
             expty cond = transExp(venv, tenv, a->u.iff.test);
             if (cond.ty != Ty_Int()) {
                 error(a->pos, "condition expression: if test must produce int");
                 return expTy(NULL, Ty_Void());
             }
-            dprintf("  then!\n");
             expty thenet = transExp(venv, tenv, a->u.iff.then);
             if (a->u.iff.elsee) {  // if-then-else
-                dprintf("  else!\n");
                 expty elseet = transExp(venv, tenv, a->u.iff.elsee);
                 // if-then: no return value. if-then-else: can have return value
                 if (elseet.ty != thenet.ty) {
@@ -289,7 +268,6 @@ expty transExp(S_table venv, S_table tenv, A_exp a) {
             return expTy(NULL, thenet.ty);
         }
         case A_whileExp: {
-            dprintf(" while!\n");
             expty test = transExp(venv, tenv, a->u.whilee.test), body;
             if (test.ty != Ty_Int())
                 error(a->pos, "while loop: while test must produce int");
@@ -338,7 +316,6 @@ expty transExp(S_table venv, S_table tenv, A_exp a) {
             return expTy(NULL, Ty_Void());
         }
         case A_breakExp: {
-            dprintf(" break!\n");
             if (!inside) {
                 error(a->pos,
                       "break expression: break expression outside loop");
@@ -346,7 +323,6 @@ expty transExp(S_table venv, S_table tenv, A_exp a) {
             return expTy(NULL, Ty_Void());
         }
         case A_letExp: {
-            dprintf(" let!\n");
             A_decList d;
             S_beginScope(venv);
             S_beginScope(tenv);
@@ -356,9 +332,7 @@ expty transExp(S_table venv, S_table tenv, A_exp a) {
                 transDec(venv, tenv, d->head);
             }
 
-            dprintf(" let body\n");
             expty et = transExp(venv, tenv, a->u.let.body);
-            dprintf(" end let body\n");
 
             S_endScope(tenv);
             S_endScope(venv);
@@ -366,10 +340,8 @@ expty transExp(S_table venv, S_table tenv, A_exp a) {
             return et;
         }
         case A_arrayExp: {
-            dprintf(" array!\n");
             expty init, size;
             Ty_ty typ = S_look(tenv, a->u.array.typ);
-            dprintf(" looking %s:%d\n", S_name(a->u.array.typ), typ->kind);
 
             if (!typ) {
                 error(a->pos, "array expression: undefined type %s",
@@ -406,7 +378,6 @@ expty transVar(S_table venv, S_table tenv, A_var v) {
     switch (v->kind) {
         case A_simpleVar: {
             E_enventry x = S_look(venv, v->u.simple);
-            printf(" simple var! %s\n", S_name(v->u.simple));
 
             if (x && x->kind == E_varEntry) {
                 return expTy(NULL, actual_ty(x->u.var.ty));
@@ -417,7 +388,6 @@ expty transVar(S_table venv, S_table tenv, A_var v) {
             }
         }
         case A_fieldVar: {
-            dprintf(" fieldvar!\n");
             expty et = transVar(venv, tenv, v->u.field.var);
 
             if (et.ty->kind == Ty_record) {
@@ -441,7 +411,6 @@ expty transVar(S_table venv, S_table tenv, A_var v) {
             }
         }
         case A_subscriptVar: {
-            dprintf("subscript!\n");
             expty et = transVar(venv, tenv, v->u.subscript.var);
             expty etint = transExp(venv, tenv, v->u.subscript.exp);
 
@@ -469,7 +438,6 @@ expty transVar(S_table venv, S_table tenv, A_var v) {
 void transDec(S_table venv, S_table tenv, A_dec d) {
     switch (d->kind) {
         case A_varDec: {
-            dprintf(" dec:vardec:%p %p\n", d->u.var.var, d->u.var.typ);
             expty e = transExp(venv, tenv, d->u.var.init);
 
             // Where escape happens.
@@ -488,12 +456,10 @@ void transDec(S_table venv, S_table tenv, A_dec d) {
                           "initialze");
             }
 
-            dprintf(" put to %p [%p:%p]\n", venv, d->u.var.var, eentry);
             S_enter(venv, d->u.var.var, eentry);
             return;
         }
         case A_typeDec: {
-            printf(" dec:typedec:%p\n", d->u.type);
             hoist_type_names(tenv, d);
             Ty_tyList tl = nametyList(tenv, d->u.type);
             checkTypeDec(tenv, tl);
@@ -548,7 +514,6 @@ void transDec(S_table venv, S_table tenv, A_dec d) {
                     }
                 }
                 S_enter(venv, fun_list->head->name, E_FunEntry(head, r));
-                dprintf(" \tfuncdec:label [%s]\n", S_name(f->name));
 
                 for (int i = 0; i < index; i++) {
                     if (typenames[i] == (void *)fun_list->head->name) {
@@ -596,7 +561,6 @@ void transDec(S_table venv, S_table tenv, A_dec d) {
 Ty_ty transTy(S_table tenv, A_ty a) {
     // assert(a != NULL); // might cause trouble in recursive dec!
     if (a == NULL) {
-        printf(" type void\n");
         return Ty_Void();
     }
     switch (a->kind) {
@@ -609,20 +573,15 @@ Ty_ty transTy(S_table tenv, A_ty a) {
             }
 
             if (a->u.name == S_Symbol("int")) {
-                dprintf(" type int\n");
             } else if (a->u.name == S_Symbol("string")) {
-                dprintf(" type string\n");
             } else if (a->u.name == S_Symbol("string")) {
-                dprintf(" type float\n");
             } else {
-                dprintf(" type name\n");
                 // return Ty_Name(a->u.name, NULL);  // set to null first
             }
 
             return ty;
         }
         case A_recordTy: {
-            printf(" type record\n");
             A_fieldList fl;
             Ty_field ty_f;
             Ty_fieldList ty_fl_head = NULL, ty_fl_tail = NULL;
@@ -648,11 +607,9 @@ Ty_ty transTy(S_table tenv, A_ty a) {
         }
         case A_arrayTy: {
             Ty_ty ty = transTy(tenv, A_NameTy(0, a->u.array));
-            dprintf(" type array of %s\n", S_name(a->u.array));
             return Ty_Array(ty);
         }
         default:
-            dprintf(" a:%p, %x\n", a, a->kind);
             assert(0);
             return Ty_Void();
     }
@@ -689,19 +646,15 @@ void hoist_type_names(S_table tenv, A_dec dec) {
 Ty_tyList nametyList(S_table tenv, A_nametyList nl) {
     if (nl == NULL) return NULL;
     Ty_ty ty = transTy(tenv, nl->head->ty);  // for myint, get ty_int
-    printf(" dec:nametylist:%p, %d\n", nl, ty->kind);
 
     Ty_ty head;
     if (ty->kind == Ty_int || ty->kind == Ty_string || ty->kind == Ty_name) {
-        printf(" creating a name type, %s->%d\n", S_name(nl->head->name),
-               ty->kind);
         head = Ty_Name(nl->head->name, ty);
     } else {
         head = ty;
     }
     S_enter(tenv, nl->head->name,
             ty);  // now if you S_look arrtype, it'll be a type
-    printf(" senter:%s = %d\n", S_name(nl->head->name), ty->kind);
     return Ty_TyList(head, nametyList(tenv, nl->tail));
 }
 
@@ -710,7 +663,6 @@ void checkTypeDec(S_table tenv, Ty_tyList tl) {
     S_table dup_check = S_empty();
     for (; tl; tl = tl->tail) {
         ty = tl->head;
-        dprintf(" check type.. %d\n", ty->kind);
 
         if (ty->kind == Ty_record) {
             checkRecord(tenv, ty->u.record);
@@ -725,7 +677,6 @@ void checkTypeDec(S_table tenv, Ty_tyList tl) {
             S_table cycle_check = S_empty();
             Ty_ty nty = ty;
             while (nty && nty->kind == Ty_name) {
-                dprintf(" check cycle.. %s\n", S_name(nty->u.name.sym));
                 if (S_look(cycle_check,
                            nty->u.name.sym)) {  // != NULL. entered before
                     error(0, "illegal type cycle");
@@ -734,11 +685,7 @@ void checkTypeDec(S_table tenv, Ty_tyList tl) {
                 S_enter(cycle_check, nty->u.name.sym, (void *)1);
                 tmpty = S_look(tenv, nty->u.name.sym);
 
-                dprintf(" now jump namety %s to %d\n", S_name(nty->u.name.sym),
-                        tmpty->kind);
                 nty = tmpty;
-                dprintf(" nty%p nty->kind == Ty_name?:%d\n", nty,
-                        (nty != NULL) ? (nty->kind == Ty_name) : 0);
             }
 
             if (nty == NULL) {
@@ -749,19 +696,16 @@ void checkTypeDec(S_table tenv, Ty_tyList tl) {
             }
         }
     }
-    dprintf(" end of check type\n");
 
     return;
 }
 
 void checkRecord(S_table tenv, Ty_fieldList fl) {
     if (fl == NULL) return;
-    dprintf("!!!!!!\n\n\n\n");
     Ty_ty ty = fl->head->ty, tmpty;
     S_symbol s;
 
     if (ty->kind == Ty_array) {
-        dprintf("!!!!!!%d\n", ty->u.array->kind);
     }
 
     S_table cycle_check = S_empty();
