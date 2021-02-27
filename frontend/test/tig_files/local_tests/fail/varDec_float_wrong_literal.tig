@@ -1,0 +1,5 @@
+let 
+    var f1: float := 10
+in
+    f1
+end

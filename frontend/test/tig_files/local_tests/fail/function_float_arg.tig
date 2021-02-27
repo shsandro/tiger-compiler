@@ -1,0 +1,6 @@
+let
+    var x: float := 10.0
+    function float_gt(x: float, y: float): int = x > y
+in 
+    float_gt(x, 9);
+end

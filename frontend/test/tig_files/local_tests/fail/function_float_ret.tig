@@ -1,0 +1,6 @@
+let
+    function float_times10(x: float): float = x * 10.0
+    function int_times10(x: int): int = x * 10
+in 
+    float_times10(int_times10(10))
+end

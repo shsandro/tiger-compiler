@@ -1,0 +1,9 @@
+let
+    var x: float := 10.0
+    function float_gt(x: float, y: float): int = x > y
+
+    function float_times10(x: float): float = x * 10.0
+in 
+    float_gt(x, 9.9);
+    float_times10(float_times10(x))
+end

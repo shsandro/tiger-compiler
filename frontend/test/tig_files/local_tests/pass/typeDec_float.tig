@@ -1,0 +1,11 @@
+let
+	type floatvec = array of floatvec
+    type Point = {x: float, y: float}
+    type PointVec = array of Point
+
+    var p1: Point := Point {x=10.0, y=20.0}
+    var p2 := Point {x=30.0, y=40.0}
+    var point_list := PointVec[2] of Point {x=0.0, y=0.0}
+in
+    p1
+end
