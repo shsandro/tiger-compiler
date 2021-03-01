@@ -54,6 +54,7 @@ dkms.conf
 lextest
 parsertest
 semantictest
+tigerc
 
 # vscode
 .vscode

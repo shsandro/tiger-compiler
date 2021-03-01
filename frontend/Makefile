@@ -1,6 +1,8 @@
 INCLUDE_FOLDER=include
 TEST=test
 
+all: semantictest parsertest lextest
+
 tests: semantictest parsertest lextest
 	rm -f scanner_driver.o parser_driver.o tiger.tab.o lex.yy.o error.o util.o absyn.o symbol.o table.o prabsyn.o parse.o semant.o types.o env.o
 
