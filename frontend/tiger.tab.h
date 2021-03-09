@@ -106,7 +106,7 @@ union YYSTYPE
 
 	int pos;
 	int ival;
-    float fval;
+   float fval;
 	string sval;
 	A_var var;
 	A_exp exp;
@@ -115,16 +115,15 @@ union YYSTYPE
 	A_expList exps;
 	A_ty ty;
 	S_symbol symbol;
-	/* et cetera */
 	A_fieldList fields;
-    A_efieldList efields;
-    A_fundec fundec;
-    A_fundecList fundecs;
-    A_namety namety;
+   A_efieldList efields;
+   A_fundec fundec;
+   A_fundecList fundecs;
+   A_namety namety;
 	A_nametyList nametys;
 	
 
-#line 128 "tiger.tab.h"
+#line 127 "tiger.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
