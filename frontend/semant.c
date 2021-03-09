@@ -17,8 +17,10 @@ typedef struct expty_ {
 
 expty expTy(Tr_exp exp, Ty_ty ty) {
     expty e;
+
     e.exp = exp;
     e.ty = ty;
+
     return e;
 }
 
@@ -44,20 +46,20 @@ int SEM_transProg(A_exp exp) {
 
 Ty_ty actual_ty(Ty_ty ty) {
     assert(ty);
+
     Ty_ty tmpty;
     while (ty->kind == Ty_name) {
         tmpty = ty->u.name.ty;
+
         if (tmpty)
             ty = tmpty;
         else
-            return NULL;  // XXX ugly code
+            return NULL;
     }
+
     return ty;
 }
 
-// Compare two actual type
-// Ty_nil == Ty_record
-// Ty_record or Ty_array: compare the reference
 static bool actual_eq(Ty_ty source, Ty_ty target) {
     Ty_ty t1 = actual_ty(source);
     Ty_ty t2 = actual_ty(target);
@@ -69,10 +71,12 @@ static bool actual_eq(Ty_ty source, Ty_ty target) {
 }
 
 Ty_tyList makeFormalTyList(S_table tenv, A_fieldList afl) {
-    if (!afl) return NULL; /* ugly special case */
+    if (!afl) return NULL;
+
     Ty_tyList ttl = checked_malloc(sizeof(*ttl));
     Ty_tyList ttl_hd = ttl;
     Ty_tyList last = NULL;
+
     while (afl != NULL) {
         ttl->tail = checked_malloc(sizeof(*(ttl->tail)));
 
@@ -89,11 +93,14 @@ Ty_tyList makeFormalTyList(S_table tenv, A_fieldList afl) {
             error(afl->head->pos, " undefined type: %s",
                   S_name(afl->head->typ));
         }
+
         last = ttl;
         ttl = ttl->tail;
         afl = afl->tail;
     }
-    if (last) last->tail = NULL;  // have to clear it.
+
+    if (last) last->tail = NULL;
+
     return ttl_hd;
 }
 
@@ -120,8 +127,10 @@ expty transExp(S_table venv, S_table tenv, A_exp a) {
             if (et == NULL || et->kind != E_funEntry) {
                 error(a->pos, "call expression: undefined type %s",
                       S_name(a->u.call.func));
+
                 return expTy(NULL, Ty_Nil());
             }
+
             A_expList el = a->u.call.args;
             Ty_tyList formals = et->u.fun.formals;
             expty tmp;
@@ -136,35 +145,39 @@ expty transExp(S_table venv, S_table tenv, A_exp a) {
                               "call expression: argument type dosen't match "
                               "the paramater");
                 }
+
                 formals = formals->tail;
                 el = el->tail;
             }
+
             if (el != NULL) {
                 error(a->pos, "call expression: too many arguments %s",
                       S_name(a->u.call.func));
-                return expTy(NULL, et->u.fun.result);
-            } else {
-                return expTy(NULL, et->u.fun.result);
             }
+
+            return expTy(NULL, et->u.fun.result);
         }
         case A_opExp: {
             A_oper oper = a->u.op.oper;
             expty left = transExp(venv, tenv, a->u.op.left);
             expty right = transExp(venv, tenv, a->u.op.right);
+
+            // operand must be integer or float,
+            // return value must be integer or float
             if (oper == A_plusOp || oper == A_minusOp || oper == A_timesOp ||
                 oper == A_divideOp) {
-                // operand must be integer or float, return value must be
-                // integer or float
                 if (left.ty->kind != Ty_int && left.ty->kind != Ty_float)
                     error(a->u.op.left->pos,
                           "binary operation: integer or float required");
+
                 if (right.ty->kind != Ty_int && right.ty->kind != Ty_float)
                     error(a->u.op.right->pos,
                           "binary operation: integer or float required");
+
                 if (right.ty->kind != right.ty->kind)
                     error(a->u.op.left->pos,
                           "binary operation: same type required");
-                // arithmatic return.
+
                 if (right.ty->kind == Ty_int)
                     return expTy(NULL, Ty_Int());
                 else
@@ -187,7 +200,6 @@ expty transExp(S_table venv, S_table tenv, A_exp a) {
                 }
             }
 
-            // next step we need to discriminate return value by string or not
             return expTy(NULL, Ty_Int());
         }
         case A_recordExp: {
@@ -197,6 +209,7 @@ expty transExp(S_table venv, S_table tenv, A_exp a) {
                       S_name(a->u.record.typ));
                 return expTy(NULL, Ty_Record(NULL));
             }
+
             if (recordty->kind != Ty_record) {
                 error(a->pos, "record expression: <%s> is not a record type",
                       S_name(a->u.record.typ));
@@ -226,19 +239,23 @@ expty transExp(S_table venv, S_table tenv, A_exp a) {
         case A_seqExp: {
             expty exp = expTy(NULL, Ty_Void());
             A_expList el;
+
             for (el = a->u.seq; el; el = el->tail) {
                 exp = transExp(venv, tenv, el->head);
             }
+
             return exp;
         }
         case A_assignExp: {
             expty var = transVar(venv, tenv, a->u.assign.var);
             expty exp = transExp(venv, tenv, a->u.assign.exp);
+
             if (var.ty != exp.ty)
                 error(a->pos,
                       "assign expression: dismatch type between variable and "
                       "expression <%d> <%d>",
                       var.ty->kind, exp.ty->kind);
+
             return expTy(NULL, Ty_Void());
         }
         case A_ifExp: {
@@ -248,23 +265,23 @@ expty transExp(S_table venv, S_table tenv, A_exp a) {
                 return expTy(NULL, Ty_Void());
             }
             expty thenet = transExp(venv, tenv, a->u.iff.then);
-            if (a->u.iff.elsee) {  // if-then-else
+            if (a->u.iff.elsee) {
                 expty elseet = transExp(venv, tenv, a->u.iff.elsee);
-                // if-then: no return value. if-then-else: can have return value
                 if (elseet.ty != thenet.ty) {
-                    // XXX: shoud this semantic contain Ty_Void()?
                     if (!((elseet.ty == Ty_Nil() || elseet.ty == Ty_Void()) ||
                           (thenet.ty == Ty_Nil() || thenet.ty == Ty_Void())))
                         error(a->pos,
                               "condition expression: then-else section must be "
                               "the same type");
                 }
+
                 return expTy(NULL, thenet.ty);
-            } else if (thenet.ty != Ty_Void()) {  // if-then
+            } else if (thenet.ty != Ty_Void()) {
                 error(a->pos,
                       "condition expression: if-then exp's body must produce "
                       "no value");
             }
+
             return expTy(NULL, thenet.ty);
         }
         case A_whileExp: {
@@ -278,7 +295,6 @@ expty transExp(S_table venv, S_table tenv, A_exp a) {
 
             if (body.ty != Ty_Void() && body.ty != Ty_Nil()) {
                 error(a->pos, "while loop: body section must produce no value");
-                return expTy(NULL, Ty_Void());
             }
 
             return expTy(NULL, Ty_Void());
@@ -290,13 +306,11 @@ expty transExp(S_table venv, S_table tenv, A_exp a) {
             if (lo.ty->kind != Ty_int) {
                 error(a->u.forr.lo->pos,
                       "for loop: lower part must be integer");
-                return expTy(NULL, Ty_Void());
             }
 
             if (hi.ty->kind != Ty_int) {
                 error(a->u.forr.hi->pos,
                       "for loop: higer part must be integer");
-                return expTy(NULL, Ty_Void());
             }
 
             S_beginScope(venv);
@@ -308,7 +322,6 @@ expty transExp(S_table venv, S_table tenv, A_exp a) {
 
             if (body.ty->kind != Ty_void) {
                 error(a->u.forr.body->pos, "for loop: body part must be void");
-                return expTy(NULL, Ty_Void());
             }
 
             S_endScope(venv);
@@ -328,7 +341,6 @@ expty transExp(S_table venv, S_table tenv, A_exp a) {
             S_beginScope(tenv);
 
             for (d = a->u.let.decs; d; d = d->tail) {
-                // append in a reversed order. but don't worry. check return.
                 transDec(venv, tenv, d->head);
             }
 
@@ -336,7 +348,7 @@ expty transExp(S_table venv, S_table tenv, A_exp a) {
 
             S_endScope(tenv);
             S_endScope(venv);
-            // seqExp reverse the list again. so everything is good.
+
             return et;
         }
         case A_arrayExp: {
@@ -371,7 +383,8 @@ expty transExp(S_table venv, S_table tenv, A_exp a) {
         }
         default:;
     }
-    assert(0);  // should have returned from some clause of the switch
+
+    assert(0);  // not recognized
 }
 
 expty transVar(S_table venv, S_table tenv, A_var v) {
@@ -403,12 +416,12 @@ expty transVar(S_table venv, S_table tenv, A_var v) {
                       "field var expression: no such field <%s> in the record",
                       S_name(v->u.field.sym));
 
-                return expTy(NULL, Ty_Int());
             } else {
                 error(v->u.field.var->pos,
                       "field var expression: not a record type variable");
-                return expTy(NULL, Ty_Int());
             }
+
+            return expTy(NULL, Ty_Int());
         }
         case A_subscriptVar: {
             expty et = transVar(venv, tenv, v->u.subscript.var);
@@ -432,7 +445,8 @@ expty transVar(S_table venv, S_table tenv, A_var v) {
         }
         defalut:;
     }
-    assert(0);  // wrong kind
+
+    assert(0);  // not recognized
 }
 
 void transDec(S_table venv, S_table tenv, A_dec d) {
@@ -457,24 +471,24 @@ void transDec(S_table venv, S_table tenv, A_dec d) {
             }
 
             S_enter(venv, d->u.var.var, eentry);
-            return;
+            break;
         }
         case A_typeDec: {
             hoist_type_names(tenv, d);
             Ty_tyList tl = nametyList(tenv, d->u.type);
             checkTypeDec(tenv, tl);
-            return;
+            break;
         }
         case A_functionDec: {
             A_fundecList fun_list;
 
             int index = 0;
-            void *typenames[10];  // store typenames in list, check for
-                                  // redeclaration
+            void *typenames[10];
 
-            // example: function treeLeaves(t: tree): int =
-            // treelistLeaves(t.children) 1: add header (function treeLeaves(t:
-            // tree): int =)
+            /* example:
+            function treeLeaves(t: tree): int =
+            treelistLeaves(t.children) 1: add header
+            (functiontreeLeaves(t:tree): int =) */
             for (fun_list = d->u.function; fun_list;
                  fun_list = fun_list->tail) {
                 // i need elements of E_FunEntry, because its value environment
@@ -491,7 +505,7 @@ void transDec(S_table venv, S_table tenv, A_dec d) {
                         error(fun_list->head->pos,
                               "function declare: undefined return type %s",
                               S_name(fun_list->head->result));
-                        return;
+                        break;
                     }
                 } else {
                     r = Ty_Void();
@@ -503,7 +517,7 @@ void transDec(S_table venv, S_table tenv, A_dec d) {
                         error(fl->head->pos,
                               "function declare: undefined parameter type %s",
                               S_name(fl->head->typ));
-                        return;
+                        break;
                     }
                     if (head) {
                         tail->tail = Ty_TyList(ty, NULL);
@@ -527,11 +541,14 @@ void transDec(S_table venv, S_table tenv, A_dec d) {
                 }
                 typenames[index++] = (void *)fun_list->head->name;
             }
+
             // 2: translate body (treelistLeaves(t.children))
             for (fun_list = d->u.function; fun_list;
                  fun_list = fun_list->tail) {
                 E_enventry fun_entry = S_look(venv, fun_list->head->name);
+
                 S_beginScope(venv);
+
                 // add parameters into environment
                 A_fieldList fl;
                 Ty_tyList tl = fun_entry->u.fun.formals;
@@ -540,8 +557,10 @@ void transDec(S_table venv, S_table tenv, A_dec d) {
                      fl = fl->tail, tl = tl->tail) {
                     S_enter(venv, fl->head->name, E_VarEntry(tl->head));
                 }
+
                 // translate body
                 expty exp = transExp(venv, tenv, fun_list->head->body);
+
                 // compare return type and body type
                 if (!actual_eq(fun_entry->u.fun.result, exp.ty)) {
                     error(
@@ -549,20 +568,21 @@ void transDec(S_table venv, S_table tenv, A_dec d) {
                         "function declare: body type and return type with <%s>",
                         S_name(fun_list->head->name));
                     S_endScope(venv);
-                    return;
+                    break;
                 }
+
                 S_endScope(venv);
             }
-            return;
+            break;
         }
     }
 }
 
 Ty_ty transTy(S_table tenv, A_ty a) {
-    // assert(a != NULL); // might cause trouble in recursive dec!
     if (a == NULL) {
         return Ty_Void();
     }
+
     switch (a->kind) {
         case A_nameTy: {
             Ty_ty ty = S_look(tenv, a->u.name);
@@ -572,13 +592,6 @@ Ty_ty transTy(S_table tenv, A_ty a) {
                 return Ty_Void();
             }
 
-            if (a->u.name == S_Symbol("int")) {
-            } else if (a->u.name == S_Symbol("string")) {
-            } else if (a->u.name == S_Symbol("string")) {
-            } else {
-                // return Ty_Name(a->u.name, NULL);  // set to null first
-            }
-
             return ty;
         }
         case A_recordTy: {
@@ -586,6 +599,7 @@ Ty_ty transTy(S_table tenv, A_ty a) {
             Ty_field ty_f;
             Ty_fieldList ty_fl_head = NULL, ty_fl_tail = NULL;
             Ty_ty ty;
+
             for (fl = a->u.record; fl; fl = fl->tail) {
                 ty = S_look(tenv, fl->head->typ);
                 if (!ty) {
@@ -594,7 +608,9 @@ Ty_ty transTy(S_table tenv, A_ty a) {
                           S_name(fl->head->typ));
                     return Ty_Void();
                 }
+
                 ty_f = Ty_Field(fl->head->name, ty);
+
                 if (ty_fl_head) {
                     ty_fl_tail->tail = Ty_FieldList(ty_f, NULL);
                     ty_fl_tail = ty_fl_tail->tail;
@@ -603,6 +619,7 @@ Ty_ty transTy(S_table tenv, A_ty a) {
                     ty_fl_tail = ty_fl_head;
                 }
             }
+
             return Ty_Record(ty_fl_head);
         }
         case A_arrayTy: {
@@ -611,14 +628,15 @@ Ty_ty transTy(S_table tenv, A_ty a) {
         }
         default:
             assert(0);
-            return Ty_Void();
     }
 }
 
 Ty_fieldList makeTyFieldList(S_table tenv, A_fieldList afl) {
     if (afl == NULL) return NULL;
+
     A_ty aty = A_NameTy(afl->head->pos, afl->head->typ);
     Ty_field head = Ty_Field(afl->head->name, transTy(tenv, aty));
+
     return Ty_FieldList(head, makeTyFieldList(tenv, afl->tail));
 }
 
@@ -630,31 +648,33 @@ void hoist_type_names(S_table tenv, A_dec dec) {
     for (type_list = dec->u.type; type_list; type_list = type_list->tail) {
         S_enter(tenv, type_list->head->name,
                 Ty_Name(type_list->head->name, NULL));
+
         for (int i = 0; i < index; i++) {
             if (typenames[i] == (void *)type_list->head->name) {
                 error(type_list->head->ty->pos,
-                      "type declare: redeclaration type <%s>, there are "
-                      "two types with the same name in the same "
-                      "(consecutive) batch of mutually recursive types.",
+                      "type declare: redeclaration type <%s>",
                       S_name(type_list->head->name));
             }
         }
+
         typenames[index++] = (void *)type_list->head->name;
     }
 }
 
 Ty_tyList nametyList(S_table tenv, A_nametyList nl) {
     if (nl == NULL) return NULL;
-    Ty_ty ty = transTy(tenv, nl->head->ty);  // for myint, get ty_int
+    Ty_ty ty = transTy(tenv, nl->head->ty);
 
     Ty_ty head;
-    if (ty->kind == Ty_int || ty->kind == Ty_string || ty->kind == Ty_name) {
+    if (ty->kind == Ty_int || ty->kind == Ty_string || ty->kind == Ty_float ||
+        ty->kind == Ty_name) {
         head = Ty_Name(nl->head->name, ty);
     } else {
         head = ty;
     }
-    S_enter(tenv, nl->head->name,
-            ty);  // now if you S_look arrtype, it'll be a type
+
+    S_enter(tenv, nl->head->name, ty);
+
     return Ty_TyList(head, nametyList(tenv, nl->tail));
 }
 
@@ -672,16 +692,17 @@ void checkTypeDec(S_table tenv, Ty_tyList tl) {
             if (S_look(dup_check, ty->u.name.sym)) {
                 error(0, "two types have the same name");
             }
+
             S_enter(dup_check, ty->u.name.sym, (void *)1);
 
             S_table cycle_check = S_empty();
             Ty_ty nty = ty;
             while (nty && nty->kind == Ty_name) {
-                if (S_look(cycle_check,
-                           nty->u.name.sym)) {  // != NULL. entered before
+                if (S_look(cycle_check, nty->u.name.sym)) {
                     error(0, "illegal type cycle");
                     return;
                 }
+
                 S_enter(cycle_check, nty->u.name.sym, (void *)1);
                 tmpty = S_look(tenv, nty->u.name.sym);
 
@@ -689,7 +710,7 @@ void checkTypeDec(S_table tenv, Ty_tyList tl) {
             }
 
             if (nty == NULL) {
-                error(0, "%%s contains undeclared type" /*, S_name(s)*/);
+                error(0, "contains undeclared type");
             } else {
                 ty->u.name.ty = nty;
                 S_enter(tenv, ty->u.name.sym, nty);
@@ -705,15 +726,13 @@ void checkRecord(S_table tenv, Ty_fieldList fl) {
     Ty_ty ty = fl->head->ty, tmpty;
     S_symbol s;
 
-    if (ty->kind == Ty_array) {
-    }
-
     S_table cycle_check = S_empty();
     while (ty && ty->kind == Ty_name) {
-        if (S_look(cycle_check, ty->u.name.sym)) {  // != NULL. entered before
+        if (S_look(cycle_check, ty->u.name.sym)) {
             error(0, "illegal type cycle");
             return;
         }
+
         s = ty->u.name.sym;
         S_enter(cycle_check, s, (void *)1);
         tmpty = S_look(tenv, s);
@@ -722,10 +741,8 @@ void checkRecord(S_table tenv, Ty_fieldList fl) {
     }
 
     if (ty) {
-        checkRecord(tenv, fl->tail);  // move to next
-        return;
+        checkRecord(tenv, fl->tail);
     } else {
         error(0, " undefined type %s", S_name(s));
     }
-    return;
 }
