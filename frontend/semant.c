@@ -5,6 +5,8 @@
 
 #include "include/env.h"
 #include "include/error.h"
+#include "include/frame.h"
+#include "include/translate.h"
 #include "include/types.h"
 #include "include/util.h"
 
@@ -15,17 +17,17 @@ typedef struct expty_ {
     Ty_ty ty;
 } expty;
 
-expty expTy(Tr_exp exp, Ty_ty ty) {
+static expty expTy(Tr_exp exp, Ty_ty ty) {
     expty e;
     e.exp = exp;
     e.ty = ty;
     return e;
 }
 
-expty transVar(S_table venv, S_table tenv, A_var v);
-expty transExp(S_table venv, S_table tenv, A_exp e);
-void transDec(S_table venv, S_table tenv, A_dec d);
-Ty_ty transTy(S_table tenv, A_ty t);
+static expty transVar(Tr_level level, S_table venv, S_table tenv, A_var v);
+static expty transExp(Tr_level level, S_table venv, S_table tenv, A_exp e);
+static void transDec(Tr_level level, S_table venv, S_table tenv, A_dec d);
+static Ty_ty transTy(S_table tenv, A_ty t);
 void checkTypeDec(S_table tenv, Ty_tyList tl);
 Ty_tyList nametyList(S_table tenv, A_nametyList nl);
 void checkRecord(S_table tenv, Ty_fieldList fl);
@@ -37,7 +39,7 @@ int SEM_transProg(A_exp exp) {
     S_table tenv = E_base_tenv();
     S_table venv = E_base_venv();
 
-    transExp(venv, tenv, exp);
+    transExp(Tr_outermost(), venv, tenv, exp);
 
     return anyErrors();
 }
@@ -97,7 +99,7 @@ Ty_tyList makeFormalTyList(S_table tenv, A_fieldList afl) {
     return ttl_hd;
 }
 
-expty transExp(S_table venv, S_table tenv, A_exp a) {
+static expty transExp(Tr_level level, S_table venv, S_table tenv, A_exp a) {
     switch (a->kind) {
         case A_varExp: {
             return transVar(venv, tenv, a->u.var);
@@ -374,7 +376,7 @@ expty transExp(S_table venv, S_table tenv, A_exp a) {
     assert(0);  // should have returned from some clause of the switch
 }
 
-expty transVar(S_table venv, S_table tenv, A_var v) {
+static expty transVar(Tr_level level, S_table venv, S_table tenv, A_var v) {
     switch (v->kind) {
         case A_simpleVar: {
             E_enventry x = S_look(venv, v->u.simple);
@@ -435,7 +437,7 @@ expty transVar(S_table venv, S_table tenv, A_var v) {
     assert(0);  // wrong kind
 }
 
-void transDec(S_table venv, S_table tenv, A_dec d) {
+static void transDec(Tr_level level, S_table venv, S_table tenv, A_dec d) {
     switch (d->kind) {
         case A_varDec: {
             expty e = transExp(venv, tenv, d->u.var.init);
@@ -558,7 +560,7 @@ void transDec(S_table venv, S_table tenv, A_dec d) {
     }
 }
 
-Ty_ty transTy(S_table tenv, A_ty a) {
+static Ty_ty transTy(S_table tenv, A_ty a) {
     // assert(a != NULL); // might cause trouble in recursive dec!
     if (a == NULL) {
         return Ty_Void();
