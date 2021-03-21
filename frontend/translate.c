@@ -1,6 +1,6 @@
-#include "translate.h"
+#include "include/translate.h"
 
-#include "frame.h"
+#include "include/frame.h"
 
 struct Tr_level_ {
     Tr_level parent;

@@ -5,15 +5,15 @@
  *
  */
 
-#include "temp.h"
+#include "include/temp.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include "symbol.h"
-#include "table.h"
-#include "util.h"
+#include "include/symbol.h"
+#include "include/table.h"
+#include "include/util.h"
 
 struct Temp_temp_ {
     int num;

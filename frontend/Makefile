@@ -4,21 +4,33 @@ TEST=test
 all: semantictest parsertest lextest
 
 tests: semantictest parsertest lextest
-	rm -f scanner_driver.o parser_driver.o tiger.tab.o lex.yy.o error.o util.o absyn.o symbol.o table.o prabsyn.o parse.o semant.o types.o env.o
+	rm -f scanner_driver.o parser_driver.o tiger.tab.o lex.yy.o error.o util.o absyn.o symbol.o table.o prabsyn.o parse.o semant.o types.o env.o mipsframe.o temp.o translate.o escape.o
 
-semantictest: semantic_driver.o tiger.tab.o lex.yy.o error.o util.o absyn.o table.o symbol.o parse.o semant.o types.o env.o
-	gcc -g semantic_driver.o tiger.tab.o lex.yy.o error.o util.o absyn.o table.o symbol.o parse.o semant.o types.o env.o -o semantictest
+semantictest: semantic_driver.o tiger.tab.o lex.yy.o error.o util.o absyn.o table.o symbol.o parse.o semant.o types.o env.o mipsframe.o temp.o translate.o escape.o
+	gcc -g semantic_driver.o tiger.tab.o lex.yy.o error.o util.o absyn.o table.o symbol.o parse.o semant.o types.o env.o mipsframe.o temp.o translate.o escape.o -o semantictest
 
 semantic_driver.o: $(TEST)/semantic_driver.c $(INCLUDE_FOLDER)/error.h $(INCLUDE_FOLDER)/util.h $(INCLUDE_FOLDER)/absyn.h $(INCLUDE_FOLDER)/parse.h $(INCLUDE_FOLDER)/semant.h $(INCLUDE_FOLDER)/symbol.h
 	gcc -g -c $(TEST)/semantic_driver.c
 
-semant.o: semant.c $(INCLUDE_FOLDER)/env.h $(INCLUDE_FOLDER)/error.h $(INCLUDE_FOLDER)/types.h $(INCLUDE_FOLDER)/util.h $(INCLUDE_FOLDER)/semant.h $(INCLUDE_FOLDER)/absyn.h
+mipsframe.o: mipsframe.c $(INCLUDE_FOLDER)/frame.h $(INCLUDE_FOLDER)/util.h 
+	gcc -g -c mipsframe.c
+
+temp.o: temp.c $(INCLUDE_FOLDER)/symbol.h $(INCLUDE_FOLDER)/table.h $(INCLUDE_FOLDER)/util.h $(INCLUDE_FOLDER)/temp.h 
+	gcc -g -c temp.c
+
+translate.o: translate.c $(INCLUDE_FOLDER)/frame.h $(INCLUDE_FOLDER)/translate.h
+	gcc -g -c translate.c
+
+escape.o: escape.c $(INCLUDE_FOLDER)/symbol.h $(INCLUDE_FOLDER)/escape.h
+	gcc -g -c escape.c
+
+semant.o: semant.c $(INCLUDE_FOLDER)/env.h $(INCLUDE_FOLDER)/error.h $(INCLUDE_FOLDER)/types.h $(INCLUDE_FOLDER)/util.h $(INCLUDE_FOLDER)/semant.h $(INCLUDE_FOLDER)/absyn.h $(INCLUDE_FOLDER)/frame.h $(INCLUDE_FOLDER)/translate.h $(INCLUDE_FOLDER)/semant.h
 	gcc -g -c semant.c
 
 types.o: types.c $(INCLUDE_FOLDER)/types.h $(INCLUDE_FOLDER)/symbol.h $(INCLUDE_FOLDER)/util.h $(INCLUDE_FOLDER)/types.h
 	gcc -g -c types.c
 
-env.o: env.c $(INCLUDE_FOLDER)/env.h $(INCLUDE_FOLDER)/symbol.h $(INCLUDE_FOLDER)/util.h
+env.o: env.c $(INCLUDE_FOLDER)/env.h $(INCLUDE_FOLDER)/symbol.h $(INCLUDE_FOLDER)/util.h $(INCLUDE_FOLDER)/types.h $(INCLUDE_FOLDER)/translate.h
 	gcc -g -c env.c
 
 lextest: scanner_driver.o lex.yy.o error.o util.o
