@@ -5,6 +5,7 @@
 
 #include "include/env.h"
 #include "include/error.h"
+#include "include/escape.h"
 #include "include/frame.h"
 #include "include/temp.h"
 #include "include/translate.h"
@@ -40,6 +41,8 @@ void hoist_type_names(S_table tenv, A_dec dec);
 static int inside = 0;
 
 int SEM_transProg(A_exp exp) {
+    Esc_findEscape(exp);
+
     S_table tenv = E_base_tenv();
     S_table venv = E_base_venv();
 
@@ -315,8 +318,7 @@ static expty transExp(Tr_level level, S_table venv, S_table tenv, A_exp a) {
             }
 
             S_beginScope(venv);
-            Tr_access m_access = Tr_allocLocal(
-                level, TRUE);  // keep things easy, all vars are escape
+            Tr_access m_access = Tr_allocLocal(level, a->u.forr.escape);
             S_enter(venv, a->u.forr.var, E_VarEntry(m_access, Ty_Int()));
 
             inside++;  // inside loop
@@ -481,10 +483,7 @@ static void transDec(Tr_level level, S_table venv, S_table tenv, A_dec d) {
                           "initialze");
             }
 
-            // TODO: all variables escaping. Maybe implement escape
-            // Where escape happens.
-            Tr_access m_access = Tr_allocLocal(
-                level, TRUE);  // keep things easy, all vars are escape
+            Tr_access m_access = Tr_allocLocal(level, d->u.var.escape);
             E_enventry eentry = E_VarEntry(m_access, e.ty);
 
             S_enter(venv, d->u.var.var, eentry);

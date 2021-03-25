@@ -49,7 +49,7 @@ Temp_label F_name(F_frame f) { return f->name; }
 F_accessList F_formals(F_frame f) { return f->formals; }
 
 F_access F_allocLocal(F_frame f, bool escape) {
-    assert(f && escape);
+    assert(f && (escape == FALSE || escape == TRUE));
     f->locals++;
     return InFrame(-f->locals * F_WORD_SIZE);
 }

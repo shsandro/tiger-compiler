@@ -6,7 +6,7 @@ all: frontend $(FRONTEND_OBJS)
 	cd $(FRONTEND_FOLDER) && make
 	gcc -g tigerc.o $(FRONTEND_OBJS) -o tigerc
 
-frontend: tigerc.c
+.PHONY frontend: tigerc.c
 	gcc -g -c tigerc.c
 
 clean:

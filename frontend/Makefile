@@ -21,7 +21,7 @@ temp.o: temp.c $(INCLUDE_FOLDER)/symbol.h $(INCLUDE_FOLDER)/table.h $(INCLUDE_FO
 translate.o: translate.c $(INCLUDE_FOLDER)/frame.h $(INCLUDE_FOLDER)/translate.h
 	gcc -g -c translate.c
 
-escape.o: escape.c $(INCLUDE_FOLDER)/symbol.h $(INCLUDE_FOLDER)/escape.h
+escape.o: escape.c $(INCLUDE_FOLDER)/symbol.h $(INCLUDE_FOLDER)/absyn.h $(INCLUDE_FOLDER)/escape.h 
 	gcc -g -c escape.c
 
 semant.o: semant.c $(INCLUDE_FOLDER)/env.h $(INCLUDE_FOLDER)/error.h $(INCLUDE_FOLDER)/types.h $(INCLUDE_FOLDER)/util.h $(INCLUDE_FOLDER)/semant.h $(INCLUDE_FOLDER)/absyn.h $(INCLUDE_FOLDER)/frame.h $(INCLUDE_FOLDER)/translate.h $(INCLUDE_FOLDER)/semant.h
