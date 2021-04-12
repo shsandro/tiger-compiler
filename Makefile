@@ -1,14 +1,14 @@
-FRONTEND_FOLDER=frontend
+SRC_FOLDER=src
 
-FRONTEND_OBJS=$(FRONTEND_FOLDER)/tiger.tab.o  $(FRONTEND_FOLDER)/lex.yy.o $(FRONTEND_FOLDER)/error.o $(FRONTEND_FOLDER)/util.o $(FRONTEND_FOLDER)/absyn.o $(FRONTEND_FOLDER)/table.o $(FRONTEND_FOLDER)/symbol.o $(FRONTEND_FOLDER)/parse.o $(FRONTEND_FOLDER)/semant.o $(FRONTEND_FOLDER)/types.o $(FRONTEND_FOLDER)/env.o $(FRONTEND_FOLDER)/prabsyn.o $(FRONTEND_FOLDER)/temp.o $(FRONTEND_FOLDER)/translate.o $(FRONTEND_FOLDER)/mipsframe.o $(FRONTEND_FOLDER)/escape.o
+SRC_OBJS=$(SRC_FOLDER)/tiger.tab.o  $(SRC_FOLDER)/lex.yy.o $(SRC_FOLDER)/error.o $(SRC_FOLDER)/util.o $(SRC_FOLDER)/absyn.o $(SRC_FOLDER)/table.o $(SRC_FOLDER)/symbol.o $(SRC_FOLDER)/parse.o $(SRC_FOLDER)/semant.o $(SRC_FOLDER)/types.o $(SRC_FOLDER)/env.o $(SRC_FOLDER)/prabsyn.o $(SRC_FOLDER)/temp.o $(SRC_FOLDER)/translate.o $(SRC_FOLDER)/mipsframe.o $(SRC_FOLDER)/escape.o
 
-all: frontend $(FRONTEND_OBJS)
-	cd $(FRONTEND_FOLDER) && make
-	gcc -g tigerc.o $(FRONTEND_OBJS) -o tigerc
+all: src $(SRC_OBJS)
+	cd $(SRC_FOLDER) && make
+	gcc -g tigerc.o $(SRC_OBJS) -o tigerc
 
-.PHONY frontend: tigerc.c
+.PHONY src: tigerc.c
 	gcc -g -c tigerc.c
 
 clean:
-	cd $(FRONTEND_FOLDER) && make clean
+	cd $(SRC_FOLDER) && make clean
 	rm -rf tigerc tigerc.o

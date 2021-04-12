@@ -3,11 +3,11 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "frontend/include/absyn.h"
-#include "frontend/include/error.h"
-#include "frontend/include/parse.h"
-#include "frontend/include/prabsyn.h"
-#include "frontend/include/semant.h"
+#include "src/include/absyn.h"
+#include "src/include/error.h"
+#include "src/include/parse.h"
+#include "src/include/prabsyn.h"
+#include "src/include/semant.h"
 
 #define TRUE 1
 #define FALSE 0
