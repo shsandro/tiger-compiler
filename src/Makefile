@@ -4,13 +4,19 @@ TEST=test
 all: semantictest parsertest lextest
 
 tests: semantictest parsertest lextest
-	rm -f scanner_driver.o parser_driver.o tiger.tab.o lex.yy.o error.o util.o absyn.o symbol.o table.o prabsyn.o parse.o semant.o types.o env.o mipsframe.o temp.o translate.o escape.o
+	rm -f scanner_driver.o parser_driver.o tiger.tab.o lex.yy.o error.o util.o absyn.o symbol.o table.o prabsyn.o parse.o semant.o types.o env.o mipsframe.o temp.o translate.o escape.o printtree.o tree.o
 
-semantictest: semantic_driver.o tiger.tab.o lex.yy.o error.o util.o absyn.o table.o symbol.o parse.o semant.o types.o env.o mipsframe.o temp.o translate.o escape.o
-	gcc -g semantic_driver.o tiger.tab.o lex.yy.o error.o util.o absyn.o table.o symbol.o parse.o semant.o types.o env.o mipsframe.o temp.o translate.o escape.o -o semantictest
+semantictest: semantic_driver.o tiger.tab.o lex.yy.o error.o util.o absyn.o table.o symbol.o parse.o semant.o types.o env.o mipsframe.o temp.o translate.o escape.o printtree.o tree.o
+	gcc -g semantic_driver.o tiger.tab.o lex.yy.o error.o util.o absyn.o table.o symbol.o parse.o semant.o types.o env.o mipsframe.o temp.o translate.o escape.o printtree.o tree.o -o semantictest
 
 semantic_driver.o: $(TEST)/semantic_driver.c $(INCLUDE_FOLDER)/error.h $(INCLUDE_FOLDER)/util.h $(INCLUDE_FOLDER)/absyn.h $(INCLUDE_FOLDER)/parse.h $(INCLUDE_FOLDER)/semant.h $(INCLUDE_FOLDER)/symbol.h
 	gcc -g -c $(TEST)/semantic_driver.c
+
+printtree.o: printtree.c $(INCLUDE_FOLDER)/printtree.h $(INCLUDE_FOLDER)/symbol.h $(INCLUDE_FOLDER)/temp.h $(INCLUDE_FOLDER)/tree.h $(INCLUDE_FOLDER)/util.h
+	gcc -g -c printtree.c
+
+tree.o: tree.c $(INCLUDE_FOLDER)/tree.h $(INCLUDE_FOLDER)/symbol.h $(INCLUDE_FOLDER)/temp.h $(INCLUDE_FOLDER)/util.h
+	gcc -g -c tree.c
 
 mipsframe.o: mipsframe.c $(INCLUDE_FOLDER)/frame.h $(INCLUDE_FOLDER)/util.h 
 	gcc -g -c mipsframe.c
@@ -18,7 +24,7 @@ mipsframe.o: mipsframe.c $(INCLUDE_FOLDER)/frame.h $(INCLUDE_FOLDER)/util.h
 temp.o: temp.c $(INCLUDE_FOLDER)/symbol.h $(INCLUDE_FOLDER)/table.h $(INCLUDE_FOLDER)/util.h $(INCLUDE_FOLDER)/temp.h 
 	gcc -g -c temp.c
 
-translate.o: translate.c $(INCLUDE_FOLDER)/frame.h $(INCLUDE_FOLDER)/translate.h
+translate.o: translate.c $(INCLUDE_FOLDER)/translate.h $(INCLUDE_FOLDER)/frame.h $(INCLUDE_FOLDER)/printtree.h 
 	gcc -g -c translate.c
 
 escape.o: escape.c $(INCLUDE_FOLDER)/symbol.h $(INCLUDE_FOLDER)/absyn.h $(INCLUDE_FOLDER)/escape.h 

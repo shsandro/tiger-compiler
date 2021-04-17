@@ -12,7 +12,7 @@
 #include "include/types.h"
 #include "include/util.h"
 
-typedef void *Tr_exp;
+// typedef void *Tr_exp;
 
 typedef struct expty_ {
     Tr_exp exp;
@@ -46,7 +46,7 @@ int SEM_transProg(A_exp exp) {
     S_table tenv = E_base_tenv();
     S_table venv = E_base_venv();
 
-    transExp(Tr_outermost(), venv, tenv, exp);
+    expty trans_expr = transExp(Tr_outermost(), venv, tenv, exp);
 
     return anyErrors();
 }

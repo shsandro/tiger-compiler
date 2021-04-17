@@ -17,6 +17,7 @@ struct F_access_ {
         Temp_temp reg;  // in register
     } u;
 };
+
 static F_access InFrame(int offset);  // memory location at offset X from the fp
 static F_access InReg(Temp_temp reg);  // held in reg X
 static F_accessList F_AccessList(F_access head, F_accessList tail);
@@ -75,4 +76,53 @@ static F_access InReg(Temp_temp reg) {
     a->kind = inReg;
     a->u.reg = reg;
     return a;
+}
+
+static Temp_temp fp = NULL;
+/**
+ * always return a fp register point to current level's frame.
+ */
+Temp_temp F_FP() {
+    if (!fp) {
+        fp = Temp_newtemp();
+    }
+    return fp;
+}
+
+T_exp F_Exp(F_access acc, T_exp framePtr) {
+    if (acc->kind == inFrame) {
+        return T_Mem(T_Binop(T_plus, framePtr, T_Const(acc->u.offset)));
+    } else {
+        return T_Temp(acc->u.reg);
+    }
+}
+
+T_stm F_procEntryExit1(F_frame frame, T_stm stm) { return stm; }
+
+T_exp F_externalCall(string s, T_expList args) {
+    return T_Call(T_Name(Temp_namedlabel(s)), args);
+}
+
+// fragment implement
+F_frag F_StringFrag(Temp_label label, string str) {
+    F_frag f = checked_malloc(sizeof(*f));
+    f->kind = F_stringFrag;
+    f->u.stringg.label = label;
+    f->u.stringg.str = str;
+    return f;
+}
+
+F_frag F_ProcFrag(T_stm body, F_frame frame) {
+    F_frag f = checked_malloc(sizeof(*f));
+    f->kind = F_procFrag;
+    f->u.proc.body = body;
+    f->u.proc.frame = frame;
+    return f;
+}
+
+F_fragList F_FragList(F_frag head, F_fragList tail) {
+    F_fragList fl = checked_malloc(sizeof(*fl));
+    fl->head = head;
+    fl->tail = tail;
+    return fl;
 }
