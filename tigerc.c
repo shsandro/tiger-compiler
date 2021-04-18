@@ -28,7 +28,8 @@ void help_menu(const char *prog_name) {
         "available yet]\n");
 }
 
-int frontend(char *input_file, int print_tree, A_exp *absyn_root) {
+int frontend(char *input_file, int print_tree, int print_ir,
+             A_exp *absyn_root) {
     FILE *out = stdout;
 
     reset(input_file);
@@ -44,7 +45,7 @@ int frontend(char *input_file, int print_tree, A_exp *absyn_root) {
         fprintf(out, "\n");
     }
 
-    return SEM_transProg(absyn_tree_root);
+    return SEM_transProg(absyn_tree_root, print_ir);
 }
 
 int main(int argc, char *const *argv) {
@@ -52,6 +53,7 @@ int main(int argc, char *const *argv) {
     char *output_file, *input_file = NULL;
     int print_tree = FALSE, print_ir = FALSE, print_assembly = FALSE;
     A_exp absyn_root = NULL;
+    Tr_exp ir = NULL;
 
     while ((ch = getopt(argc, argv, "aho:p:is")) != -1) {
         switch (ch) {
@@ -94,7 +96,7 @@ int main(int argc, char *const *argv) {
         exit(EXIT_FAILURE);
     }
 
-    if (!frontend(input_file, print_tree, &absyn_root)) {
+    if (!frontend(input_file, print_tree, print_ir, &absyn_root)) {
         exit(EXIT_FAILURE);
     }
 }
