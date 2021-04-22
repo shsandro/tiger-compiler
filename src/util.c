@@ -17,9 +17,9 @@ void *checked_malloc(int len) {
 
 string String(char *s) {
     string p = checked_malloc(strlen(s) - 1);
-    s++;
-    memcpy(p, s, strlen(s) - 1);
-    p[strlen(s) - 1] = '\0';
+    // s++;
+    memcpy(p, s, strlen(s));
+    p[strlen(s)] = '\0';
 
     return p;
 }

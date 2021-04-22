@@ -52,7 +52,8 @@ F_accessList F_formals(F_frame f) { return f->formals; }
 F_access F_allocLocal(F_frame f, bool escape) {
     assert(f && (escape == FALSE || escape == TRUE));
     f->locals++;
-    return InFrame(-f->locals * F_WORD_SIZE);
+    return escape ? InFrame(-f->locals * F_WORD_SIZE) : InReg(Temp_newtemp());
+    // return InFrame(-(f->locals * F_WORD_SIZE));
 }
 
 static F_accessList F_AccessList(F_access head, F_accessList tail) {

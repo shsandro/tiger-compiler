@@ -412,7 +412,7 @@ static expty transExp(Tr_level level, S_table venv, S_table tenv, A_exp a) {
             S_endScope(tenv);
             S_endScope(venv);
 
-            return expTy(Tr_letExp(head), et.ty);
+            return expTy(Tr_seqExp(head), et.ty);
         }
         case A_arrayExp: {
             expty init, size;

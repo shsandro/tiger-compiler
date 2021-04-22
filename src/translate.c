@@ -395,12 +395,6 @@ Tr_exp Tr_ifExp(Tr_exp test, Tr_exp then, Tr_exp elsee) {
     doPatch(c.trues, t);
 
     if (elsee) {
-        /*
-        Here, we uses the most simple way to translate if expression,
-        The BOOK indicates this way is not efficient when then-else part is Cx
-        However, this kind of expression is not so frequently using. So, keep it
-        simple.
-        */
         Temp_temp r = Temp_newtemp();
         Temp_label z = Temp_newlabel();
         T_stm jump = T_Jump(T_Name(z), Temp_LabelList(z, NULL));
@@ -408,8 +402,6 @@ Tr_exp Tr_ifExp(Tr_exp test, Tr_exp then, Tr_exp elsee) {
         T_stm then_stm = NULL;
         T_stm else_stm = NULL;
 
-        // the expression then and else must have the same type, which is the
-        // type of entire if-exp or both produce no value.
         if (elsee->kind == Tr_ex) {
             con_exp = Tr_Ex(T_Eseq(
                 c.stm,
