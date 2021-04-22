@@ -128,7 +128,7 @@ static expty transExp(Tr_level level, S_table venv, S_table tenv, A_exp a) {
             return expTy(Tr_intExp(a->u.intt), Ty_Int());
         }
         case A_floatExp: {
-            return expTy(Tr_noExp(), Ty_Float());  // todo Tr_floatExp
+            return expTy(Tr_floatExp(a->u.floatt), Ty_Float());
         }
         case A_stringExp: {
             return expTy(Tr_stringExp(a->u.stringg), Ty_String());

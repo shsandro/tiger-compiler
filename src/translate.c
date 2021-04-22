@@ -271,6 +271,8 @@ Tr_exp Tr_nilExp() {
 
 Tr_exp Tr_intExp(int n) { return Tr_Ex(T_Const(n)); }
 
+Tr_exp Tr_floatExp(float n) { return Tr_Ex(T_FConst(n)); }
+
 static F_fragList global_string = NULL;
 Tr_exp Tr_stringExp(string s) {
     Temp_label str = Temp_newlabel();

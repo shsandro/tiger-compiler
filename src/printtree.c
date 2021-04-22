@@ -111,6 +111,10 @@ static void pr_tree_exp(FILE *out, T_exp exp, int d) {
             indent(out, d);
             fprintf(out, "CONST %d", exp->u.CONST);
             break;
+        case T_FCONST:
+            indent(out, d);
+            fprintf(out, "FCONST %f", exp->u.FCONST);
+            break;
         case T_CALL: {
             T_expList args = exp->u.CALL.args;
             indent(out, d);

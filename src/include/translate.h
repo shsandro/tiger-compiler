@@ -40,6 +40,7 @@ Tr_exp Tr_simpleVar(Tr_access access, Tr_level level);
 Tr_exp Tr_fieldVar(Tr_exp array, int offset);
 Tr_exp Tr_subscriptVar(Tr_exp array, Tr_exp index);
 Tr_exp Tr_intExp(int n);
+Tr_exp Tr_floatExp(float n);
 Tr_exp Tr_stringExp(string s);
 Tr_exp Tr_callExp(Tr_level call_level, Tr_level func_level, Temp_label name,
                   Tr_expList args);
