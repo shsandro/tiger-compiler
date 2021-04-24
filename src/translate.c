@@ -1,5 +1,6 @@
 #include "include/translate.h"
 
+#include "include/canon.h"
 #include "include/frame.h"
 #include "include/printtree.h"
 
@@ -500,6 +501,7 @@ F_fragList Tr_getResult() {
 }
 
 void Tr_printTree(Tr_exp e) {
-    T_stmList sl = T_StmList(unNx(e), NULL);
-    printStmList(stdout, sl);
+    T_stmList sl = C_linearize(unNx(e));
+    struct C_block b = C_basicBlocks(sl);
+    printStmList(stdout, C_traceSchedule(b));
 }
