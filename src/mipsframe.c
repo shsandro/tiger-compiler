@@ -1,7 +1,10 @@
+#include "include/assem.h"
 #include "include/frame.h"
 #include "include/util.h"
 
-const int F_K = 6;  // not use here yet
+#define F_MAX_REGS 32
+
+const int F_K = 6;
 const int F_WORD_SIZE = 4;
 
 struct F_frame_ {
@@ -17,6 +20,79 @@ struct F_access_ {
         Temp_temp reg;  // in register
     } u;
 };
+
+static Temp_temp regs[F_MAX_REGS];
+static void F_regs_init();
+static Temp_tempList F_spec_regs(int r[], int n);
+
+static void F_regs_init() {
+    if (regs[0] == NULL) {
+        for (int i = 0; i < F_MAX_REGS; i++) {
+            regs[i] = Temp_newtemp();
+        }
+    }
+}
+
+static Temp_tempList F_spec_regs(int r[], int n) {
+    assert(n < F_MAX_REGS);
+    Temp_tempList list = NULL, last = NULL;
+    for (int i = 0; i < n; i++) {
+        if (i == 0) {
+            list = Temp_TempList(regs[r[i]], NULL);
+            last = list;
+        } else {
+            last->tail = Temp_TempList(regs[r[i]], NULL);
+            last = last->tail;
+        }
+    }
+    return list;
+}
+
+Temp_map F_tempMap() {
+    static Temp_map F_tempMap = NULL;
+
+    if (regs[0] == NULL) {
+        F_regs_init();
+    }
+
+    if (F_tempMap == NULL) {
+        F_tempMap = Temp_empty();
+        Temp_enter(F_tempMap, regs[0], "$zero");
+        Temp_enter(F_tempMap, regs[1], "$at");
+        Temp_enter(F_tempMap, regs[2], "$v0");
+        Temp_enter(F_tempMap, regs[3], "$v1");
+        Temp_enter(F_tempMap, regs[4], "$a0");
+        Temp_enter(F_tempMap, regs[5], "$a1");
+        Temp_enter(F_tempMap, regs[6], "$a2");
+        Temp_enter(F_tempMap, regs[7], "$a3");
+        Temp_enter(F_tempMap, regs[8], "$t0");
+        Temp_enter(F_tempMap, regs[9], "$t1");
+        Temp_enter(F_tempMap, regs[10], "$t2");
+        Temp_enter(F_tempMap, regs[11], "$t3");
+        Temp_enter(F_tempMap, regs[12], "$t4");
+        Temp_enter(F_tempMap, regs[13], "$t5");
+        Temp_enter(F_tempMap, regs[14], "$t6");
+        Temp_enter(F_tempMap, regs[15], "$t7");
+        Temp_enter(F_tempMap, regs[16], "$s0");
+        Temp_enter(F_tempMap, regs[17], "$s1");
+        Temp_enter(F_tempMap, regs[18], "$s2");
+        Temp_enter(F_tempMap, regs[19], "$s3");
+        Temp_enter(F_tempMap, regs[20], "$s4");
+        Temp_enter(F_tempMap, regs[21], "$s5");
+        Temp_enter(F_tempMap, regs[22], "$s6");
+        Temp_enter(F_tempMap, regs[23], "$s7");
+        Temp_enter(F_tempMap, regs[24], "$t8");
+        Temp_enter(F_tempMap, regs[25], "$t9");
+        Temp_enter(F_tempMap, regs[26], "$k0");
+        Temp_enter(F_tempMap, regs[27], "$k1");
+        Temp_enter(F_tempMap, regs[28], "$gp");
+        Temp_enter(F_tempMap, regs[29], "$sp");
+        Temp_enter(F_tempMap, regs[30], "$fp");
+        Temp_enter(F_tempMap, regs[31], "$ra");
+        F_tempMap = Temp_layerMap(F_tempMap, Temp_name());
+    }
+    return F_tempMap;
+}
 
 static F_access InFrame(int offset);  // memory location at offset X from the fp
 static F_access InReg(Temp_temp reg);  // held in reg X
@@ -79,17 +155,6 @@ static F_access InReg(Temp_temp reg) {
     return a;
 }
 
-static Temp_temp fp = NULL;
-/**
- * always return a fp register point to current level's frame.
- */
-Temp_temp F_FP() {
-    if (!fp) {
-        fp = Temp_newtemp();
-    }
-    return fp;
-}
-
 T_exp F_Exp(F_access acc, T_exp framePtr) {
     if (acc->kind == inFrame) {
         return T_Mem(T_Binop(T_plus, framePtr, T_Const(acc->u.offset)));
@@ -126,4 +191,105 @@ F_fragList F_FragList(F_frag head, F_fragList tail) {
     fl->head = head;
     fl->tail = tail;
     return fl;
+}
+
+/**
+ * MIPS calling convention
+ *
+ * the $v registers are for function returns,
+ * the $a registers are for function arguments,
+ * the $t variables are temporary caller saved registers,
+ * the $s registers are callee saved.
+ */
+
+Temp_temp F_ZERO() {
+    if (regs[0] == NULL) {
+        F_regs_init();
+    }
+    return regs[0];
+}
+
+Temp_temp F_RV() {
+    if (regs[2] == NULL) {
+        F_regs_init();
+    }
+    return regs[2];
+}
+
+Temp_temp F_SP() {
+    if (regs[29] == NULL) {
+        F_regs_init();
+    }
+    return regs[29];
+}
+
+Temp_temp F_FP() {
+    if (regs[30] == NULL) {
+        F_regs_init();
+    }
+    return regs[30];
+}
+
+Temp_temp F_RA() {
+    if (regs[31] == NULL) {
+        F_regs_init();
+    }
+    return regs[31];
+}
+
+// $s0-$s7
+Temp_tempList F_CalleeSaves() {
+    static Temp_tempList list = NULL;
+    if (list == NULL) {
+        int index[] = {16, 17, 18, 19, 20, 21, 22, 23};
+        list = F_spec_regs(index, sizeof(index) / sizeof(index[0]));
+    }
+    return list;
+}
+
+// $t0-$t9
+Temp_tempList F_CallerSaves() {
+    static Temp_tempList list = NULL;
+    if (list == NULL) {
+        int index[] = {8, 9, 10, 11, 12, 13, 14, 15, 24, 25};
+        list = F_spec_regs(index, sizeof(index) / sizeof(index[0]));
+    }
+    return list;
+}
+
+// $a0-$a3
+Temp_tempList F_ArgsRegs() {
+    static Temp_tempList list = NULL;
+    if (list == NULL) {
+        int index[] = {4, 5, 6, 7};
+        list = F_spec_regs(index, sizeof(index) / sizeof(index[0]));
+    }
+    return list;
+}
+
+// registers that are to be STORE in stack, would be trashed by callee.
+Temp_tempList F_CallSaves() {
+    static Temp_tempList list = NULL;
+    if (list == NULL) {
+        int index[] = {2,  3,  4,  5,  6,  7,  8,  9, 10,
+                       11, 12, 13, 14, 15, 24, 25, 31};
+        list = F_spec_regs(index, sizeof(index) / sizeof(index[0]));
+    }
+    return list;
+}
+
+AS_instrList F_procEntryExit2(AS_instrList body) {
+    static Temp_tempList returnSink = NULL;
+    if (!returnSink)
+        returnSink = Temp_TempList(
+            F_ZERO(),
+            Temp_TempList(F_RA(), Temp_TempList(F_SP(), F_CalleeSaves())));
+    return AS_splice(body,
+                     AS_InstrList(AS_Oper("", NULL, returnSink, NULL), NULL));
+}
+
+AS_proc F_procEntryExit3(F_frame frame, AS_instrList body) {
+    char buf[100];
+    sprintf(buf, "PROCEDURE %s\n", S_name(frame->name));
+    return AS_Proc(String(buf), body, "END\n");
 }

@@ -1,16 +1,24 @@
 INCLUDE_FOLDER=include
 TEST=test
 
-all: semantictest parsertest lextest
+all: semantictest parsertest lextest codegen
 
 tests: semantictest parsertest lextest
 	rm -f scanner_driver.o parser_driver.o tiger.tab.o lex.yy.o error.o util.o absyn.o symbol.o table.o prabsyn.o parse.o semant.o types.o env.o mipsframe.o temp.o translate.o escape.o printtree.o tree.o
 
-semantictest: semantic_driver.o tiger.tab.o lex.yy.o error.o util.o absyn.o table.o symbol.o parse.o semant.o types.o env.o mipsframe.o temp.o translate.o escape.o printtree.o tree.o canon.o
-	gcc -g semantic_driver.o tiger.tab.o lex.yy.o error.o util.o absyn.o table.o symbol.o parse.o semant.o types.o env.o mipsframe.o temp.o translate.o escape.o printtree.o tree.o canon.o -o semantictest
+semantictest: semantic_driver.o tiger.tab.o lex.yy.o error.o util.o absyn.o table.o symbol.o parse.o semant.o types.o env.o mipsframe.o temp.o translate.o escape.o printtree.o tree.o canon.o assem.o
+	gcc -g semantic_driver.o tiger.tab.o lex.yy.o error.o util.o absyn.o table.o symbol.o parse.o semant.o types.o env.o mipsframe.o temp.o translate.o escape.o printtree.o tree.o canon.o assem.o -o semantictest
+
+codegen: assem.o mipscodegen.o
 
 semantic_driver.o: $(TEST)/semantic_driver.c $(INCLUDE_FOLDER)/error.h $(INCLUDE_FOLDER)/util.h $(INCLUDE_FOLDER)/absyn.h $(INCLUDE_FOLDER)/parse.h $(INCLUDE_FOLDER)/semant.h $(INCLUDE_FOLDER)/symbol.h
 	gcc -g -c $(TEST)/semantic_driver.c
+
+assem.o: assem.c $(INCLUDE_FOLDER)/assem.h  $(INCLUDE_FOLDER)/absyn.h $(INCLUDE_FOLDER)/error.h $(INCLUDE_FOLDER)/frame.h $(INCLUDE_FOLDER)/symbol.h $(INCLUDE_FOLDER)/temp.h $(INCLUDE_FOLDER)/tree.h $(INCLUDE_FOLDER)/util.h
+	gcc -g -c assem.c
+
+mipscodegen.o: mipscodegen.c $(INCLUDE_FOLDER)/codegen.h
+	gcc -g -c mipscodegen.c
 
 canon.o: canon.c $(INCLUDE_FOLDER)/canon.h $(INCLUDE_FOLDER)/symbol.h $(INCLUDE_FOLDER)/temp.h $(INCLUDE_FOLDER)/tree.h $(INCLUDE_FOLDER)/util.h
 	gcc -g -c canon.c
@@ -21,7 +29,7 @@ printtree.o: printtree.c $(INCLUDE_FOLDER)/printtree.h $(INCLUDE_FOLDER)/symbol.
 tree.o: tree.c $(INCLUDE_FOLDER)/tree.h $(INCLUDE_FOLDER)/symbol.h $(INCLUDE_FOLDER)/temp.h $(INCLUDE_FOLDER)/util.h
 	gcc -g -c tree.c
 
-mipsframe.o: mipsframe.c $(INCLUDE_FOLDER)/frame.h $(INCLUDE_FOLDER)/util.h 
+mipsframe.o: mipsframe.c $(INCLUDE_FOLDER)/frame.h $(INCLUDE_FOLDER)/util.h $(INCLUDE_FOLDER)/assem.h 
 	gcc -g -c mipsframe.c
 
 temp.o: temp.c $(INCLUDE_FOLDER)/symbol.h $(INCLUDE_FOLDER)/table.h $(INCLUDE_FOLDER)/util.h $(INCLUDE_FOLDER)/temp.h 

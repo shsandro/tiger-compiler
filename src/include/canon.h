@@ -4,6 +4,9 @@
  *
  */
 
+#ifndef CANON_H
+#define CANON_H
+
 #include "temp.h"
 #include "tree.h"
 
@@ -48,3 +51,5 @@ T_stmList C_traceSchedule(struct C_block b);
    in this reordering as many JUMP(T.NAME(lab)) statements
    as possible are eliminated by falling through into T.LABEL(lab).
 */
+
+#endif

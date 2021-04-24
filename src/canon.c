@@ -1,6 +1,3 @@
-#ifndef CANON_H
-#define CANON_H
-
 /*
  * canon.c - Functions to convert the IR trees into basic blocks and traces.
  *
@@ -312,5 +309,3 @@ T_stmList C_traceSchedule(struct C_block b) {
 
     return getNext();
 }
-
-#endif

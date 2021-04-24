@@ -41,19 +41,20 @@ void hoist_type_names(S_table tenv, A_dec dec);
 static int inside = 0;
 static Tr_exp brk[16];
 
-int SEM_transProg(A_exp exp, int print_ir) {
+SemantReturn SEM_transProg(A_exp exp) {
     Esc_findEscape(exp);
 
     S_table tenv = E_base_tenv();
     S_table venv = E_base_venv();
 
     expty trans_expr = transExp(Tr_outermost(), venv, tenv, exp);
+    Tr_procEntryExit(Tr_outermost(), trans_expr.exp, NULL);
 
-    int any_errors = anyErrors();
+    SemantReturn ret = {.any_errors = anyErrors(),
+                        .tree_root = trans_expr.exp,
+                        .f_frag = Tr_getResult()};
 
-    if (!any_errors && print_ir) Tr_printTree(trans_expr.exp);
-
-    return any_errors;
+    return ret;
 }
 
 Ty_ty actual_ty(Ty_ty ty) {

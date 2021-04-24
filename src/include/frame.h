@@ -2,6 +2,7 @@
 #ifndef FRAME_H
 #define FRAME_H
 
+#include "assem.h"
 #include "temp.h"
 #include "tree.h"
 #include "util.h"
@@ -54,11 +55,26 @@ struct F_fragList_ {
 };
 F_fragList F_FragList(F_frag head, F_fragList tail);
 
-Temp_temp F_FP();
 extern const int F_WORD_SIZE;
 T_exp F_Exp(F_access acc, T_exp framePtr);
 T_stm F_procEntryExit1(F_frame frame, T_stm stm);
 
 T_exp F_externalCall(string s, T_expList args);
+
+Temp_map F_tempMap();
+
+Temp_temp F_FP();
+Temp_temp F_RV();
+Temp_temp F_RA();
+Temp_temp F_SP();
+Temp_temp F_ZERO();
+Temp_tempList F_CalleeSaves();
+Temp_tempList F_CallerSaves();
+Temp_tempList F_ArgsRegs();
+Temp_tempList F_CallSaves();
+
+T_stm F_procEntryExit1(F_frame frame, T_stm stm);
+AS_instrList F_procEntryExit2(AS_instrList body);
+AS_proc F_procEntryExit3(F_frame frame, AS_instrList body);
 
 #endif

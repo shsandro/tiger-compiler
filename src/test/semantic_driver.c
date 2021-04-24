@@ -21,5 +21,5 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-    return SEM_transProg(absyn_tree_root, FALSE);
+    return SEM_transProg(absyn_tree_root).any_errors;
 }
