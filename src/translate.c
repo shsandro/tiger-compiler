@@ -387,6 +387,7 @@ Tr_exp Tr_assignExp(Tr_exp left, Tr_exp right) {
     return Tr_Nx(T_Move(unEx(left), unEx(right)));
 }
 
+// FIXME?
 Tr_exp Tr_ifExp(Tr_exp test, Tr_exp then, Tr_exp elsee) {
     Tr_exp con_exp = NULL;
 
@@ -407,11 +408,11 @@ Tr_exp Tr_ifExp(Tr_exp test, Tr_exp then, Tr_exp elsee) {
             con_exp = Tr_Ex(T_Eseq(
                 c.stm,
                 T_Eseq(
-                    T_Label(t),
+                    T_Label(f),
                     T_Eseq(
                         T_Move(T_Temp(r), unEx(then)),
                         T_Eseq(jump,
-                               T_Eseq(T_Label(f),
+                               T_Eseq(T_Label(t),
                                       T_Eseq(T_Move(T_Temp(r), unEx(elsee)),
                                              T_Eseq(jump,
                                                     T_Eseq(T_Label(z),
@@ -505,8 +506,4 @@ void Tr_printTree(Tr_exp e) {
     printStmList(stdout, sl);
 }
 
-void Tr_printCanonicalTree(Tr_exp e) {
-    T_stmList sl = C_linearize(unNx(e));
-    struct C_block b = C_basicBlocks(sl);
-    printStmList(stdout, C_traceSchedule(b));
-}
+void Tr_printCanonicalTree(T_stmList e) { printStmList(stdout, e); }

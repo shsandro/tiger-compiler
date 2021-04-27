@@ -57,6 +57,6 @@ Tr_exp Tr_letExp(Tr_expList exps);
 Tr_exp Tr_arrayExp(Tr_exp size, Tr_exp init);
 
 void Tr_printTree(Tr_exp e);
-void Tr_printCanonicalTree(Tr_exp e);
+void Tr_printCanonicalTree(T_stmList e);
 
 #endif

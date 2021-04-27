@@ -16,6 +16,9 @@
 #define TRUE 1
 #define FALSE 0
 
+int print_tree = FALSE, print_ir = FALSE, print_before_assembly = FALSE,
+    print_after_assembly = FALSE, print_canonical = FALSE;
+
 void help_menu(const char *prog_name) {
     printf("Usage: %s [flags]\n", prog_name);
     printf("    -h               prints this usage guide\n");
@@ -36,8 +39,7 @@ void help_menu(const char *prog_name) {
         "        [not available yet]\n");
 }
 
-SemantReturn frontend(char *input_file, int print_tree, int print_ir,
-                      int print_canonical, A_exp *absyn_root) {
+SemantReturn frontend(char *input_file, A_exp *absyn_root) {
     FILE *out = stdout;
 
     reset(input_file);
@@ -57,16 +59,6 @@ SemantReturn frontend(char *input_file, int print_tree, int print_ir,
 
     SemantReturn sem_ret = SEM_transProg(absyn_tree_root);
 
-    if (!sem_ret.any_errors && print_ir) {
-        fprintf(out, "=============       IR       =============\n");
-        Tr_printTree(sem_ret.tree_root);
-    }
-
-    if (!sem_ret.any_errors && print_canonical) {
-        fprintf(out, "============= Canonical Tree =============\n");
-        Tr_printCanonicalTree(sem_ret.tree_root);
-    }
-
     return sem_ret;
 }
 
@@ -77,22 +69,28 @@ static void do_proc(FILE *out, F_frame frame, T_stm body) {
     stm_l = C_linearize(body);
     stm_l = C_traceSchedule(C_basicBlocks(stm_l));
 
+    if (print_canonical) {
+        fprintf(stdout, "============= Canonical Tree =============\n");
+        Tr_printCanonicalTree(stm_l);
+        print_canonical = 0;
+    }
+
     instr_l = F_codegen(frame, stm_l);
-    AS_printInstrList(out, instr_l, F_tempMap());
+
+    if (print_before_assembly) {
+        fprintf(stdout, "============= Crude Assembly =============\n");
+        AS_printInstrList(out, instr_l, F_tempMap());
+    }
 }
 
-int backend(F_fragList frags, int print_before_as, int print_after_as) {
-    if (print_before_as) {
-        fprintf(stdout, "============= Crude Assembly =============\n");
+int backend(F_fragList frags) {
+    AS_instrList instr_l = NULL;
+    T_stmList stm_l = NULL;
 
-        AS_instrList instr_l = NULL;
-        T_stmList stm_l = NULL;
-
-        F_fragList f = frags;
-        for (; f; f = f->tail) {
-            if (f->head->kind == F_procFrag) {
-                do_proc(stdout, f->head->u.proc.frame, f->head->u.proc.body);
-            }
+    F_fragList f = frags;
+    for (; f; f = f->tail) {
+        if (f->head->kind == F_procFrag) {
+            do_proc(stdout, f->head->u.proc.frame, f->head->u.proc.body);
         }
     }
 }
@@ -100,8 +98,6 @@ int backend(F_fragList frags, int print_before_as, int print_after_as) {
 int main(int argc, char *const *argv) {
     int ch;
     char *output_file, *input_file = NULL;
-    int print_tree = FALSE, print_ir = FALSE, print_before_assembly = FALSE,
-        print_after_assembly = FALSE, print_canonical = FALSE;
     A_exp absyn_root = NULL;
     Tr_exp ir = NULL;
 
@@ -154,12 +150,16 @@ int main(int argc, char *const *argv) {
         exit(EXIT_FAILURE);
     }
 
-    SemantReturn sem_ret = frontend(input_file, print_tree, print_ir,
-                                    print_canonical, &absyn_root);
+    SemantReturn sem_ret = frontend(input_file, &absyn_root);
 
     if (sem_ret.any_errors) {
         exit(EXIT_FAILURE);
-    } else {
-        backend(sem_ret.f_frag, print_before_assembly, print_after_assembly);
     }
+
+    if (print_ir) {
+        fprintf(stdout, "=============       IR       =============\n");
+        Tr_printTree(sem_ret.tree_root);
+    }
+
+    backend(sem_ret.f_frag);
 }
