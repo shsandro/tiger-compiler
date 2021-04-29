@@ -7,6 +7,7 @@
 #include "include/error.h"
 #include "include/escape.h"
 #include "include/frame.h"
+#include "include/semant_errors.h"
 #include "include/temp.h"
 #include "include/translate.h"
 #include "include/types.h"
@@ -138,26 +139,27 @@ static expty transExp(Tr_level level, S_table venv, S_table tenv, A_exp a) {
             E_enventry et = S_look(venv, a->u.call.func);
 
             if (et == NULL || et->kind != E_funEntry) {
-                error(a->pos, "call expression: undefined type %s",
-                      S_name(a->u.call.func));
+                error(a->pos, SEM_ERR_UNDEFINED_FUNC, S_name(a->u.call.func));
 
                 return expTy(Tr_noExp(), Ty_Nil());
             }
 
+            int count = 0;
             A_expList el = a->u.call.args;
             Ty_tyList formals = et->u.fun.formals;
             expty tmp;
             Tr_expList tr_el = NULL;
             while (formals != NULL) {
                 if (el == NULL) {
-                    error(a->pos, "call expression: too few arguments");
+                    error(a->pos, SEM_ERR_FN_TOO_FEW_ARGS,
+                          S_name(a->u.call.func));
                     return expTy(Tr_noExp(), Ty_Nil());
                 } else {
+                    ++count;
                     tmp = transExp(level, venv, tenv, el->head);
                     if (formals->head != tmp.ty)
-                        error(a->pos,
-                              "call expression: argument type dosen't match "
-                              "the paramater");
+                        error(a->pos, SEM_ERR_FN_ARG_WRONG_TYPE, count,
+                              S_name(a->u.call.func));
                 }
 
                 formals = formals->tail;
@@ -166,8 +168,7 @@ static expty transExp(Tr_level level, S_table venv, S_table tenv, A_exp a) {
             }
 
             if (el != NULL) {
-                error(a->pos, "call expression: too many arguments %s",
-                      S_name(a->u.call.func));
+                error(a->pos, SEM_ERR_FN_TOO_MANY_ARGS, S_name(a->u.call.func));
                 return expTy(Tr_noExp(), et->u.fun.result);
             }
 
@@ -182,16 +183,13 @@ static expty transExp(Tr_level level, S_table venv, S_table tenv, A_exp a) {
             if (oper == A_plusOp || oper == A_minusOp || oper == A_timesOp ||
                 oper == A_divideOp) {
                 if (left.ty->kind != Ty_int && left.ty->kind != Ty_float)
-                    error(a->u.op.left->pos,
-                          "binary operation: integer or float required");
+                    error(a->u.op.left->pos, SEM_ERR_OP_REQ_TYPE, "binary");
 
                 if (right.ty->kind != Ty_int && right.ty->kind != Ty_float)
-                    error(a->u.op.right->pos,
-                          "binary operation: integer or float required");
+                    error(a->u.op.right->pos, SEM_ERR_OP_REQ_TYPE, "binary");
 
-                if (right.ty->kind != right.ty->kind)
-                    error(a->u.op.left->pos,
-                          "binary operation: same type required");
+                if (left.ty->kind != right.ty->kind)
+                    error(a->u.op.left->pos, SEM_ERR_OP_DIFF_TYPE);
 
                 Tr_exp tr_exp = Tr_arithExp(oper, left.exp, right.exp);
 
@@ -201,21 +199,19 @@ static expty transExp(Tr_level level, S_table venv, S_table tenv, A_exp a) {
                     return expTy(tr_exp, Ty_Float());
             } else if (left.ty->kind != right.ty->kind && left.ty != Ty_Nil() &&
                        right.ty != Ty_Nil()) {
-                error(a->u.op.left->pos,
-                      "operators compare: different type for compare");
+                error(a->u.op.left->pos, SEM_ERR_OP_DIFF_TYPE);
                 return expTy(Tr_noExp(), Ty_Int());
             } else if (oper != A_eqOp && oper != A_neqOp) {  // lt, le, gt, ge
                 if ((left.ty->kind != Ty_int && left.ty->kind != Ty_float) ||
                     (right.ty->kind != Ty_int && right.ty->kind != Ty_float)) {
-                    error(a->u.op.left->pos,
-                          "binary compare: integer or float required");
+                    error(a->u.op.left->pos, SEM_ERR_OP_REQ_TYPE, "comparison");
                     return expTy(Tr_noExp(), Ty_Int());
                 }
             } else if (!(left.ty->kind == Ty_int || left.ty->kind == Ty_array ||
                          left.ty->kind == Ty_record ||
                          left.ty->kind == Ty_string)) {
                 if (right.ty != Ty_Nil()) {
-                    error(a->u.op.left->pos, "binary compare: can't compare!");
+                    error(a->u.op.left->pos, SEM_ERR_OP_REQ_TYPE, "comparison");
                     return expTy(Tr_noExp(), Ty_Int());
                 }
             }
@@ -225,14 +221,12 @@ static expty transExp(Tr_level level, S_table venv, S_table tenv, A_exp a) {
         case A_recordExp: {
             Ty_ty recordty = S_look(tenv, a->u.record.typ);
             if (NULL == recordty) {
-                error(a->pos, "record expression: undefined type %s",
-                      S_name(a->u.record.typ));
+                error(a->pos, SEM_ERR_UNDEFINED_TYPE, S_name(a->u.record.typ));
                 return expTy(Tr_noExp(), Ty_Record(NULL));
             }
 
             if (recordty->kind != Ty_record) {
-                error(a->pos, "record expression: <%s> is not a record type",
-                      S_name(a->u.record.typ));
+                error(a->pos, SEM_ERR_NOT_RECORD, S_name(a->u.record.typ));
                 return expTy(Tr_noExp(), Ty_Record(NULL));
             }
 
@@ -243,15 +237,14 @@ static expty transExp(Tr_level level, S_table venv, S_table tenv, A_exp a) {
             for (fl = a->u.record.fields, ty_fl = recordty->u.record;
                  fl && ty_fl; fl = fl->tail, ty_fl = ty_fl->tail, n_fields++) {
                 if (fl->head->name != ty_fl->head->name) {
-                    error(a->pos,
-                          "record expression: <%s> not a valid field name",
-                          S_name(fl->head->name));
+                    error(a->pos, SEM_ERR_UNDEFINED_FIELD,
+                          S_name(fl->head->name), S_name(a->u.record.typ));
                     return expTy(Tr_noExp(), Ty_Record(NULL));
                 }
                 expty exp = transExp(level, venv, tenv, fl->head->exp);
                 if (!actual_eq(exp.ty, ty_fl->head->ty)) {
-                    error(a->pos,
-                          "record expression: both field types dismatch");
+                    error(a->pos, SEM_ERR_FIELD_WRONG_TYPE,
+                          S_name(fl->head->name), S_name(a->u.record.typ));
                     return expTy(Tr_noExp(), Ty_Record(NULL));
                 }
 
@@ -277,18 +270,14 @@ static expty transExp(Tr_level level, S_table venv, S_table tenv, A_exp a) {
         case A_assignExp: {
             expty var = transVar(level, venv, tenv, a->u.assign.var);
             expty exp = transExp(level, venv, tenv, a->u.assign.exp);
-            if (var.ty != exp.ty)
-                error(a->pos,
-                      "assign expression: dismatch type between variable and "
-                      "expression <%d> <%d>",
-                      var.ty->kind, exp.ty->kind);
+            if (var.ty != exp.ty) error(a->pos, SEM_ERR_VAR_WRONG_TYPE);
 
             return expTy(Tr_assignExp(var.exp, exp.exp), Ty_Void());
         }
         case A_ifExp: {
             expty cond = transExp(level, venv, tenv, a->u.iff.test);
             if (cond.ty != Ty_Int()) {
-                error(a->pos, "condition expression: if test must produce int");
+                error(a->pos, SEM_ERR_IF_COND);
                 return expTy(Tr_noExp(), Ty_Void());
             }
             expty thenet = transExp(level, venv, tenv, a->u.iff.then);
@@ -298,17 +287,13 @@ static expty transExp(Tr_level level, S_table venv, S_table tenv, A_exp a) {
                 if (elseet.ty != thenet.ty) {
                     if (!((elseet.ty == Ty_Nil() || elseet.ty == Ty_Void()) ||
                           (thenet.ty == Ty_Nil() || thenet.ty == Ty_Void())))
-                        error(a->pos,
-                              "condition expression: then-else section must be "
-                              "the same type");
+                        error(a->pos, SEM_ERR_IF_ELSE_TYPE_DIFF);
                 }
 
                 return expTy(Tr_ifExp(cond.exp, thenet.exp, elseet.exp),
                              thenet.ty);
             } else if (thenet.ty != Ty_Void()) {
-                error(a->pos,
-                      "condition expression: if-then exp's body must produce "
-                      "no value");
+                error(a->pos, SEM_ERR_NOT_VOID_ELSELESS_IF);
                 return expTy(Tr_noExp(), Ty_Void());
             }
 
@@ -316,8 +301,7 @@ static expty transExp(Tr_level level, S_table venv, S_table tenv, A_exp a) {
         }
         case A_whileExp: {
             expty test = transExp(level, venv, tenv, a->u.whilee.test), body;
-            if (test.ty != Ty_Int())
-                error(a->pos, "while loop: while test must produce int");
+            if (test.ty != Ty_Int()) error(a->pos, SEM_ERR_WHILE_COND);
 
             inside++;  // inside loop
             Tr_exp done = Tr_doneExp();
@@ -326,7 +310,7 @@ static expty transExp(Tr_level level, S_table venv, S_table tenv, A_exp a) {
             inside--;  // outside
 
             if (body.ty != Ty_Void() && body.ty != Ty_Nil()) {
-                error(a->pos, "while loop: body section must produce no value");
+                error(a->pos, SEM_ERR_WHILE_NOT_VOID);
             }
 
             return expTy(Tr_whileExp(test.exp, done, body.exp), Ty_Void());
@@ -389,8 +373,7 @@ static expty transExp(Tr_level level, S_table venv, S_table tenv, A_exp a) {
         }
         case A_breakExp: {
             if (!inside) {
-                error(a->pos,
-                      "break expression: break expression outside loop");
+                error(a->pos, SEM_ERR_BREAK_OUTSIDE_LOOP);
                 return expTy(Tr_noExp(), Ty_Void());
             }
             return expTy(Tr_breakExp(brk[inside]), Ty_Void());

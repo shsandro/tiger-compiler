@@ -41,7 +41,7 @@ translate.o: translate.c $(INCLUDE_FOLDER)/translate.h $(INCLUDE_FOLDER)/frame.h
 escape.o: escape.c $(INCLUDE_FOLDER)/symbol.h $(INCLUDE_FOLDER)/absyn.h $(INCLUDE_FOLDER)/escape.h 
 	gcc -g -c escape.c
 
-semant.o: semant.c $(INCLUDE_FOLDER)/env.h $(INCLUDE_FOLDER)/error.h $(INCLUDE_FOLDER)/types.h $(INCLUDE_FOLDER)/util.h $(INCLUDE_FOLDER)/semant.h $(INCLUDE_FOLDER)/absyn.h $(INCLUDE_FOLDER)/frame.h $(INCLUDE_FOLDER)/translate.h $(INCLUDE_FOLDER)/semant.h
+semant.o: semant.c $(INCLUDE_FOLDER)/semant_errors.h $(INCLUDE_FOLDER)/env.h $(INCLUDE_FOLDER)/error.h $(INCLUDE_FOLDER)/types.h $(INCLUDE_FOLDER)/util.h $(INCLUDE_FOLDER)/semant.h $(INCLUDE_FOLDER)/absyn.h $(INCLUDE_FOLDER)/frame.h $(INCLUDE_FOLDER)/translate.h $(INCLUDE_FOLDER)/semant.h
 	gcc -g -c semant.c
 
 types.o: types.c $(INCLUDE_FOLDER)/types.h $(INCLUDE_FOLDER)/symbol.h $(INCLUDE_FOLDER)/util.h $(INCLUDE_FOLDER)/types.h
