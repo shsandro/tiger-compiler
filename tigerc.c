@@ -62,43 +62,51 @@ SemantReturn frontend(char *input_file, A_exp *absyn_root) {
     return sem_ret;
 }
 
-static void do_proc(FILE *out, F_frame frame, T_stm body) {
-    AS_instrList instr_l = NULL;
-    T_stmList stm_l = NULL;
+int backend(Tr_exp exp) {
+    T_stmList stmList = NULL;
+    F_fragList f_frags = NULL;
 
-    stm_l = C_linearize(body);
-    stm_l = C_traceSchedule(C_basicBlocks(stm_l));
+    Tr_procEntryExit(Tr_outermost(), exp, NULL);
 
-    if (print_canonical) {
-        fprintf(stdout, "============= Canonical Tree =============\n");
-        Tr_printCanonicalTree(stm_l);
-        print_canonical = 0;
+    if (print_ir) {
+        fprintf(stdout, "=============       IR       =============\n");
+        Tr_printTree(exp);
     }
 
-    instr_l = F_codegen(frame, stm_l);
+    f_frags = Tr_getResult();
+    for (F_fragList f = f_frags; f; f = f->tail) {
+        stmList = C_linearize(f->head->u.proc.body);
+        stmList = C_traceSchedule(C_basicBlocks(stmList));
 
-    if (print_before_assembly) {
-        fprintf(stdout, "============= Crude Assembly =============\n");
-        AS_printInstrList(out, instr_l, F_tempMap());
-    }
-}
+        if (print_canonical) {
+            Tr_printCanonicalTree(stmList);
+        }
 
-int backend(F_fragList frags) {
-    AS_instrList instr_l = NULL;
-    T_stmList stm_l = NULL;
-
-    F_fragList f = frags;
-    for (; f; f = f->tail) {
         if (f->head->kind == F_procFrag) {
-            do_proc(stdout, f->head->u.proc.frame, f->head->u.proc.body);
+            AS_instrList instr_l = F_codegen(f->head->u.proc.frame, stmList);
+
+            if (print_before_assembly) {
+                AS_printInstrList(stdout, instr_l, F_tempMap());
+            }
         }
     }
+    return 0;
+}
+
+int program(char *input_file, char *output_file) {
+    A_exp absyn_root = NULL;
+    SemantReturn sem_ret = frontend(input_file, &absyn_root);
+
+    if (sem_ret.any_errors) {
+        exit(EXIT_FAILURE);
+    }
+
+    return backend(sem_ret.tree_root);
 }
 
 int main(int argc, char *const *argv) {
     int ch;
     char *output_file, *input_file = NULL;
-    A_exp absyn_root = NULL;
     Tr_exp ir = NULL;
 
     while ((ch = getopt(argc, argv, "aho:p:isSc")) != -1) {
@@ -150,16 +158,5 @@ int main(int argc, char *const *argv) {
         exit(EXIT_FAILURE);
     }
 
-    SemantReturn sem_ret = frontend(input_file, &absyn_root);
-
-    if (sem_ret.any_errors) {
-        exit(EXIT_FAILURE);
-    }
-
-    if (print_ir) {
-        fprintf(stdout, "=============       IR       =============\n");
-        Tr_printTree(sem_ret.tree_root);
-    }
-
-    backend(sem_ret.f_frag);
+    return program(input_file, output_file);
 }

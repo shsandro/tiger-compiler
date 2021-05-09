@@ -91,19 +91,38 @@ static void format(char *result, string assem, Temp_tempList dst,
                    Temp_tempList src, AS_targets jumps, Temp_map m) {
     char *p;
     int i = 0; /* offset to result string */
-    for (p = assem; p && *p != '\0'; p++)
+
+    for (p = assem; p && *p != '\0'; p++) {
+        string t = (string)malloc(sizeof(string) * 5);
+
+        t[0] = 'T';
+        t[1] = '\0';
+
         if (*p == '`') switch (*(++p)) {
                 case 's': {
                     int n = atoi(++p);
                     string s = Temp_look(m, nthTemp(src, n));
-                    strcpy(result + i, s);
-                    i += strlen(s);
+
+                    if (!strstr(s, "$")) {
+                        strcat(t, s);
+                        strcpy(result + i, t);
+                        i += strlen(t);
+                    } else {
+                        strcpy(result + i, s);
+                        i += strlen(s);
+                    }
                 } break;
                 case 'd': {
                     int n = atoi(++p);
                     string s = Temp_look(m, nthTemp(dst, n));
-                    strcpy(result + i, s);
-                    i += strlen(s);
+                    if (!strstr(s, "$")) {
+                        strcat(t, s);
+                        strcpy(result + i, t);
+                        i += strlen(t);
+                    } else {
+                        strcpy(result + i, s);
+                        i += strlen(s);
+                    }
                 } break;
                 case 'j':
                     assert(jumps);
@@ -125,6 +144,9 @@ static void format(char *result, string assem, Temp_tempList dst,
             result[i] = *p;
             i++;
         }
+
+        free(t);
+    }
     result[i] = '\0';
 }
 
@@ -148,7 +170,6 @@ void AS_print(FILE *out, AS_instr i, Temp_map m) {
     }
 }
 
-/* c should be COL_color; temporarily it is not */
 void AS_printInstrList(FILE *out, AS_instrList iList, Temp_map m) {
     for (; iList; iList = iList->tail) {
         AS_print(out, iList->head, m);

@@ -49,11 +49,11 @@ SemantReturn SEM_transProg(A_exp exp) {
     S_table venv = E_base_venv();
 
     expty trans_expr = transExp(Tr_outermost(), venv, tenv, exp);
-    Tr_procEntryExit(Tr_outermost(), trans_expr.exp, NULL);
 
-    SemantReturn ret = {.any_errors = anyErrors(),
-                        .tree_root = trans_expr.exp,
-                        .f_frag = Tr_getResult()};
+    SemantReturn ret = {
+        .any_errors = anyErrors(),
+        .tree_root = trans_expr.exp,
+    };
 
     return ret;
 }
@@ -175,7 +175,7 @@ static expty transExp(Tr_level level, S_table venv, S_table tenv, A_exp a) {
 
             return expTy(
                 Tr_callExp(level, et->u.fun.level, et->u.fun.label, tr_el),
-                et->u.fun.result);
+                actual_ty(et->u.fun.result));
         }
         case A_opExp: {
             A_oper oper = a->u.op.oper;
@@ -388,7 +388,6 @@ static expty transExp(Tr_level level, S_table venv, S_table tenv, A_exp a) {
             S_beginScope(tenv);
 
             for (d = a->u.let.decs; d; d = d->tail) {
-                // append in a reversed order. but don't worry. check return.
                 head = Tr_ExpList(transDec(level, venv, tenv, d->head), head);
             }
 
@@ -398,7 +397,7 @@ static expty transExp(Tr_level level, S_table venv, S_table tenv, A_exp a) {
             S_endScope(tenv);
             S_endScope(venv);
 
-            return expTy(Tr_seqExp(head), et.ty);
+            return expTy(Tr_letExp(head), et.ty);
         }
         case A_arrayExp: {
             expty init, size;
@@ -483,7 +482,8 @@ static expty transVar(Tr_level level, S_table venv, S_table tenv, A_var v) {
 
             if (actual_ty(et.ty)->kind == Ty_array) {
                 Ty_ty arr = et.ty->u.array;
-                return expTy(Tr_subscriptVar(et.exp, etint.exp), arr);
+                return expTy(Tr_subscriptVar(et.exp, etint.exp),
+                             actual_ty(arr));
             } else {
                 error(v->u.subscript.var->pos, SEM_ERR_NOT_AN_ARRAY);
                 return expTy(Tr_noExp(), Ty_Int());
@@ -571,7 +571,6 @@ static Tr_exp transDec(Tr_level level, S_table venv, S_table tenv, A_dec d) {
                         head = Ty_TyList(ty, NULL);
                         tail = head;
                     }
-
                     if (m_head) {
                         m_tail->tail = U_BoolList(TRUE, NULL);
                         m_tail = m_tail->tail;
@@ -622,6 +621,7 @@ static Tr_exp transDec(Tr_level level, S_table venv, S_table tenv, A_dec d) {
                     break;
                 }
 
+                Tr_procEntryExit(fun_entry->u.fun.level, exp.exp, m_accessList);
                 S_endScope(venv);
             }
             return Tr_noExp();
