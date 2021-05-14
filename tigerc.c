@@ -65,6 +65,7 @@ SemantReturn frontend(char *input_file, A_exp *absyn_root) {
 int backend(Tr_exp exp) {
     T_stmList stmList = NULL;
     F_fragList f_frags = NULL;
+    F_fragList s_frags = NULL;
 
     Tr_procEntryExit(Tr_outermost(), exp, NULL);
 
@@ -74,6 +75,14 @@ int backend(Tr_exp exp) {
     }
 
     f_frags = Tr_getResult();
+
+    if (print_before_assembly) {
+        for (s_frags = f_frags; s_frags; s_frags = s_frags->tail)
+            if (s_frags->head->kind == F_stringFrag)
+                fprintf(stdout, "%s: %s\n\n", Temp_labelstring(Temp_newlabel()),
+                        s_frags->head->u.stringg.str);
+    }
+
     for (F_fragList f = f_frags; f; f = f->tail) {
         stmList = C_linearize(f->head->u.proc.body);
         stmList = C_traceSchedule(C_basicBlocks(stmList));

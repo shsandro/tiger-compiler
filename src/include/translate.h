@@ -59,4 +59,8 @@ Tr_exp Tr_arrayExp(Tr_exp size, Tr_exp init);
 void Tr_printTree(Tr_exp e);
 void Tr_printCanonicalTree(T_stmList e);
 
+Tr_exp Tr_eqStringExp(A_oper op, Tr_exp left, Tr_exp right);
+Tr_exp Tr_eqRef(A_oper op, Tr_exp left, Tr_exp right);
+Tr_exp Tr_eqExp(A_oper op, Tr_exp left, Tr_exp right);
+
 #endif

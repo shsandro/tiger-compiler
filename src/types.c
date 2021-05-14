@@ -12,6 +12,9 @@
 #include "include/symbol.h"
 #include "include/util.h"
 
+static char error_str_ty[][12] = {"record", "nil",  "int",  "string",
+                                  "array",  "name", "void", "float"};
+
 static struct Ty_ty_ tynil = {Ty_nil};
 Ty_ty Ty_Nil(void) { return &tynil; }
 
@@ -96,4 +99,9 @@ void TyList_print(Ty_tyList list) {
         TyList_print(list->tail);
         printf(")");
     }
+}
+
+char *Ty_ToString(Ty_ty t) {
+    if (t->kind == Ty_name) return S_name(t->u.name.sym);
+    return error_str_ty[t->kind];
 }

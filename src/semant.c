@@ -178,46 +178,95 @@ static expty transExp(Tr_level level, S_table venv, S_table tenv, A_exp a) {
                 actual_ty(et->u.fun.result));
         }
         case A_opExp: {
+            // FIXME float error
             A_oper oper = a->u.op.oper;
             expty left = transExp(level, venv, tenv, a->u.op.left);
             expty right = transExp(level, venv, tenv, a->u.op.right);
-            if (oper == A_plusOp || oper == A_minusOp || oper == A_timesOp ||
-                oper == A_divideOp) {
-                if (left.ty->kind != Ty_int && left.ty->kind != Ty_float)
-                    error(a->u.op.left->pos, SEM_ERR_OP_REQ_TYPE, "binary");
+            Tr_exp translation = Tr_noExp();
 
-                if (right.ty->kind != Ty_int && right.ty->kind != Ty_float)
-                    error(a->u.op.right->pos, SEM_ERR_OP_REQ_TYPE, "binary");
+            switch (oper) {
+                case A_plusOp:
+                case A_minusOp:
+                case A_timesOp:
+                case A_divideOp:
+                    if (left.ty->kind != Ty_int || left.ty->kind != Ty_float)
+                        error(a->u.op.left->pos, "Integer required");
+                    if (right.ty->kind != Ty_int || right.ty->kind != Ty_float)
+                        error(a->u.op.right->pos, "Integer required");
+                    if (left.ty->kind != right.ty->kind)
 
-                if (left.ty->kind != right.ty->kind)
-                    error(a->u.op.left->pos, SEM_ERR_OP_DIFF_TYPE);
+                        return expTy(Tr_arithExp(oper, left.exp, right.exp),
+                                     Ty_Int());
 
-                Tr_exp tr_exp = Tr_arithExp(oper, left.exp, right.exp);
+                case A_eqOp:
+                case A_neqOp:
+                    switch (left.ty->kind) {
+                        case Ty_int: {
+                            if (right.ty == left.ty)
+                                translation =
+                                    Tr_eqExp(oper, left.exp, right.exp);
+                            break;
+                        }
+                        case Ty_string: {
+                            if (right.ty == left.ty)
+                                translation =
+                                    Tr_eqStringExp(oper, left.exp, right.exp);
+                            break;
+                        }
+                        case Ty_array: {
+                            if (right.ty->kind != left.ty->kind) {
+                                error(a->u.op.right->pos,
+                                      "%s expression given; expected %s",
+                                      Ty_ToString(right.ty),
+                                      Ty_ToString(left.ty));
+                            }
+                            translation = Tr_eqRef(oper, left.exp, right.exp);
+                            break;
+                        }
+                        case Ty_record: {
+                            if (right.ty->kind != Ty_record &&
+                                right.ty->kind != Ty_nil) {
+                                error(a->u.op.right->pos,
+                                      "%s expression given is not a record "
+                                      "or nil",
+                                      Ty_ToString(right.ty));
+                            }
+                            translation = Tr_eqRef(oper, left.exp, right.exp);
+                            break;
+                        }
+                        default: {
+                            error(a->u.op.right->pos,
+                                  "unexpected %s expression in comparsion",
+                                  Ty_ToString(right.ty));
+                        }
+                    }
+                    return expTy(translation, Ty_Int());
 
-                if (right.ty->kind == Ty_int)
-                    return expTy(tr_exp, Ty_Int());
-                else
-                    return expTy(tr_exp, Ty_Float());
-            } else if (left.ty->kind != right.ty->kind && left.ty != Ty_Nil() &&
-                       right.ty != Ty_Nil()) {
-                error(a->u.op.left->pos, SEM_ERR_OP_DIFF_TYPE);
-                return expTy(Tr_noExp(), Ty_Int());
-            } else if (oper != A_eqOp && oper != A_neqOp) {  // lt, le, gt, ge
-                if ((left.ty->kind != Ty_int && left.ty->kind != Ty_float) ||
-                    (right.ty->kind != Ty_int && right.ty->kind != Ty_float)) {
-                    error(a->u.op.left->pos, SEM_ERR_OP_REQ_TYPE, "comparison");
-                    return expTy(Tr_noExp(), Ty_Int());
-                }
-            } else if (!(left.ty->kind == Ty_int || left.ty->kind == Ty_array ||
-                         left.ty->kind == Ty_record ||
-                         left.ty->kind == Ty_string)) {
-                if (right.ty != Ty_Nil()) {
-                    error(a->u.op.left->pos, SEM_ERR_OP_REQ_TYPE, "comparison");
-                    return expTy(Tr_noExp(), Ty_Int());
+                case A_gtOp:
+                case A_ltOp:
+                case A_leOp:
+                case A_geOp: {
+                    if (right.ty->kind != left.ty->kind) {
+                        error(a->u.op.right->pos, "%s given; expected %s",
+                              Ty_ToString(right.ty), Ty_ToString(left.ty));
+                    }
+                    switch (left.ty->kind) {
+                        case Ty_int:
+                            translation = Tr_relExp(oper, left.exp, right.exp);
+                            break;
+                        case Ty_string:
+                            translation = Tr_noExp();
+                            break;
+                        default: {
+                            error(a->u.op.right->pos,
+                                  "unexpected type %s in comparison",
+                                  Ty_ToString(right.ty));
+                            translation = Tr_noExp();
+                        }
+                    }
+                    return expTy(translation, Ty_Int());
                 }
             }
-
-            return expTy(Tr_relExp(oper, left.exp, right.exp), Ty_Int());
         }
         case A_recordExp: {
             Ty_ty recordty = S_look(tenv, a->u.record.typ);
@@ -272,7 +321,8 @@ static expty transExp(Tr_level level, S_table venv, S_table tenv, A_exp a) {
         case A_assignExp: {
             expty var = transVar(level, venv, tenv, a->u.assign.var);
             expty exp = transExp(level, venv, tenv, a->u.assign.exp);
-            if (var.ty != exp.ty) error(a->pos, SEM_ERR_VAR_WRONG_TYPE);
+            if (var.ty != exp.ty)
+                if (exp.ty != Ty_Nil()) error(a->pos, SEM_ERR_VAR_WRONG_TYPE);
 
             return expTy(Tr_assignExp(var.exp, exp.exp), Ty_Void());
         }
@@ -520,7 +570,12 @@ static Tr_exp transDec(Tr_level level, S_table venv, S_table tenv, A_dec d) {
             Tr_access m_access = Tr_allocLocal(level, d->u.var.escape);
             E_enventry eentry = E_VarEntry(m_access, e.ty);
 
-            S_enter(venv, d->u.var.var, eentry);
+            if (d->u.var.typ != NULL) {
+                S_enter(venv, d->u.var.var, E_VarEntry(m_access, dec_ty));
+            } else {
+                S_enter(venv, d->u.var.var, eentry);
+            }
+
             return Tr_assignExp(Tr_simpleVar(m_access, level), e.exp);
         }
         case A_typeDec: {
