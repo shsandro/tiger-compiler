@@ -178,7 +178,6 @@ static expty transExp(Tr_level level, S_table venv, S_table tenv, A_exp a) {
                 actual_ty(et->u.fun.result));
         }
         case A_opExp: {
-            // FIXME float error
             A_oper oper = a->u.op.oper;
             expty left = transExp(level, venv, tenv, a->u.op.left);
             expty right = transExp(level, venv, tenv, a->u.op.right);
@@ -189,14 +188,21 @@ static expty transExp(Tr_level level, S_table venv, S_table tenv, A_exp a) {
                 case A_minusOp:
                 case A_timesOp:
                 case A_divideOp:
-                    if (left.ty->kind != Ty_int || left.ty->kind != Ty_float)
-                        error(a->u.op.left->pos, "Integer required");
-                    if (right.ty->kind != Ty_int || right.ty->kind != Ty_float)
-                        error(a->u.op.right->pos, "Integer required");
-                    if (left.ty->kind != right.ty->kind)
+                    if (left.ty->kind != Ty_int && left.ty->kind != Ty_float)
+                        error(a->u.op.left->pos, SEM_ERR_OP_REQ_TYPE, "binary");
+                    if (right.ty->kind != Ty_int && right.ty->kind != Ty_float)
+                        error(a->u.op.right->pos, SEM_ERR_OP_REQ_TYPE,
+                              "binary");
+                    if (left.ty->kind != right.ty->kind) {
+                        error(a->u.op.left->pos, SEM_ERR_OP_DIFF_TYPE);
+                    }
 
-                        return expTy(Tr_arithExp(oper, left.exp, right.exp),
-                                     Ty_Int());
+                    Tr_exp tr_exp = Tr_arithExp(oper, left.exp, right.exp);
+
+                    if (right.ty->kind == Ty_int)
+                        return expTy(tr_exp, Ty_Int());
+                    else
+                        return expTy(tr_exp, Ty_Float());
 
                 case A_eqOp:
                 case A_neqOp:
@@ -247,10 +253,11 @@ static expty transExp(Tr_level level, S_table venv, S_table tenv, A_exp a) {
                 case A_leOp:
                 case A_geOp: {
                     if (right.ty->kind != left.ty->kind) {
-                        error(a->u.op.right->pos, "%s given; expected %s",
-                              Ty_ToString(right.ty), Ty_ToString(left.ty));
+                        error(a->u.op.right->pos, SEM_ERR_OP_REQ_TYPE,
+                              "comparison");
                     }
                     switch (left.ty->kind) {
+                        case Ty_float:
                         case Ty_int:
                             translation = Tr_relExp(oper, left.exp, right.exp);
                             break;
