@@ -67,8 +67,6 @@ int backend(Tr_exp exp) {
     F_fragList f_frags = NULL;
     F_fragList s_frags = NULL;
 
-    Tr_procEntryExit(Tr_outermost(), exp, NULL);
-
     if (print_ir) {
         fprintf(stdout, "=============       IR       =============\n");
         Tr_printTree(exp);

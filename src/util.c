@@ -1,5 +1,6 @@
 #include "include/util.h"
 
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -13,6 +14,17 @@ void *checked_malloc(int len) {
     }
 
     return p;
+}
+
+string FormatString(string s, ...) {
+    va_list ap;
+    char tmp[50];
+    va_start(ap, s);
+    int len = vsnprintf(tmp, 50, s, ap);
+    va_end(ap);
+    string res = checked_malloc(len + 1);
+    strcpy(res, tmp);
+    return res;
 }
 
 string String(char *s) {

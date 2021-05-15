@@ -49,6 +49,7 @@ SemantReturn SEM_transProg(A_exp exp) {
     S_table venv = E_base_venv();
 
     expty trans_expr = transExp(Tr_outermost(), venv, tenv, exp);
+    Tr_procEntryExit(Tr_outermost(), trans_expr.exp, NULL);
 
     SemantReturn ret = {
         .any_errors = anyErrors(),

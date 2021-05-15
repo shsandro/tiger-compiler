@@ -1,1 +1,32 @@
 /* write a program using your new construction, such code must have 30 lines and also print something */
+let
+    var x: float := 10.0
+    function float_gt(x: float, y: float): int = x > y
+
+    function float_times10(x: float): float = x * 10.0
+
+    function printint(i: int) =
+        let function f(i:int) = if i>0 
+             then (f(i/10); print(chr(i-i/10*10+ord("0"))))
+        in if i<0 then (print("-"); f(-i))
+            else if i>0 then f(i)
+            else print("0")
+        end
+
+    type floatvec = array of floatvec
+    type Point = {x: float, y: float}
+    type PointVec = array of Point
+
+    var p1: Point := Point {x=10.0, y=20.0}
+    var p2 := Point {x=30.0, y=40.0}
+    var point_list := PointVec[2] of Point {x=0.0, y=0.0}
+
+    var f1: float := 10.0
+    var f2 := 10.5
+    var f3 := f1
+    var f4 := f2
+in 
+    float_gt(x, f1 + f2 + f3 + f4);
+    print("x é maior que 0?");
+    printint(float_gt(float_times10(x), 0.0))
+end
