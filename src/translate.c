@@ -220,18 +220,10 @@ static struct Cx unCx(Tr_exp e) {
 
 Tr_exp Tr_noExp() { return Tr_Ex(T_Const(0)); }
 
-/**
- * translate frame access to simple varaible
- *
- * note:
- * access may be declared in outer level, so it needs to follow the static link
- * to find.
- */
 Tr_exp Tr_simpleVar(Tr_access access, Tr_level level) {
     T_exp fp = T_Temp(F_FP());
     Tr_level current_level = level;
-    // F_formals returns all the formals in the frame, in which the head is
-    // static link
+
     if (access->level != current_level) {
         fp = F_Exp(F_formals(level->frame)->head, fp);
         current_level = current_level->parent;
@@ -250,13 +242,6 @@ Tr_exp Tr_subscriptVar(Tr_exp array, Tr_exp index) {
                       T_Binop(T_mul, unEx(index), T_Const(F_WORD_SIZE)))));
 }
 
-/**
- * nil is treated as a record with no memory space
- *
- * note:
- * built-in function "initRecord" need a paramater, so called size, to allocate
- * memory space
- */
 static Temp_temp nil = NULL;
 Tr_exp Tr_nilExp() {
     if (!nil) {
@@ -387,66 +372,71 @@ Tr_exp Tr_assignExp(Tr_exp left, Tr_exp right) {
     return Tr_Nx(T_Move(unEx(left), unEx(right)));
 }
 
-// FIXME?
 Tr_exp Tr_ifExp(Tr_exp test, Tr_exp then, Tr_exp elsee) {
-    Tr_exp con_exp = NULL;
-
-    struct Cx c = unCx(test);
-    Temp_label t = Temp_newlabel(), f = Temp_newlabel();
-    doPatch(c.falses, f);
-    doPatch(c.trues, t);
-
     if (elsee) {
+        Temp_label t = Temp_newlabel(), f = Temp_newlabel(),
+                   join = Temp_newlabel();
         Temp_temp r = Temp_newtemp();
-        Temp_label z = Temp_newlabel();
-        T_stm jump = T_Jump(T_Name(z), Temp_LabelList(z, NULL));
-
-        T_stm then_stm = NULL;
-        T_stm else_stm = NULL;
-
+        Tr_exp result = NULL;
+        T_stm joinJump = T_Jump(T_Name(join), Temp_LabelList(join, NULL));
+        struct Cx cond = unCx(test);
+        doPatch(cond.trues, t);
+        doPatch(cond.falses, f);
         if (elsee->kind == Tr_ex) {
-            con_exp = Tr_Ex(T_Eseq(
-                c.stm,
+            result = Tr_Ex(T_Eseq(
+                cond.stm,
                 T_Eseq(
-                    T_Label(f),
+                    T_Label(t),
                     T_Eseq(
                         T_Move(T_Temp(r), unEx(then)),
-                        T_Eseq(jump,
-                               T_Eseq(T_Label(t),
+                        T_Eseq(joinJump,
+                               T_Eseq(T_Label(f),
                                       T_Eseq(T_Move(T_Temp(r), unEx(elsee)),
-                                             T_Eseq(jump,
-                                                    T_Eseq(T_Label(z),
+                                             T_Eseq(joinJump,
+                                                    T_Eseq(T_Label(join),
                                                            T_Temp(r))))))))));
         } else {
-            then_stm = (then->kind == Tr_nx) ? then->u.nx : then->u.cx.stm;
-            else_stm = (elsee->kind == Tr_nx) ? elsee->u.nx : elsee->u.cx.stm;
-            con_exp = Tr_Nx(T_Seq(
-                c.stm,
-                T_Seq(T_Label(t),
-                      T_Seq(then_stm,
-                            T_Seq(jump,
-                                  T_Seq(T_Label(f),
-                                        T_Seq(else_stm,
-                                              T_Seq(jump, T_Label(z)))))))));
-        }
-    } else {
-        T_stm then_stm = NULL;
+            T_stm thenStm;
+            if (then->kind == Tr_ex)
+                thenStm = T_Exp(then->u.ex);
+            else
+                thenStm = (then->kind == Tr_nx) ? then->u.nx : then->u.cx.stm;
 
-        switch (then->kind) {
-            case Tr_ex:
-                then_stm = T_Exp(then->u.ex);
-                break;
-            case Tr_nx:
-                then_stm = then->u.nx;
-                break;
-            case Tr_cx:
-                then_stm = then->u.cx.stm;
-                break;
+            T_stm elseeStm =
+                (elsee->kind == Tr_nx) ? elsee->u.nx : elsee->u.cx.stm;
+            result = Tr_Nx(
+                T_Seq(cond.stm,
+                      T_Seq(T_Label(t),
+                            T_Seq(thenStm,
+                                  T_Seq(joinJump,
+                                        T_Seq(T_Label(f),
+                                              T_Seq(elseeStm,
+                                                    T_Seq(joinJump,
+                                                          T_Label(join)))))))));
         }
-        con_exp =
-            Tr_Nx(T_Seq(c.stm, T_Seq(T_Label(t), T_Seq(then_stm, T_Label(f)))));
+
+        return result;
+    } else {
+        Temp_label t = Temp_newlabel(), f = Temp_newlabel();
+        struct Cx cond = unCx(test);
+        Tr_exp result = NULL;
+        doPatch(cond.trues, t);
+        doPatch(cond.falses, f);
+        if (then->kind == Tr_nx) {
+            result = Tr_Nx(T_Seq(
+                cond.stm, T_Seq(T_Label(t), T_Seq(then->u.nx, T_Label(f)))));
+        } else if (then->kind == Tr_cx) {
+            result = Tr_Nx(
+                T_Seq(cond.stm,
+                      T_Seq(T_Label(t), T_Seq(then->u.cx.stm, T_Label(f)))));
+        } else {
+            result = Tr_Nx(
+                T_Seq(cond.stm,
+                      T_Seq(T_Label(t), T_Seq(T_Exp(unEx(then)), T_Label(f)))));
+        }
+
+        return result;
     }
-    return con_exp;
 }
 
 Tr_exp Tr_whileExp(Tr_exp test, Tr_exp done, Tr_exp body) {
