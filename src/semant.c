@@ -207,6 +207,7 @@ static expty transExp(Tr_level level, S_table venv, S_table tenv, A_exp a) {
                 case A_eqOp:
                 case A_neqOp:
                     switch (left.ty->kind) {
+                        case Ty_float:
                         case Ty_int: {
                             if (right.ty == left.ty)
                                 translation =
