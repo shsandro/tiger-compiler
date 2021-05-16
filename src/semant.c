@@ -470,7 +470,7 @@ static expty transExp(Tr_level level, S_table venv, S_table tenv, A_exp a) {
 
             if (typ->u.array->kind == Ty_name)
                 typ->u.array = S_look(tenv, typ->u.array->u.name.sym);
-            if (init.ty != typ->u.array) {
+            if (!actual_eq(init.ty, typ->u.array)) {
                 error(a->pos, SEM_ERR_ARRAY_WRONG_TYPE);
                 return expTy(Tr_noExp(), Ty_Array(typ));
             }
