@@ -48,6 +48,30 @@
 
 let
 
+function shift_right(valor:int, n:int): int =
+  let 
+    var exp := 2
+  in
+    for i := 0 to n do (
+      exp := exp * 2;
+    );
+
+    valor := valor / exp;
+    valor
+  end
+
+function shift_left(valor:int, n:int): int =
+  let 
+    var exp := 2
+  in
+    for i := 0 to n do (
+      exp := exp * 2;
+    );
+
+    valor := valor * exp;
+    valor
+  end
+
  /* COMPLEX STRUCTURE */
  type COMPLEX =  {real : int, imag : int}
 
@@ -307,8 +331,8 @@ last entry is for mil=30 case when wd is max */
     tqmf[tqmf_ptr] := xin2;
 
     /* scale outputs */
-    xl := (xa + xb) >> 15;
-    xh := (xa - xb) >> 15;
+    xl := shift_right((xa + xb), 15);
+    xh := shift_right((xa - xb), 15);
 
     /* end of quadrature mirror filter code */
 
@@ -329,7 +353,7 @@ last entry is for mil=30 case when wd is max */
 
     /* invqxl: computes quantized difference signal */
     /* for invqbl, truncate by 2 lsbs, so mode = 3 */
-    dlt := (detl*qq4_code4_table[il >> 2]) >> 15;
+    dlt := shift_right((detl*qq4_code4_table[shift_right(il, 2)]), 15);
 
     /* logscl: updates logarithmic quant. scale factor in low sub band */
     nbl := logscl(il,nbl);
@@ -382,11 +406,11 @@ last entry is for mil=30 case when wd is max */
     else
         ih := 1;     /* 0,1 are neg codes */
 
-    decis := (564*deth) >> 12;
+    decis := shift_right((564*deth), 12);
     if(abs(eh) > decis) then ih := ih - 1;     /* mih = 2 case */
 
     /* invqah: compute the quantized difference signal, higher sub-band*/
-    dh := (deth*qq2_code2_table[ih]) >> 15;
+    dh := shift_right((deth*qq2_code2_table[ih]), 15);
 
     /* logsch: update logarithmic quantizer scale factor in hi sub-band*/
     nbh := logsch(ih,nbh);
@@ -420,7 +444,7 @@ last entry is for mil=30 case when wd is max */
 
     /* multiplex ih and il to get signals together */
     /*return(il | (ih << 6));*/
-    ih << 6
+    shift_left(ih, 6)
  end
 
 /* decode function, result in xout1 and xout2 */
@@ -441,7 +465,7 @@ last entry is for mil=30 case when wd is max */
 
     /* split transmitted word from input into ilr and ih */
     ilr := input; /* & 0x3f; */
-    ih := input >> 6;
+    ih := shift_right(input, 6);
 
     /* LOWER SUB_BAND DECODER */
 
@@ -454,10 +478,10 @@ last entry is for mil=30 case when wd is max */
     dec_sl := dec_spl + dec_szl;
 
     /* invqxl: compute quantized difference signal for adaptive predic */
-    dec_dlt := (dec_detl*qq4_code4_table[ilr >> 2]) >> 15;
+    dec_dlt := shift_right((dec_detl*qq4_code4_table[shift_right(ilr, 2)]), 15);
 
     /* invqxl: compute quantized difference signal for decoder output */
-    dl := (dec_detl*qq6_code6_table[il]) >> 15;
+    dl := shift_right((dec_detl*qq6_code6_table[il]), 15);
 
     rl := dl + dec_sl;
 
@@ -501,7 +525,7 @@ last entry is for mil=30 case when wd is max */
     dec_sh := dec_sph + dec_szh;
 
     /* invqah: in-place compute the quantized difference signal */
-    dec_dh := (dec_deth*qq2_code2_table[ih]) >> 15 ;
+    dec_dh := shift_right((dec_deth*qq2_code2_table[ih]), 15);
 
     /* logsch: update logarithmic quantizer scale factor in hi sub band */
     dec_nbh := logsch(ih,dec_nbh);
@@ -561,8 +585,8 @@ last entry is for mil=30 case when wd is max */
     h_ptr := h_ptr + 1;
 
     /* scale by 2^14 */
-    xout1 := xa1 >> 14;
-    xout2 := xa2 >> 14;
+    xout1 := shift_right(xa1, 14);
+    xout2 := shift_right(xa2, 14);
 
     /* update delay lines */
     ac_ptr1 := ac_ptr - 1;
@@ -903,7 +927,7 @@ end
     for i := 1 to 5 do
         zl := zl + bpl[i] * dlt[i];
 
-    (zl >> 14)   /* x2 here */
+    (shift_right(zl, 14))   /* x2 here */
  end
 
  /* filtep - compute predictor output signal (pole section) */
@@ -918,7 +942,7 @@ end
     pl := al1*pl;
     pl2 := 2*rlt2;
     pl := pl + al2 * pl2;
-    (pl >> 15)
+    (shift_right(pl, 15))
  end
 
  /* quantl - quantize the difference signal in the lower sub-band */
@@ -934,7 +958,7 @@ end
     /* determine mil based on decision levels and detl gain */
     for mil := 0 to 29 do (
     	mil2 := mil;
-        decis := (decis_levl[mil]*detl) >> 15;
+        decis := shift_right((decis_levl[mil]*detl), 15);
         if(wd <= decis) then break
     );
     /* if mil=30 then wd is less than all decision levels */
@@ -949,8 +973,8 @@ end
  let
     var wd := 0
  in
-    wd := (nbl * 127) >> 7;   /* leak factor 127/128 */
-    nbl := wd + wl_code_table[il >> 2];
+    wd := shift_right((nbl * 127), 7);   /* leak factor 127/128 */
+    nbl := wd + wl_code_table[shift_right(il, 2)];
     if(nbl < 0) then nbl := 0;
     if(nbl > 18432) then nbl := 18432;
     nbl
@@ -963,10 +987,10 @@ end
     var wd2 := 0
     var wd3 := 0
  in
-    wd1 := (nbl >> 6) /*& 31*/;
-    wd2 := nbl >> 11;
-    wd3 := ilb_table[wd1] >> (shift_constant + 1 - wd2);
-    (wd3 << 3)
+    wd1 := shift_right(nbl, 6) /*& 31*/;
+    wd2 := shift_right(nbl, 11);
+    wd3 := shift_right(ilb_table[wd1], (shift_constant + 1 - wd2));
+    (shift_left(wd3, 3))
  end
 
  /* upzero - inputs: dlt, dlti[0-5], bli[0-5], outputs: updated bli[0-5] */
@@ -979,11 +1003,11 @@ end
     /*if dlt is zero, then no sum into bli */
     if(dlt = 0) then 
       for i := 0 to 5 do
-        bli[i] := (255* bli[i]) >> 8 /* leak factor of 255/256 */
+        bli[i] := shift_right((255* bli[i]), 8) /* leak factor of 255/256 */
     else 
       for i := 0 to 5 do (
         if(dlt*dlti[i] >= 0) then wd2 := 128 else wd2 = -128;
-        wd3 := (255*bli[i]) >> 8;    /* leak factor of 255/256 */
+        wd3 := shift_right((255*bli[i]), 8);    /* leak factor of 255/256 */
         bli[i] := wd2 + wd3
       );
 
@@ -1006,12 +1030,12 @@ end
  in
     wd2 := 4*al1;
     if(plt*plt1 >= 0) then wd2 := -wd2;    /* check same sign */
-    wd2 := wd2 >> 7;                  /* gain of 1/128 */
+    wd2 := shift_right(wd2, 7);                  /* gain of 1/128 */
     if(plt*plt2 >= 0) then
         wd4 := wd2 + 128             /* same sign case */
     else
         wd4 := wd2 - 128;
-    apl2 := wd4 + (127*al2 >> 7);  /* leak factor of 127/128 */
+    apl2 := wd4 + (shift_right(127*al2, 7));  /* leak factor of 127/128 */
 
     /* apl2 is limited to +-.75 */
     if(apl2 > 12288) then apl2 := 12288;
@@ -1028,7 +1052,7 @@ end
     var wd3 := 0
     var apl1 := 0
  in
-    wd2 := (al1*255) >> 8;   /* leak factor of 255/256 */
+    wd2 := shift_right((al1*255), 8);   /* leak factor of 255/256 */
     if(plt*plt1 >= 0) then
         apl1 := wd2 + 192      /* same sign case */
     else 
@@ -1044,7 +1068,7 @@ end
  /* INVQAH: inverse adaptive quantizer for the higher sub-band */
  /* returns dh, code table is pre-multiplied by 8 */
  function invqah(ih:int, deth:int):int =
-    (deth*qq2_code2_table[ih]) >> 15
+    shift_right((deth*qq2_code2_table[ih]), 15)
 
  /* logsch - update log quantizer scale factor in higher sub-band */
  /* note that nbh is passed and returned */
@@ -1052,7 +1076,7 @@ end
  let
     var wd := 0
  in
-    wd := (nbh * 127) >> 7;       /* leak factor 127/128 */
+    wd := shift_right((nbh * 127), 7);       /* leak factor 127/128 */
     nbh := wd + wh_code_table[ih];
     if(nbh < 0) then nbh := 0;
     if(nbh > 22528) then nbh := 22528;
@@ -1067,7 +1091,7 @@ function sin(rad:int):int =
   while (rad > 2*PI) do
     rad := rad - 2 * PI;
   while (rad < -2*PI) do
-    rad = rad + 2 * PI;
+    rad := rad + 2 * PI;
   app := rad;
   diff := rad;
   diff := (diff * (-(rad*rad))) / ((2 * inc) * (2 * inc + 1));

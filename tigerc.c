@@ -33,10 +33,10 @@ void help_menu(const char *prog_name) {
         "allocation\n");
     printf(
         "    -S               prints the generated assembly code after regs "
-        "allocation [not available yet]\n");
+        "allocation [not available]\n");
     printf(
         "    -o               sets the name of the output binary               "
-        "        [not available yet]\n");
+        "        [not available]\n");
 }
 
 SemantReturn frontend(char *input_file, A_exp *absyn_root) {

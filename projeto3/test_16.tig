@@ -52,6 +52,29 @@
 */
 
 let
+  function shift_right(valor:int, n:int): int =
+    let 
+      var exp := 2
+    in
+      for i := 0 to n do (
+        exp := exp * 2;
+      );
+
+      valor := valor / exp;
+      valor
+    end
+
+  function shift_left(valor:int, n:int): int =
+    let 
+      var exp := 2
+    in
+      for i := 0 to n do (
+        exp := exp * 2;
+      );
+
+      valor := valor * exp;
+      valor
+    end
 
  type intARRAY = array of int
 
@@ -209,10 +232,15 @@ let
     tmp13 := tmp0 - tmp3;
     tmp11 := tmp1 + tmp2;
     tmp12 := tmp1 - tmp2;
-  
+    
+    dataptr[0] := shift_left((tmp10 + tmp11), PASS1_BITS);
+    dataptr[4] := shift_left((tmp10 - tmp11), PASS1_BITS);
     
     z1 := (tmp12 + tmp13) * FIX_0_541196100;
-       
+    dataptr[2] := ((z1 + tmp13 * FIX_0_765366865) + shift_right(shift_left(1, (CONST_BITS-PASS1_BITS-1)), CONST_BITS-PASS1_BITS));
+    
+    dataptr[6] := ((z1 + tmp12 * -FIX_1_847759065) + shift_right(shift_left(1, (CONST_BITS-PASS1_BITS-1)), CONST_BITS-PASS1_BITS));
+    
     /* Odd part per figure 8 --- note paper omits factor of sqrt(2).
      * cK represents cos(K*pi/16).
      * i0..i3 in the paper are tmp4..tmp7 here.
@@ -235,7 +263,11 @@ let
     
     z3 := z3 + z5;
     z4 := z4 + z5;
-  
+    
+    dataptr[7] := ((tmp4 + z1 + z3) + shift_right(shift_left(1, (CONST_BITS-PASS1_BITS-1)), CONST_BITS-PASS1_BITS-1));
+    dataptr[5] := ((tmp5 + z2 + z4) + shift_right(shift_left(1, (CONST_BITS-PASS1_BITS-1)), CONST_BITS-PASS1_BITS));
+    dataptr[3] := ((tmp6 + z2 + z3) + shift_right(shift_left(1, (CONST_BITS-PASS1_BITS-1)), CONST_BITS-PASS1_BITS));
+    dataptr[1] := ((tmp7 + z1 + z4) + shift_right(shift_left(1, (CONST_BITS-PASS1_BITS-1)), CONST_BITS-PASS1_BITS));
     
     /*dataptr := dataptr[DCTSIZE]		 advance pointer to next row */
   );
@@ -264,8 +296,13 @@ let
     tmp13 := tmp0 - tmp3;
     tmp11 := tmp1 + tmp2;
     tmp12 := tmp1 - tmp2;
+   
+    dataptr[DCTSIZE*0] := ((tmp10 + tmp11) + shift_right(shift_left(1, (PASS1_BITS-1)), PASS1_BITS));
+    dataptr[DCTSIZE*4] := ((tmp10 - tmp11) + shift_right(shift_left(1, (PASS1_BITS-1)), PASS1_BITS));
     
     z1 := tmp12 + tmp13 * FIX_0_541196100;
+    dataptr[DCTSIZE*2] := ((z1 + tmp13 * FIX_0_765366865) + shift_right(shift_left(1, (CONST_BITS+PASS1_BITS-1)), CONST_BITS+PASS1_BITS));
+    dataptr[DCTSIZE*6] := ((z1 + tmp12 * -FIX_1_847759065) + shift_right(shift_left(1, (CONST_BITS+PASS1_BITS-1)), CONST_BITS+PASS1_BITS));
     
     /* Odd part per figure 8 --- note paper omits factor of sqrt(2).
      * cK represents cos(K*pi/16).
@@ -289,12 +326,15 @@ let
     
     z3 := z3 + z5;
     z4 := z4 + z5;
+   
+    dataptr[DCTSIZE*7] := ((tmp4 + z1 + z3) + shift_right(shift_left(1, (CONST_BITS+PASS1_BITS-1)), CONST_BITS+PASS1_BITS));
+    dataptr[DCTSIZE*5] := ((tmp5 + z2 + z4) + shift_right(shift_left(1, (CONST_BITS+PASS1_BITS-1)), CONST_BITS+PASS1_BITS));
+    dataptr[DCTSIZE*3] := ((tmp6 + z2 + z3) + shift_right(shift_left(1, (CONST_BITS+PASS1_BITS-1)), CONST_BITS+PASS1_BITS));
+    dataptr[DCTSIZE*1] := ((tmp7 + z1 + z4) + shift_right(shift_left(1, (CONST_BITS+PASS1_BITS-1)), CONST_BITS+PASS1_BITS));
     
     /*dataptr := dataptr + 1			 advance pointer to next column */
-  )
-
+  );
 end
-
 
 /* Main function
    Time to function execution time using logic analyzer,
