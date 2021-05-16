@@ -58,3 +58,7 @@ tigerc
 
 # vscode
 .vscode
+
+test_projeto_*.sh
+saida_test_projeto_*.txt
+/test

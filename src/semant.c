@@ -38,7 +38,6 @@ Ty_tyList nametyList(S_table tenv, A_nametyList nl);
 void checkRecord(S_table tenv, Ty_fieldList fl);
 void hoist_type_names(S_table tenv, A_dec dec);
 
-// inside flag (for loop, while loop)
 static int inside = 0;
 static Tr_exp brk[16];
 
@@ -341,7 +340,7 @@ static expty transExp(Tr_level level, S_table venv, S_table tenv, A_exp a) {
                 return expTy(Tr_noExp(), Ty_Void());
             }
             expty thenet = transExp(level, venv, tenv, a->u.iff.then);
-            if (a->u.iff.elsee) {  // if-then-else
+            if (a->u.iff.elsee) {
                 expty elseet = transExp(level, venv, tenv, a->u.iff.elsee);
                 // if-then: no return value. if-then-else: can have return value
                 if (elseet.ty != thenet.ty) {
@@ -488,7 +487,7 @@ static expty transExp(Tr_level level, S_table venv, S_table tenv, A_exp a) {
         default:;
     }
 
-    assert(0);  // not recognized
+    assert(0);
 }
 
 static expty transVar(Tr_level level, S_table venv, S_table tenv, A_var v) {
@@ -550,13 +549,13 @@ static expty transVar(Tr_level level, S_table venv, S_table tenv, A_var v) {
         defalut:;
     }
 
-    assert(0);  // not recognized
+    assert(0);
 }
 
 static Tr_exp transDec(Tr_level level, S_table venv, S_table tenv, A_dec d) {
     switch (d->kind) {
         case A_varDec: {
-            Ty_ty dec_ty = NULL;  // declare type maybe NULL
+            Ty_ty dec_ty = NULL;
             if (d->u.var.typ != NULL) {
                 dec_ty = S_look(tenv, d->u.var.typ);
                 if (!dec_ty) {
@@ -658,7 +657,7 @@ static Tr_exp transDec(Tr_level level, S_table venv, S_table tenv, A_dec d) {
                 typenames[index++] = (void *)fun_list->head->name;
             }
 
-            // 2: translate body (treelistLeaves(t.children))
+            // translate body
             for (fun_list = d->u.function; fun_list;
                  fun_list = fun_list->tail) {
                 E_enventry fun_entry = S_look(venv, fun_list->head->name);

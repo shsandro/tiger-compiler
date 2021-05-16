@@ -193,15 +193,6 @@ F_fragList F_FragList(F_frag head, F_fragList tail) {
     return fl;
 }
 
-/**
- * MIPS calling convention
- *
- * the $v registers are for function returns,
- * the $a registers are for function arguments,
- * the $t variables are temporary caller saved registers,
- * the $s registers are callee saved.
- */
-
 Temp_temp F_ZERO() {
     if (regs[0] == NULL) {
         F_regs_init();

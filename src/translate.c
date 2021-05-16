@@ -46,8 +46,7 @@ Tr_expList Tr_ExpList(Tr_exp head, Tr_expList tail) {
 
 static Tr_accessList make_formals(Tr_level level) {
     Tr_accessList head = NULL, tail = NULL;
-    F_accessList al =
-        F_formals(level->frame)->tail;  // access parent frame's formals
+    F_accessList al = F_formals(level->frame)->tail;
 
     for (; al; al = al->tail) {
         Tr_access access = Tr_Access(level, al->head);
@@ -66,8 +65,7 @@ Tr_level Tr_newLevel(Tr_level parent, Temp_label name, U_boolList formals) {
     Tr_level level = checked_malloc(sizeof(*level));
     level->parent = parent;
     level->name = name;
-    level->frame =
-        F_newFrame(name, U_BoolList(TRUE, formals));  // one room for new bp
+    level->frame = F_newFrame(name, U_BoolList(TRUE, formals));
     level->formals = make_formals(level);
     return level;
 }
@@ -246,7 +244,6 @@ static Temp_temp nil = NULL;
 Tr_exp Tr_nilExp() {
     if (!nil) {
         nil = Temp_newtemp();
-        // initialize nil as a 0
         return Tr_Ex(T_Eseq(
             T_Move(T_Temp(nil), F_externalCall(String("initRecord"),
                                                T_ExpList(T_Const(0), NULL))),
@@ -270,12 +267,10 @@ Tr_exp Tr_stringExp(string s) {
 Tr_exp Tr_callExp(Tr_level call_level, Tr_level func_level, Temp_label name,
                   Tr_expList args) {
     T_exp fp = T_Temp(F_FP());
-    // follow the static link
     while (call_level != func_level->parent) {
         fp = F_Exp(F_formals(call_level->frame)->head, fp);
         call_level = call_level->parent;
     }
-    // convert Tr_expList to T_expList
     Tr_expList el = NULL;
     T_expList head = NULL;
     for (el = args; el; el = el->tail) {
@@ -344,7 +339,6 @@ Tr_exp Tr_recordExp(Tr_expList fields, int n_fields) {
         T_Temp(t),
         F_externalCall(String("initRecord"),
                        T_ExpList(T_Const(n_fields * F_WORD_SIZE), NULL)));
-    // reverse the list
     Tr_expList el = fields, head = NULL;
     for (; el; el = el->tail) {
         head = Tr_ExpList(el->head, head);
@@ -453,7 +447,7 @@ Tr_exp Tr_whileExp(Tr_exp test, Tr_exp done, Tr_exp body) {
 
 Tr_exp Tr_doneExp() {
     Temp_label done_label = Temp_newlabel();
-    return Tr_Ex(T_Name(done_label));  // T_Name() return a memory address
+    return Tr_Ex(T_Name(done_label));
 }
 
 Tr_exp Tr_breakExp(Tr_exp brk) {

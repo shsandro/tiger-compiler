@@ -67,18 +67,15 @@ int backend(Tr_exp exp) {
     F_fragList f_frags = NULL;
     F_fragList s_frags = NULL;
 
-    if (print_ir) {
-        fprintf(stdout, "=============       IR       =============\n");
-        Tr_printTree(exp);
-    }
-
     f_frags = Tr_getResult();
 
     if (print_before_assembly) {
         for (s_frags = f_frags; s_frags; s_frags = s_frags->tail)
-            if (s_frags->head->kind == F_stringFrag)
+            if (s_frags->head->kind == F_stringFrag) {
+                fprintf(stdout, "============= PseudoAssembly =============\n");
                 fprintf(stdout, "%s: %s\n\n", Temp_labelstring(Temp_newlabel()),
                         s_frags->head->u.stringg.str);
+            }
     }
 
     for (F_fragList f = f_frags; f; f = f->tail) {
@@ -86,18 +83,21 @@ int backend(Tr_exp exp) {
         stmList = C_traceSchedule(C_basicBlocks(stmList));
 
         if (print_canonical) {
+            fprintf(stdout, "============= Canonical Tree =============\n");
             Tr_printCanonicalTree(stmList);
         }
 
-        if (f->head->kind == F_procFrag) {
-            AS_instrList instr_l = F_codegen(f->head->u.proc.frame, stmList);
+        if (print_before_assembly) {
+            if (f->head->kind == F_procFrag) {
+                AS_instrList instr_l =
+                    F_codegen(f->head->u.proc.frame, stmList);
 
-            if (print_before_assembly) {
+                fprintf(stdout, "============= PseudoAssembly =============\n");
                 AS_printInstrList(stdout, instr_l, F_tempMap());
             }
         }
     }
-    return 0;
+    return EXIT_SUCCESS;
 }
 
 int program(char *input_file, char *output_file) {
@@ -108,7 +108,14 @@ int program(char *input_file, char *output_file) {
         exit(EXIT_FAILURE);
     }
 
-    return backend(sem_ret.tree_root);
+    if (print_ir) {
+        fprintf(stdout, "=============       IR       =============\n");
+        Tr_printTree(sem_ret.tree_root);
+    }
+
+    return (print_canonical || print_before_assembly)
+               ? backend(sem_ret.tree_root)
+               : EXIT_SUCCESS;
 }
 
 int main(int argc, char *const *argv) {
