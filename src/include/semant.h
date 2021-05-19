@@ -3,13 +3,7 @@
 
 #include "absyn.h"
 #include "frame.h"
-#include "translate.h"
 
-typedef struct {
-    int any_errors;
-    Tr_exp tree_root;
-} SemantReturn;
-
-SemantReturn SEM_transProg(A_exp exp);
+int SEM_transProg(A_exp exp);
 
 #endif
